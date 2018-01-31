@@ -1,7 +1,8 @@
-# tenhou
-golang package for working with tenhou net logs and protocol
-
 # About
+
+[![Build Status](https://travis-ci.org/dnovikoff/tenhou.svg?branch=master)](https://travis-ci.org/dnovikoff/tenhou)
+
+golang package for working with tenhou net logs and protocol
 
 This package contains functions for parsing/generating:
 1. Log files
