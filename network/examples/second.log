@@ -1,0 +1,49 @@
+Send: <HELO name="IDDEADBEAF-xxxxxxxx" tid="f0" sx="M" />
+Get: <GO type="9" lobby="0" gpid="2FF64D8A-A9692044"/> <UN n0="%E3%81%98%E3%82%83%E3%81%82%E3%81%BE%E3%81%9F" n1="%E3%83%88%E3%83%B3%E3%83%9D%E3%82%A6%E3%83%AD%E3%82%A6" n2="%E3%81%84%E3%81%9F%E3%81%A1%E3%82%83%E3%82%93" n3="%4D%6F%63%68%69%7A%6F" dan="9,10,0,10" rate="1656.39,1403.41,1338.04,1484.37" sx="M,M,M,M"/> <SAIKAI ba="0,0" oya="2" sc="250,0,198,0,302,0,250,0"/> 
+Send: <GOK />
+Get: <REINIT seed="1,0,0,0,1,102" ten="250,198,302,250" oya="2" hai="5,13,26,42,48,57,58,64,88,93,100,105,119" kawa2="121"/> <W/> 
+Get: <G118/> <T85/> 
+Send: <D p="119"/>
+Get: <D119/> <U/> 
+Get: <E117/> <V/> 
+Get: <F87/> <W/> 
+Get: <G69/> <T110/> 
+Send: <D p="110"/>
+Get: <D110/> 
+Get: <N who="2" m="42602" /> 
+Get: <F96/> 
+Get: <W/> 
+Get: <G35/> <T112/> 
+Send: <D p="112"/>
+Get: <D112/> <U/> 
+Get: <E37/> <V/> 
+Get: <F34/> <W/> 
+Get: <G111/> <T52/> 
+Send: <D p="105"/>
+Get: <D105/> <U/> 
+Get: <E115/> <V/> 
+Get: <F2/> <W/> 
+Get: <G99 t="4"/> 
+Send: <N />
+Get: <T66/> 
+Send: <D p="42"/>
+Get: <D42/> <U/> 
+Get: <E125/> <V/> 
+Get: <F30/> <W/> 
+Get: <G129/> <T50/> 
+Send: <D p="100"/>
+Get: <D100/> <U/> 
+Get: <E74/> 
+Get: <V/> 
+Get: <F36/> 
+Get: <W/> 
+Get: <g32/> <T41/> 
+Send: <D p="26"/>
+Get: <D26/> 
+Get: <U/> 
+Get: <E71/> <V/> 
+Get: <F63/> 
+Get: <W/> 
+Get: <G21/> 
+Get: <AGARI ba="0,0" hai="12,15,17,18,21,23,76,81,84,124,127" m="42602" machi="21" ten="30,2900,0" yaku="14,1,10,1" doraHai="102" who="2" fromWho="3" sc="250,0,198,0,302,29,250,-29" /> 
+Send: <NEXTREADY />
