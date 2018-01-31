@@ -1,0 +1,78 @@
+Send: <HELO name="IDDEADBEAF-xxxxxxxx" tid="f0" sx="M" />
+Get: <HELO uname="%E3%81%98%E3%82%83%E3%81%82%E3%81%BE%E3%81%9F" auth="20180120-be208bdd" PF4="9,60,1656.39,210.0,12,17,18,6,0,524,113,41,213,95" ratingscale="PF3=1.000000&PF4=1.000000&PF01C=0.582222&PF02C=0.501632&PF03C=0.414869&PF11C=0.823386&PF12C=0.709416&PF13C=0.586714&PF23C=0.378722&PF33C=0.535594&PF1C00=8.000000" rr="PF3=0,0&PF4=38478,0&PF01C=0,0&PF02C=0,0&PF03C=0,0&PF11C=0,0&PF12C=0,0&PF13C=0,0&PF23C=0,0&PF33C=0,0&PF1C00=0,0"/> 
+Send: <AUTH val="20180120-59f37015"/>
+Send: <PXR V="9" />
+Get: <LN n="BCf1BAf1Uh1EO" j="D1B3B1C2D1C4C8C1B2B1D13C2B1D12C4D8B1C4B3B1C1B1B" g="DA3I1Fw3U1BM4M8GA3Q1CU4E8EI4w4E8BA12M1BO2q2BC2G1k1w1P1e2J"/> 
+Send: <Z />
+Send: <JOIN t="0,9" />
+Get: <RANKING v2="11,17,18,6,162.0,,1095,2828,1205,1777,1025,1763,1170,232,38478"/> 
+Get: <REJOIN t="0,9,r"/> 
+Send: <JOIN t="0,9,r" />
+Get: <GO type="9" lobby="0" gpid="2FF64D8A-A9692044"/> <UN n0="%E3%81%98%E3%82%83%E3%81%82%E3%81%BE%E3%81%9F" n1="%E3%83%88%E3%83%B3%E3%83%9D%E3%82%A6%E3%83%AD%E3%82%A6" n2="%E3%81%84%E3%81%9F%E3%81%A1%E3%82%83%E3%82%93" n3="%4D%6F%63%68%69%7A%6F" dan="9,10,0,10" rate="1656.39,1403.41,1338.04,1484.37" sx="M,M,M,M"/> <TAIKYOKU oya="1" log="2018012012gm-0009-0000-66fafd38"/> 
+Send: <GOK />
+Send: <NEXTREADY />
+Get: <INIT seed="0,0,0,0,5,32" ten="250,250,250,250" oya="1" hai="107,126,24,127,103,93,106,31,83,68,47,88,59"/> <U/> 
+Send: <Z />
+Get: <E116/> <V/> 
+Get: <F135/> <W/> 
+Send: <Z />
+Get: <G34 t="4"/> 
+Send: <N type="3" hai0="24" hai1="31" />
+Get: <N who="0" m="20839" /> 
+Send: <D p="68"/>
+Get: <D68/> <U/> 
+Get: <E38/> <V/> 
+Get: <F102/> <W/> 
+Get: <g113/> <T99/> 
+Send: <D p="47"/>
+Get: <D47/> <U/> 
+Get: <E121/> <V/> 
+Send: <Z />
+Get: <F50/> <W/> 
+Get: <G105 t="5"/> 
+Send: <N />
+Get: <T36/> 
+Send: <D p="36"/>
+Get: <D36/> <U/> 
+Get: <E65/> 
+Get: <V/> 
+Get: <REACH who="2" step="1"/> 
+Send: <Z />
+Get: <F94/> <REACH who="2" ten="250,250,240,250" step="2"/> <W/> 
+Get: <G117/> <T81/> 
+Send: <D p="103"/>
+Get: <D103/> <U/> 
+Get: <E110/> <V/> 
+Get: <f13/> 
+Get: <W/> 
+Send: <Z />
+Get: <G49/> <T97/> 
+Send: <D p="93"/>
+Get: <D93/> <U/> 
+Get: <E51/> <V/> 
+Get: <f122/> <W/> 
+Get: <G74/> <T109/> 
+Send: <Z />
+Send: <D p="109"/>
+Get: <D109/> <U/> 
+Get: <E42/> <V/> 
+Get: <f75/> <W/> 
+Get: <g100 t="4"/> 
+Send: <N />
+Get: <T53/> 
+Send: <D p="106"/>
+Get: <D106/> <U/> 
+Get: <E3/> <V/> 
+Get: <f92/> <W/> 
+Send: <Z />
+Get: <g123/> <T18/> 
+Send: <D p="107"/>
+Get: <D107/> <U/> 
+Get: <E40/> <V/> 
+Get: <f35/> <W/> 
+Get: <G85 t="4"/> 
+Send: <N />
+Send: <Z />
+Get: <T112/> 
+Send: <D p="81"/>
+Get: <D81/> <U/>

@@ -1,0 +1,693 @@
+Send: <HELO name="NoName" tid="f0" sx="M" />
+Get: <HELO uname="%4E%6F%4E%61%6D%65" auth="20180117-e7b5e83e" ratingscale="PF3=1.000000&PF4=1.000000&PF01C=0.582222&PF02C=0.501632&PF03C=0.414869&PF11C=0.823386&PF12C=0.709416&PF13C=0.586714&PF23C=0.378722&PF33C=0.535594&PF1C00=8.000000"/> 
+Send: <AUTH val="20180117-c1ebb26f"/>
+Send: <PXR V="1" />
+Get: <LN n="oK1nH1Rx1DF" j="C4D3B1C12D1B2C1C4B8D8B8B12B7C2B" g="Bs1E2E1Dk1E2c1BA12Ds3E1Bg12Bo4o12c4E8S1Ba2k2h3Y1b1P1e2J"/> 
+Send: <Z />
+Send: <JOIN t="0,9" />
+Get: <GO type="9" lobby="0" gpid="16FC25D5-14571922"/> <UN n0="%4E%6F%4E%61%6D%65" n1="%EF%BC%B2%EF%BC%B9%EF%BC%AF%EF%BC%99%EF%BC%90%EF%BC%99%EF%BC%90" n2="%E7%A9%BA%E6%B5%81" n3="%4D%72%2E%E5%82%80" dan="0,10,0,1" rate="1500.00,1461.07,1500.00,1520.74" sx="M,M,M,M"/> <TAIKYOKU oya="0" log="2018011712gm-0009-0000-a06a7d07"/> 
+Send: <GOK />
+Send: <NEXTREADY />
+Get: <INIT seed="0,0,0,2,5,81" ten="250,250,250,250" oya="0" hai="105,32,91,115,0,63,30,94,49,131,118,37,86"/> <T13/> 
+Send: <D p="115"/>
+Get: <D115/> <U/> 
+Send: <Z />
+Get: <E122/> 
+Get: <V/> 
+Get: <f73/> <W/> 
+Get: <G2/> <T47/> 
+Send: <D p="0"/>
+Get: <D0/> 
+Send: <Z />
+Get: <U/> 
+Get: <E68/> <V/> 
+Get: <F114/> <W/> 
+Get: <G111/> <T116/> 
+Send: <Z />
+Send: <D p="131"/>
+Get: <D131/> <U/> 
+Send: <Z />
+Get: <e117 t="1"/> 
+Send: <N />
+Get: <V/> 
+Get: <F103/> 
+Get: <W/> 
+Get: <G130/> <T100/> 
+Send: <D p="37"/>
+Get: <D37/> <U/> 
+Send: <Z />
+Get: <e4/> <V/> 
+Get: <F8/> <W/> 
+Get: <g120/> <T20/> 
+Send: <D p="32"/>
+Send: <Z />
+Get: <D32/> <U/> 
+Get: <E106/> <V/> 
+Get: <F24/> <W/> 
+Get: <g123/> <T26/> 
+Send: <D p="105"/>
+Get: <D105/> <U/> 
+Get: <e6/> <V/> 
+Get: <F25/> <W/> 
+Send: <Z />
+Get: <g121/> <T84/> 
+Send: <D p="116"/>
+Get: <D116/> <U/> 
+Get: <e7/> <V/> 
+Get: <F76/> <W/> 
+Get: <g113/> <T85/> 
+Send: <Z />
+Send: <D p="118"/>
+Get: <D118/> <U/> 
+Get: <e75/> <V/> 
+Get: <F87 t="3"/> 
+Send: <N type="1" hai0="84" hai1="85" />
+Get: <N who="0" m="33354" /> 
+Send: <D p="100"/>
+Get: <D100/> <U/> 
+Send: <Z />
+Get: <E126/> <V/> 
+Get: <F119/> <W/> 
+Get: <REACH who="3" step="1"/> 
+Get: <G133/> <REACH who="3" ten="250,250,250,240" step="2"/> <T134/> 
+Send: <D p="134"/>
+Get: <D134/> <U/> 
+Send: <Z />
+Get: <e128/> <V/> 
+Get: <f17/> <W/> 
+Get: <g39/> <T78/> 
+Send: <D p="78"/>
+Get: <D78/> <U/> 
+Get: <E102/> <V/> 
+Get: <f83/> 
+Get: <AGARI ba="0,1" hai="28,29,48,52,59,72,77,83,90,92,96,99,101,107" machi="83" ten="40,2600,0" yaku="1,1,54,1,53,0" doraHai="81" doraHaiUra="62" who="3" fromWho="2" sc="250,0,250,0,250,-26,240,36" /> 
+Send: <Z />
+Send: <NEXTREADY />
+Get: <INIT seed="1,0,0,4,2,34" ten="250,250,224,276" oya="1" hai="51,99,9,125,110,76,17,16,119,104,81,85,43"/> <U/> 
+Send: <Z />
+Get: <E116/> <V/> 
+Get: <F77/> <W/> 
+Get: <G114/> <T84/> 
+Send: <D p="119"/>
+Get: <D119/> <U/> 
+Get: <E105/> <V/> 
+Get: <F118/> <W/> 
+Send: <Z />
+Get: <G106/> <T41/> 
+Send: <D p="110"/>
+Get: <D110/> <U/> 
+Get: <E123/> <V/> 
+Get: <F90/> <W/> 
+Send: <Z />
+Get: <G108/> <T19/> 
+Send: <D p="125"/>
+Get: <D125/> <U/> 
+Get: <E39/> <V/> 
+Get: <f101/> <W/> 
+Get: <g115/> <T124/> 
+Send: <D p="124"/>
+Get: <D124/> <U/> 
+Get: <E38/> <V/> 
+Send: <Z />
+Get: <F89/> <W/> 
+Get: <G127/> <T40/> 
+Send: <D p="104"/>
+Get: <D104/> <U/> 
+Get: <E26/> <V/> 
+Get: <f79/> <W/> 
+Send: <Z />
+Get: <G131/> 
+Get: <N who="2" m="50249" /> 
+Get: <F111/> <W/> 
+Get: <g37/> <T71/> 
+Send: <D p="71"/>
+Get: <D71/> 
+Get: <N who="2" m="27210" /> 
+Send: <Z />
+Get: <F10/> <W/> 
+Get: <G132/> 
+Get: <N who="2" m="50761" /> 
+Get: <F5/> 
+Get: <W/> 
+Send: <Z />
+Get: <g113/> <T92/> 
+Send: <D p="9"/>
+Get: <D9/> 
+Get: <N who="1" m="4279" /> 
+Get: <E126/> <V/> 
+Get: <F36/> <W/> 
+Get: <G8/> <T102 t="32"/> 
+Send: <REACH hai="84" />
+Send: <D p="84"/>
+Get: <REACH who="0" step="1"/> <D84/> <REACH who="0" ten="240,250,224,276" step="2"/> <U/> 
+Send: <Z />
+Get: <E130/> <V/> 
+Get: <f80/> 
+Get: <W/> 
+Get: <G83/> <T88/> 
+Send: <D p="88"/>
+Get: <D88/> 
+Send: <Z />
+Get: <N who="1" m="53407" /> 
+Get: <E100/> <V/> 
+Get: <f35/> 
+Get: <W/> 
+Get: <g109/> <T15/> 
+Send: <D p="15"/>
+Get: <D15/> <U/> 
+Send: <Z />
+Get: <E98/> <V/> 
+Get: <f72/> 
+Get: <W/> 
+Get: <G95/> <T59/> 
+Send: <D p="59"/>
+Get: <D59/> 
+Send: <Z />
+Get: <U/> 
+Get: <e103/> <V/> 
+Get: <N who="2" m="27218"/> <V/> 
+Get: <DORA hai="64" /> <F42/> <W/> 
+Send: <Z />
+Get: <G25/> <T54/> 
+Send: <D p="54"/>
+Get: <D54/> 
+Get: <AGARI ba="0,1" hai="52,54,57,63,67" m="50761,27218,50249" machi="54" ten="50,16000,3" yaku="19,1,20,1,34,2,52,4,54,1" doraHai="34,64" who="2" fromWho="0" sc="240,-160,250,0,224,170,276,0" /> 
+Send: <Z />
+Send: <NEXTREADY />
+Get: <INIT seed="2,0,0,4,3,126" ten="80,250,394,276" oya="2" hai="30,129,60,14,97,78,111,64,80,94,79,134,47"/> <V/> 
+Get: <F75/> <W/>
+Get: <G121/> <T123/> 
+Send: <D p="123"/>
+Get: <D123/> <U/> 
+Get: <E112/> <V/> 
+Send: <Z />
+Get: <F127/> <W/> 
+Get: <G104/> <T74/> 
+Send: <D p="111"/>
+Get: <D111/> <U/> 
+Get: <E34/> <V/> 
+Send: <Z />
+Get: <F133/> <W/> 
+Get: <G103 t="4"/> 
+Send: <N />
+Get: <T105/> 
+Send: <D p="134"/>
+Get: <D134/> <U/> 
+Get: <E1/> <V/> 
+Get: <f132/> <W/> 
+Send: <Z />
+Get: <G77 t="5"/> 
+Send: <N />
+Get: <T83/> 
+Send: <D p="30"/>
+Get: <D30/> 
+Get: <N who="1" m="11307" /> 
+Get: <E66/> <V/> 
+Send: <Z />
+Get: <f73/> <W/> 
+Get: <g106/> <T61/> 
+Send: <D p="105"/>
+Get: <D105/> <U/> 
+Get: <e107/> <V/> 
+Get: <f115/> <W/> 
+Get: <G2/> <T128/> 
+Send: <Z />
+Send: <D p="47"/>
+Get: <D47/> <U/> 
+Get: <E23/> <V/> 
+Get: <F67/> <W/> 
+Get: <g125/> <T117/> 
+Send: <Z />
+Send: <D p="117"/>
+Get: <D117/> <U/> 
+Get: <e35/> <V/> 
+Get: <f76 t="1"/> 
+Send: <N />
+Get: <W/> 
+Get: <g71 t="4"/> 
+Send: <N type="3" hai0="60" hai1="64" />
+Get: <N who="1" m="27178" /> 
+Get: <E88/> 
+Get: <N who="3" m="33834" /> 
+Send: <Z />
+Get: <G29/> <T119/> 
+Send: <D p="119"/>
+Get: <D119/> <U/> 
+Get: <e45/> 
+Get: <V/> 
+Send: <Z />
+Get: <F41/> <W/> 
+Get: <g32/> <T100/> 
+Send: <D p="14"/>
+Get: <D14/> <U/> 
+Get: <e39/> <V/> 
+Get: <F37/> <W/> 
+Get: <G27/> 
+Get: <T9/> 
+Send: <D p="9"/>
+Get: <D9/> 
+Get: <N who="1" m="3691" /> 
+Send: <Z />
+Get: <E131 t="1"/> 
+Send: <N type="1" hai0="128" hai1="129" />
+Get: <N who="0" m="50249" /> 
+Send: <D p="64"/>
+Get: <D64/> <U/> 
+Get: <e113/> <V/> 
+Get: <F69/> <W/> 
+Get: <G40/> <T4/> 
+Send: <D p="4"/>
+Get: <D4/> 
+Get: <N who="3" m="1577" /> 
+Send: <Z />
+Get: <G59/> <T36/> 
+Send: <D p="36"/>
+Get: <D36/> <U/> 
+Get: <e135/> <V/> 
+Get: <F72 t="8"/> 
+Send: <N type="6" />
+Send: <N />
+Get: <AGARI ba="0,0" hai="60,61,72,74,78,79,80,83,94,97,100" m="50249" machi="72" ten="30,7700,0" yaku="19,1,52,3" doraHai="126" who="0" fromWho="2" sc="80,77,250,0,394,-77,276,0" /> 
+Send: <Z />
+Send: <NEXTREADY />
+Get: <INIT seed="3,0,0,5,2,114" ten="157,250,317,276" oya="3" hai="128,62,47,53,45,20,84,37,40,57,10,50,14"/> <W/> 
+Get: <G115/> <T48/> 
+Send: <D p="128"/>
+Get: <D128/> <U/> 
+Get: <e34/> 
+Get: <V/> 
+Send: <Z />
+Get: <F33/> 
+Get: <W/> 
+Get: <G72/> 
+Get: <T4/> 
+Send: <D p="45"/>
+Get: <D45/> 
+Get: <U/> 
+Get: <E74/> 
+Get: <V/> 
+Send: <Z />
+Get: <F129/> <W/> 
+Get: <G103/> <T38/> 
+Send: <D p="84"/>
+Get: <D84/> <U/> 
+Get: <E125/> <V/> 
+Get: <F127/> <W/> 
+Get: <G39 t="5"/> 
+Send: <Z />
+Send: <N />
+Get: <T51 t="32"/> 
+Send: <D p="37"/>
+Get: <D37/> <U/> 
+Get: <E63/> 
+Get: <V/> 
+Get: <f126/> <W/> 
+Get: <g132/> <T42 t="32"/> 
+Send: <D p="42"/>
+Get: <D42/> 
+Get: <U/> 
+Send: <Z />
+Get: <E3/> <V/> 
+Get: <F135/> <W/> 
+Get: <g122/> <T109 t="32"/> 
+Send: <D p="109"/>
+Get: <D109/> <U/> 
+Get: <e113/> <V/> 
+Send: <Z />
+Get: <f29/> <W/> 
+Get: <G43 t="4"/> 
+Send: <N />
+Get: <T102 t="32"/> 
+Send: <D p="102"/>
+Get: <D102/> 
+Get: <U/> 
+Send: <Z />
+Get: <E1/> <V/> 
+Get: <f120/> <W/> 
+Get: <G96/> 
+Get: <T13 t="32"/> 
+Send: <REACH hai="38" />
+Send: <D p="38"/>
+Get: <REACH who="0" step="1"/> <D38/> <REACH who="0" ten="147,250,317,276" step="2"/> <U/> 
+Get: <E99/> 
+Get: <V/> 
+Get: <f25/> 
+Send: <Z />
+Get: <W/> 
+Get: <G71/> 
+Get: <T5/> 
+Send: <D p="5"/>
+Get: <D5/> 
+Get: <U/> 
+Send: <Z />
+Get: <REACH who="1" step="1"/> 
+Get: <E119/> <REACH who="1" ten="147,240,317,276" step="2"/> <V/> 
+Get: <F116/> <W/> 
+Get: <g118/> <T94/> 
+Send: <D p="94"/>
+Get: <D94/> <U/> 
+Get: <e111/> <V/> 
+Send: <Z />
+Get: <F107/> <W/> 
+Get: <G32/> <T123/> 
+Send: <D p="123"/>
+Get: <D123/> <U/> 
+Get: <e6/> <V/> 
+Get: <F101/> 
+Get: <AGARI ba="0,2" hai="11,15,18,21,24,31,46,49,54,85,86,93,98,101" machi="101" ten="30,7700,0" yaku="1,1,7,1,8,1,53,1" doraHai="114" doraHaiUra="92" who="1" fromWho="2" sc="147,0,240,97,317,-77,276,0" /> 
+Send: <Z />
+Send: <NEXTREADY />
+Get: <INIT seed="4,0,0,3,1,76" ten="147,337,240,276" oya="0" hai="112,58,126,92,74,97,133,24,69,56,93,118,114"/> <T63/> 
+Send: <D p="118"/>
+Get: <D118/> <U/> 
+Get: <E41/> 
+Send: <Z />
+Get: <V/> 
+Get: <F117/> <W/> 
+Get: <G109/> <T68/> 
+Send: <D p="126"/>
+Get: <D126/> <U/> 
+Get: <E70 t="1"/> 
+Send: <N />
+Get: <V/> 
+Send: <Z />
+Get: <F127/> <W/> 
+Get: <G116/> <T65/> 
+Send: <D p="133"/>
+Get: <D133/> <U/> 
+Get: <e72/> <V/> 
+Get: <F132/> <W/> 
+Get: <G71 t="5"/> 
+Send: <N />
+Get: <T48/> 
+Send: <Z />
+Send: <D p="74"/>
+Get: <D74/> <U/> 
+Get: <E111/> <V/> 
+Get: <F130/> <W/> 
+Get: <G131/> <T34/> 
+Send: <D p="48"/>
+Get: <D48/> <U/> 
+Get: <E37/> <V/> 
+Send: <Z />
+Get: <F128/> <W/> 
+Get: <G115 t="1"/> 
+Send: <N type="1" hai0="112" hai1="114" />
+Get: <N who="0" m="44075" /> 
+Send: <D p="68"/>
+Get: <D68/> <U/> 
+Get: <E110/> <V/> 
+Get: <F103/> 
+Get: <W/> 
+Get: <G121/> <T1/> 
+Send: <Z />
+Send: <D p="1"/>
+Get: <D1/> 
+Get: <U/> 
+Get: <E42/> 
+Get: <V/> 
+Get: <f122/> <W/> 
+Get: <G38/> <T52/> 
+Send: <D p="97"/>
+Get: <D97/> <U/> 
+Get: <e39/> <V/> 
+Send: <Z />
+Get: <F6/> <W/> 
+Get: <G101/> <T16/> 
+Send: <D p="34"/>
+Get: <D34/> <U/> 
+Send: <Z />
+Get: <REACH who="1" step="1"/> 
+Get: <E99/> <REACH who="1" ten="147,327,240,276" step="2"/> <V/> 
+Get: <F73/> 
+Get: <W/> 
+Get: <G25/> <T78/> 
+Send: <D p="69"/>
+Send: <Z />
+Get: <D69/> <U/> 
+Get: <e85/> 
+Get: <V/> 
+Get: <F7/> 
+Get: <AGARI ba="0,1" hai="0,2,3,7,10,15,28,29,30,40,45,49,88,89" machi="7" ten="50,6400,0" yaku="1,1,54,1,53,1" doraHai="76" doraHaiUra="9" who="1" fromWho="2" sc="147,0,327,74,240,-64,276,0" /> 
+Send: <Z />
+Send: <NEXTREADY />
+Get: <INIT seed="5,0,0,5,3,72" ten="147,401,176,276" oya="1" hai="37,18,134,128,46,90,92,73,88,118,65,29,35"/> <U/> 
+Get: <E36/>
+Get: <V/> <F106/> <W/> 
+Send: <Z />
+Get: <G39/> <T12/> 
+Send: <D p="118"/>
+Get: <D118/> <U/> 
+Get: <E124/> <V/> 
+Get: <F109/> <W/> 
+Get: <G127/> <T0/> 
+Send: <D p="128"/>
+Get: <D128/> <U/> 
+Get: <E112/> <V/> 
+Send: <Z />
+Get: <F125/> <W/> 
+Get: <G114/> <T67/> 
+Send: <D p="0"/>
+Get: <D0/> <U/> 
+Get: <E123/> <V/> 
+Get: <F115/> <W/> 
+Get: <g113/> <T2/> 
+Send: <D p="2"/>
+Get: <D2/> <U/> 
+Send: <Z />
+Get: <E22/> 
+Get: <V/> 
+Get: <F129/> <W/> 
+Get: <G116/> <T131/> 
+Send: <D p="131"/>
+Get: <D131/> <U/> 
+Get: <e77/> <V/> 
+Get: <F132/> <W/> 
+Get: <G135/> <T75/> 
+Send: <Z />
+Send: <D p="134"/>
+Get: <D134/> <U/> 
+Get: <E108/> <V/> 
+Get: <F74 t="1"/> 
+Send: <N />
+Get: <W/> 
+Get: <G30/> <T82/> 
+Send: <D p="37"/>
+Get: <D37/> <U/> 
+Get: <e3/> 
+Get: <V/> 
+Send: <Z />
+Get: <F4/> 
+Get: <W/> 
+Get: <G70/> <T122/> 
+Send: <D p="122"/>
+Get: <D122/> <U/> 
+Get: <E99/> <V/> 
+Get: <f105/> 
+Get: <W/> 
+Send: <Z />
+Get: <G66 t="1"/> 
+Send: <N type="1" hai0="65" hai1="67" />
+Get: <N who="0" m="25099" /> 
+Send: <D p="35"/>
+Get: <D35/> <U/> 
+Get: <E63/> 
+Get: <V/> 
+Get: <f117/> <W/> 
+Get: <G133/> <T120/> 
+Send: <Z />
+Send: <D p="120"/>
+Get: <D120/> <U/> 
+Get: <E119/> <V/> 
+Get: <f71/> <W/> 
+Get: <g68/> <T94/> 
+Send: <D p="73"/>
+Get: <D73/> <U/> 
+Get: <E31/> 
+Get: <V/> 
+Send: <Z />
+Get: <REACH who="2" step="1"/> 
+Get: <F58/> 
+Get: <REACH who="2" ten="147,401,166,276" step="2"/> <W/> 
+Get: <REACH who="3" step="1"/> 
+Send: <Z />
+Get: <G91 t="1"/> 
+Send: <N />
+Get: <REACH who="3" ten="147,401,166,266" step="2"/> <T79/> 
+Send: <D p="90"/>
+Get: <D90/> 
+Get: <U/> 
+Get: <E69/> <V/> 
+Get: <f80/> <W/> 
+Send: <Z />
+Get: <g126/> <T43/> 
+Send: <D p="88"/>
+Get: <D88/> 
+Get: <U/> 
+Get: <E60/> <V/> 
+Get: <f24/> <W/> 
+Get: <g41/> <T13/> 
+Send: <D p="43"/>
+Send: <Z />
+Get: <D43/> <U/> 
+Get: <e32/> <V/> 
+Get: <f38/> <W/> 
+Get: <g81 t="4"/> 
+Send: <N />
+Get: <T78/> 
+Send: <D p="82"/>
+Get: <D82/> 
+Get: <U/> 
+Get: <e61/> <V/> 
+Get: <f62/> <W/> 
+Send: <Z />
+Get: <g23 t="4"/> 
+Send: <N />
+Get: <T7/> 
+Send: <D p="29"/>
+Get: <D29/> <U/> 
+Get: <E64/> <V/> 
+Get: <f33/> <W/> 
+Get: <AGARI ba="0,2" hai="10,15,16,49,53,59,76,83,84,86,87,97,100,107" machi="86" ten="20,8000,1" yaku="1,1,0,1,7,1,52,1,54,1,53,0" doraHai="72" doraHaiUra="28" who="3" fromWho="3" sc="147,-20,401,-40,166,-20,266,100" /> 
+Send: <Z />
+Send: <NEXTREADY />
+Get: <INIT seed="6,0,0,1,2,55" ten="127,361,146,366" oya="2" hai="39,106,97,0,20,65,103,108,45,6,60,104,52"/> <V/> 
+Get: <F134/> <W/> 
+Get: <G119/> <T29/> 
+Send: <D p="108"/>
+Send: <Z />
+Get: <D108/> <U/> 
+Get: <E135/> <V/> 
+Get: <f117/> <W/> 
+Get: <G120/> <T130/> 
+Send: <D p="130"/>
+Get: <D130/> <U/> 
+Get: <E68/> <V/> 
+Send: <Z />
+Get: <F115/> 
+Get: <N who="1" m="44073" /> 
+Get: <E122/> <V/> 
+Get: <F111/> <W/> 
+Get: <G131/> <T72/> 
+Send: <D p="72"/>
+Get: <D72/> <U/> 
+Get: <E126/> <V/> 
+Send: <Z />
+Get: <F75/> <W/> 
+Get: <G127/> <T128/> 
+Send: <D p="128"/>
+Get: <D128/> <U/> 
+Get: <E56/> <V/> 
+Get: <F69/> 
+Get: <W/> 
+Send: <Z />
+Get: <g123/> <T44/> 
+Send: <D p="39"/>
+Get: <D39/> <U/> 
+Get: <e107 t="1"/> 
+Send: <N />
+Get: <V/> 
+Get: <f32/> <W/> 
+Get: <G33/> <T3/> 
+Send: <D p="104"/>
+Get: <D104/> <U/> 
+Get: <e96/> 
+Get: <V/> 
+Get: <f105/> <W/> 
+Get: <g35/> <T79/> 
+Send: <Z />
+Send: <D p="79"/>
+Get: <D79/> 
+Get: <U/> 
+Get: <e43/> <V/> 
+Get: <F2 t="1"/> 
+Send: <N />
+Get: <W/> 
+Send: <Z />
+Get: <G36/> <T59/> 
+Send: <D p="6"/>
+Get: <D6/> 
+Get: <U/> 
+Get: <E80/> <V/> 
+Send: <Z />
+Get: <F40/> <W/> 
+Get: <g37/> <T73/> 
+Send: <D p="73"/>
+Get: <D73/> <U/> 
+Get: <AGARI ba="0,0" hai="1,7,9,13,19,23,48,50,81,85,90" m="44073" machi="23" ten="30,1100,0" yaku="15,1" doraHai="55" who="1" fromWho="1" sc="127,-3,361,11,146,-5,366,-3" /> 
+Send: <Z />
+Send: <NEXTREADY />
+Get: <INIT seed="7,0,0,4,1,14" ten="124,372,141,363" oya="3" hai="93,21,22,71,124,129,121,128,120,49,39,77,131"/> <W/> 
+Get: <G104/> <T61/>
+Send: <D p="77"/>
+Get: <D77/> <U/> 
+Get: <E70/> <V/> 
+Get: <F68/> <W/> 
+Send: <Z />
+Get: <G135/> <T64/> 
+Send: <D p="93"/>
+Get: <D93/> <U/> 
+Get: <E117/> <V/> 
+Get: <F41/> 
+Get: <N who="1" m="15977" /> 
+Get: <E47/> <V/> 
+Send: <Z />
+Get: <F76/> <W/> 
+Get: <g133/> <T118/> 
+Send: <D p="21"/>
+Get: <D21/> <U/> 
+Get: <E132/> <V/> 
+Get: <F59/> <W/> 
+Get: <G74/> <T97/> 
+Send: <Z />
+Send: <D p="97"/>
+Get: <D97/> <U/> 
+Get: <E6/> <V/> 
+Get: <F99/> <W/> 
+Get: <G79/> <T52/> 
+Send: <Z />
+Send: <D p="22"/>
+Get: <D22/> <U/> 
+Get: <E82/> <V/> 
+Get: <F90/> <W/> 
+Get: <g1/> <T60/> 
+Send: <D p="118"/>
+Get: <D118/> <U/> 
+Get: <E57/> <V/> 
+Get: <F102/> 
+Send: <Z />
+Get: <W/> 
+Get: <G84/> <T54/> 
+Send: <D p="124"/>
+Get: <D124/> <U/> 
+Get: <E10/> 
+Get: <V/> 
+Get: <f107/> <W/> 
+Get: <G43/> <T95/> 
+Send: <D p="95"/>
+Get: <D95/> 
+Send: <Z />
+Get: <U/> 
+Get: <e73/> <V/> 
+Get: <f45/> <W/> 
+Get: <G72/> <T63/> 
+Send: <D p="39"/>
+Get: <D39/> 
+Get: <N who="3" m="14921" /> 
+Get: <G125/> <T98/> 
+Send: <D p="98"/>
+Get: <D98/> <U/> 
+Get: <E78/> <V/> 
+Send: <Z />
+Get: <f38/> <W/> 
+Get: <g32/> <T106/> 
+Send: <D p="106"/>
+Get: <D106/> <U/> 
+Get: <e75/> <V/> 
+Get: <f46/> <W/> 
+Get: <g96/> <T15/> 
+Send: <D p="15"/>
+Get: <D15/> <U/> 
+Get: <PROF lobby="0" type="9" add="-38.0,0,0,0,1,0,8,1,1,4,2"/> <AGARI ba="0,0" hai="23,24,31,56,62,66,83,86,89,100,101" m="15977" machi="66" ten="30,1100,0" yaku="8,1" doraHai="14" who="1" fromWho="1" sc="124,-3,372,11,141,-3,363,-5" owari="121,-38.0,383,48.0,138,-26.0,358,16.0" /> 
+Send: <NEXTREADY />
+Send: <BYE />
