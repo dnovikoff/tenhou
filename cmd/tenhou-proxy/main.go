@@ -91,8 +91,7 @@ func main() {
 	flag.Parse()
 	ln, err := net.Listen("tcp", *addrFlag)
 	checkError(err)
-	u1, err := uuid.NewV4()
-	checkError(err)
+	u1 := uuid.NewV4()
 	preifx := hex.EncodeToString(u1.Bytes()[:4])
 	log.Printf("Started server on addr '%v'. Sequence id is '%v'", *addrFlag, preifx)
 

@@ -12,6 +12,7 @@ type User struct {
 	Dan  int
 	Rate float64
 	Sex  Sex
+	Rc   *int
 }
 
 type UserList []User
@@ -64,4 +65,5 @@ type Init struct {
 	Seed
 	Scores Scores
 	Dealer base.Opponent
+	Chip   []int
 }

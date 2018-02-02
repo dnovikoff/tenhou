@@ -22,6 +22,7 @@ func (node *Node) GetInit() (x tbase.Init, err error) {
 	}
 	x.Dealer = node.GetDealer()
 	x.Scores = node.GetScores()
+	x.Chip = node.IntList("chip")
 	return
 }
 

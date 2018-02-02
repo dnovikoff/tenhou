@@ -72,6 +72,7 @@ func TestSInit(t *testing.T) {
 		},
 		[]score.Money{25000, 25000, 25000, 24000},
 		base.Front,
+		nil,
 	}
 	c.Init(Init{b, tiles})
 
