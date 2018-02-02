@@ -10,13 +10,14 @@ import (
 type Suggest int
 
 const (
-	SuggestKan    Suggest = 1 << iota
-	SuggestPon            // 2
-	SuggestChi            // 4
-	SuggestRon            // 8
-	SuggestTsumo          // 16
-	SuggestRiichi         // 32
-	SuggestDraw           // 64
+	SuggestKan      Suggest = 1 << iota
+	SuggestPon              // 2
+	SuggestChi              // 4
+	SuggestRon              // 8
+	SuggestTsumo            // 16
+	SuggestRiichi           // 32
+	SuggestDraw             // 64
+	SuggetSanmaDora         // 128
 )
 
 func (this Suggest) Check(x Suggest) bool {

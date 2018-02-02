@@ -74,6 +74,14 @@ func ScoreString(in []score.Money) string {
 	return strings.Join(tmp, ",")
 }
 
+func IntsString(in []int) string {
+	tmp := make([]string, len(in))
+	for k, v := range in {
+		tmp[k] = strconv.Itoa(v)
+	}
+	return strings.Join(tmp, ",")
+}
+
 func ParseXML(input string) (ret parser.Nodes, err error) {
 	// Dirty hack
 	input = "<mjloggm>" + input + "</mjloggm>"

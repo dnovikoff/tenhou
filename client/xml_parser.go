@@ -217,6 +217,7 @@ func ProcessUserList(node *parser.Node, c UNController) error {
 		return nil
 	}
 	dan := node.IntList("dan")
+	rc := node.IntList("rc")
 	rate := node.FloatList("rate")
 	sx := node.StringList("sx")
 	if len(dan) != 4 || len(rate) != 4 || len(sx) != 4 {
@@ -230,12 +231,17 @@ func ProcessUserList(node *parser.Node, c UNController) error {
 			return stackerr.Wrap(err)
 		}
 
+		var r *int
+		if k < len(rc) {
+			r = &rc[k]
+		}
 		ul[k] = tbase.User{
 			Num:  k,
 			Name: name,
 			Dan:  dan[k],
 			Rate: rate[k],
 			Sex:  sex,
+			Rc:   r,
 		}
 	}
 	c.UserList(ul)

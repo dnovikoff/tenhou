@@ -1,0 +1,171 @@
+Send: <Z />
+Send: <HELO name="NoName" tid="f0" sx="C" />
+Get: <HELO uname="%4E%6F%4E%61%6D%65" auth="20180202-1fe20d7e" ratingscale="PF3=1.000000&PF4=1.000000&PF01C=0.582222&PF02C=0.501632&PF03C=0.414869&PF11C=0.823386&PF12C=0.709416&PF13C=0.586714&PF23C=0.378722&PF33C=0.535594&PF1C00=8.000000"/>
+Send: <AUTH val="20180202-39bc572f"/>
+Send: <PXR V="1" />
+Send: <PXR V="1" />
+Get: <LN n="BIT1BGR1UX1FF" j="3C1B4D4C8C3D17D12C14B1B1B1C2B1B2B1C2B" g="EE3U1Gw1I2s1BI4M8HY3U1CU4I4E4EQ4BA12o4E8G1By2BL2BI2D1t1n1S1w2G"/>
+Send: <Z />
+Send: <JOIN t="0,1552" />
+Get: <GO type="1552" lobby="0"/>
+Get: <UN n0="%4E%6F%4E%61%6D%65" n1="" n2="%43%4F%4D" n3="%43%4F%4D" dan="0,0,0,0" rc="0,0,0,0" rate="1500.00,1500.00,1500.00,1500.00" sx="C,C,C,C"/>
+Get: <TAIKYOKU oya="2"/>
+Send: <GOK />
+Send: <NEXTREADY />
+Get: <INIT seed="0,0,0,2,5,66" ten="350,0,350,350" chip="0,0,0,0" oya="2" hai="99,3,56,118,120,91,98,96,43,48,0,32,105"/>
+Get: <V/>
+Get: <f63/>
+Get: <W/>
+Get: <g81/>
+Get: <T124 t="128"/>
+Send: <N type="10" />
+Get: <N who="0" m="30752" />
+Get: <T45/>
+Send: <Z />
+Send: <D p="118" />
+Get: <D118/>
+Get: <V/>
+Get: <f106/>
+Get: <W/>
+Get: <g114/>
+Get: <T94/>
+Send: <D p="124" />
+Get: <D124/>
+Get: <V/>
+Get: <f50/>
+Get: <W/>
+Get: <g74/>
+Get: <T78/>
+Send: <D p="32" />
+Get: <D32/>
+Get: <V/>
+Get: <f40/>
+Get: <W/>
+Get: <g97 t="3"/>
+Send: <N />
+Get: <T109/>
+Send: <D p="78" />
+Get: <D78/>
+Get: <V/>
+Get: <f62/>
+Get: <W/>
+Get: <g89/>
+Get: <T36/>
+Send: <Z />
+Send: <D p="105" />
+Get: <D105/>
+Get: <V/>
+Get: <f53/>
+Get: <W/>
+Get: <g69/>
+Get: <T72/>
+Send: <D p="72" />
+Get: <D72/>
+Get: <V/>
+Get: <f111/>
+Get: <W/>
+Get: <g115/>
+Get: <T93/>
+Send: <D p="109" />
+Get: <D109/>
+Get: <V/>
+Get: <f131/>
+Get: <W/>
+Get: <g80/>
+Get: <T68/>
+Send: <Z />
+Send: <D p="68" />
+Get: <D68/>
+Get: <V/>
+Get: <f70/>
+Get: <W/>
+Get: <g90/>
+Get: <T85 t="32"/>
+Send: <D p="93" />
+Get: <D93/>
+Get: <V/>
+Get: <f130/>
+Get: <W/>
+Get: <g88/>
+Get: <T33 t="32"/>
+Send: <D p="33" />
+Get: <D33/>
+Get: <V/>
+Get: <f125/>
+Get: <W/>
+Get: <g46/>
+Get: <T82 t="32"/>
+Send: <Z />
+Send: <D p="36" />
+Get: <D36/>
+Get: <V/>
+Get: <f135/>
+Get: <W/>
+Get: <g34/>
+Get: <T101 t="32"/>
+Send: <REACH hai="56" />
+Get: <REACH who="0" step="1"/>
+Send: <D p="56" />
+Get: <D56/>
+Get: <REACH who="0" ten="340,0,350,350" step="2"/>
+Get: <V/>
+Get: <f128/>
+Get: <W/>
+Get: <g129/>
+Get: <T116/>
+Send: <D p="116" />
+Get: <D116/>
+Get: <V/>
+Get: <f55/>
+Get: <W/>
+Get: <g47/>
+Get: <T35/>
+Send: <Z />
+Send: <D p="35" />
+Get: <D35/>
+Get: <V/>
+Get: <f77/>
+Get: <W/>
+Get: <g44/>
+Get: <T126/>
+Send: <D p="126" />
+Get: <D126/>
+Get: <V/>
+Get: <f110/>
+Get: <W/>
+Get: <g108/>
+Get: <T102/>
+Send: <D p="102" />
+Get: <D102/>
+Get: <V/>
+Get: <f64/>
+Get: <W/>
+Get: <g75/>
+Get: <T73/>
+Send: <D p="73" />
+Get: <D73/>
+Get: <V/>
+Get: <f134/>
+Get: <W/>
+Get: <g113/>
+Get: <T103/>
+Send: <Z />
+Send: <D p="103" />
+Get: <D103/>
+Get: <RYUUKYOKU ba="0,1" sc="340,20,0,0,350,-10,350,-10,0,0,0,0,0,0,0,0" />
+Send: <NEXTREADY />
+Get: <INIT seed="1,1,1,1,1,135" ten="360,0,340,340" chip="0,0,0,0" oya="3" hai="61,110,116,104,51,47,1,34,2,121,98,76,72"/>
+Get: <W/>
+Get: <g112/>
+Get: <T44 t="128"/>
+Send: <N type="10" />
+Get: <N who="0" m="31008" />
+Get: <T90/>
+Send: <BYE />
+Send: <HELO name="NoName" tid="f0" sx="C" />
+Get: <HELO uname="%4E%6F%4E%61%6D%65" auth="20180202-754f33b2"/>
+Send: <AUTH val="20180202-531169e3"/>
+Send: <PXR V="1" />
+Send: <PXR V="1" />
+Get: <LN n="BIl1BGh1Uk1Ej" j="D1B2B1C1B2C13C4C12D1B2B1D24C1C1B1C1B1B3C1C2C" g="Ds3Y1HI1I2s1BQ4Q8HU3Y1CM4E8EQ4w12s4E8J1CE2BF2BI2D1t1q1S1t2G"/>
+Send: <Z />

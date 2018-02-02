@@ -72,11 +72,13 @@ func (this XMLWriter) Declare(o base.Opponent, m tbase.Meld, t Suggest) {
 	w.End()
 }
 
-func (this XMLWriter) writeInit(in Init) {
-	this.
-		WriteArg("seed", in.Seed.String()).
-		WriteArg("ten", util.ScoreString(in.Scores)).
-		WriteDealer(in.Dealer).
+func (w XMLWriter) writeInit(in Init) {
+	w.WriteArg("seed", in.Seed.String()).
+		WriteArg("ten", util.ScoreString(in.Scores))
+	if in.Chip != nil {
+		w.WriteArg("chip", util.IntsString(in.Chip))
+	}
+	w.WriteDealer(in.Dealer).
 		WriteArg("hai", util.InstanceString(in.Hand))
 }
 
@@ -165,28 +167,33 @@ func (w XMLWriter) UserList(list tbase.UserList) {
 }
 
 func (w XMLWriter) WriteUserList(list tbase.UserList, isFloatFormat bool) {
-	ret := ""
+	w.Begin("UN")
 	dan := make([]string, len(list))
 	rate := make([]string, len(list))
 	sex := make([]string, len(list))
+	rc := make([]string, len(list))
 
+	haveRc := false
 	for k, v := range list {
-		ret += " n" + strconv.Itoa(k) + `="` + util.Escape(v.Name) + `"`
+		w.WriteArg("n"+strconv.Itoa(k), util.Escape(v.Name))
 		dan[k] = strconv.Itoa(v.Dan)
 		if isFloatFormat {
 			rate[k] = fmt.Sprintf("%.2f", v.Rate)
 		} else {
-			rate[k] = fmt.Sprintf("%d", int(v.Rate))
+			rate[k] = strconv.Itoa(int(v.Rate))
+		}
+		if v.Rc != nil {
+			rc[k] = strconv.Itoa(*v.Rc)
+			haveRc = true
 		}
 		sex[k] = v.Sex.Letter()
 	}
-	w.Begin("UN")
-	w.Buffer().WriteString(ret)
-	w.Write(` dan="%s" rate="%s" sx="%s"`,
-		strings.Join(dan, ","),
-		strings.Join(rate, ","),
-		strings.Join(sex, ","),
-	)
+	w.WriteArg("dan", strings.Join(dan, ","))
+	if haveRc {
+		w.WriteArg("rc", strings.Join(rc, ","))
+	}
+	w.WriteArg("rate", strings.Join(rate, ","))
+	w.WriteArg("sx", strings.Join(sex, ","))
 	w.End()
 }
 

@@ -8,16 +8,17 @@ import (
 type Answer int
 
 const (
-	AnswerSkip      Answer = 0
-	AnswerPon       Answer = 1
-	AnswerOpenedKan Answer = 2
-	AnswerChi       Answer = 3
-	AnswerClosedKan Answer = 4
-	AnswerChankan   Answer = 5
-	AnswerRon       Answer = 6
-	AnswerTsumo     Answer = 7
-	// What is 8???
-	AnswerDraw Answer = 9
+	AnswerSkip      Answer = iota
+	AnswerPon              // 1
+	AnswerOpenedKan        // 2
+	AnswerChi              // 3
+	AnswerClosedKan        // 4
+	AnswerChankan          // 5
+	AnswerRon              // 6
+	AnswerTsumo            // 7
+	Answer8                // What is 8???
+	AnswerDraw             // 9
+	AnswerSanmaDora        // 10
 )
 
 // This is how server looks from client point of view
