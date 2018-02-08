@@ -19,42 +19,13 @@ func ProcessXMLMessage(message string, c Controller) (err error) {
 		return
 	}
 	for _, v := range nodes {
-		err = ProcessXMLNode(&v, c)
-		if err != nil {
+		if err = ProcessXMLNode(&v, c); err != nil {
 			return
 		}
-		unused := v.Keys()
-		if len(unused) > 0 {
-			err = stackerr.Newf("Unused keys for node '%v': %v", v.Name, unused)
+		if err = v.ValidateUnused(); err != nil {
 			return
 		}
 	}
-	return
-}
-
-func parseLetterNode(in string, first byte) (ok bool, o base.Opponent, t tile.Instance) {
-	t = tile.InstanceNull
-	if len(in) < 1 {
-		return
-	}
-	firstLetter := in[0]
-	if firstLetter < first {
-		return
-	}
-	o = base.Opponent(firstLetter - first)
-	if o > base.Left {
-		return
-	}
-	if len(in) == 1 {
-		ok = true
-		return
-	}
-	num, err := strconv.Atoi(in[1:])
-	if err != nil {
-		return
-	}
-	ok = true
-	t = tile.Instance(num)
 	return
 }
 
@@ -254,5 +225,31 @@ func getInit(node *parser.Node) (ret Init, err error) {
 		return
 	}
 	ret.Hand = node.GetHai("hai")
+	return
+}
+
+func parseLetterNode(in string, first byte) (ok bool, o base.Opponent, t tile.Instance) {
+	t = tile.InstanceNull
+	if len(in) < 1 {
+		return
+	}
+	firstLetter := in[0]
+	if firstLetter < first {
+		return
+	}
+	o = base.Opponent(firstLetter - first)
+	if o > base.Left {
+		return
+	}
+	if len(in) == 1 {
+		ok = true
+		return
+	}
+	num, err := strconv.Atoi(in[1:])
+	if err != nil {
+		return
+	}
+	ok = true
+	t = tile.Instance(num)
 	return
 }

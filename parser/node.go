@@ -1,15 +1,15 @@
 package parser
 
 import (
+	"fmt"
 	"strconv"
-
-	"github.com/dnovikoff/tenhou/tbase"
 
 	"github.com/facebookgo/stackerr"
 
 	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/score"
 	"github.com/dnovikoff/tempai-core/tile"
+	"github.com/dnovikoff/tenhou/tbase"
 )
 
 func (this *Node) GetOpponent(key string) base.Opponent {
@@ -63,6 +63,14 @@ func (this *Node) GetTableStatus() (status tbase.TableStatus, err error) {
 type Node struct {
 	Name       string
 	Attributes map[string]string
+}
+
+func (this *Node) ValidateUnused() error {
+	unused := this.Keys()
+	if len(unused) == 0 {
+		return nil
+	}
+	return fmt.Errorf("Unused keys for node '%v': %v", this.Name, unused)
 }
 
 func (this *Node) Clone() *Node {
