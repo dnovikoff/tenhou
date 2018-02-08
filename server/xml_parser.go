@@ -1,11 +1,9 @@
 package server
 
 import (
-	"fmt"
 	"net/url"
 
 	"github.com/dnovikoff/tenhou/tbase"
-
 	"github.com/facebookgo/stackerr"
 
 	"github.com/dnovikoff/tempai-core/tile"
@@ -19,13 +17,10 @@ func ProcessXMLMessage(message string, c Controller) (err error) {
 		return
 	}
 	for _, v := range nodes {
-		err = ProcessXMLNode(&v, c)
-		if err != nil {
+		if err = ProcessXMLNode(&v, c); err != nil {
 			return
 		}
-		unused := v.Keys()
-		if len(unused) > 0 {
-			err = fmt.Errorf("Unused keys for node '%v': %v", v.Name, unused)
+		if err = v.ValidateUnused(); err != nil {
 			return
 		}
 	}
