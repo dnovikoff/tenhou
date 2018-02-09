@@ -14,7 +14,7 @@ import (
 	"github.com/dnovikoff/tenhou/client"
 )
 
-func testPair() (c1, c2 *XMLConnection) {
+func testPair() (c1, c2 *xmlConnection) {
 	server, client := net.Pipe()
 	c1 = NewXMLConnection(client)
 	c2 = NewXMLConnection(server)

@@ -19,7 +19,7 @@ import (
 var addrFlag = flag.String("addr", ":10080", "listen addr")
 var tenhouAddr = flag.String("remote-host", "133.242.10.78:10080", "tenhou flash client port")
 
-func proxy(ctx context.Context, from, to *network.XMLConnection, prefix string, logs chan string) {
+func proxy(ctx context.Context, from, to network.XMLConnection, prefix string, logs chan string) {
 	for {
 		nctx, _ := context.WithTimeout(ctx, time.Second*30)
 		message, err := from.Read(nctx)

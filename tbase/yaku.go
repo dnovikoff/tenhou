@@ -1,6 +1,7 @@
 package tbase
 
 import (
+	"sort"
 	"strconv"
 	"strings"
 
@@ -150,8 +151,36 @@ type YakuResult struct {
 
 type YakuResults []YakuResult
 type Yakumans []yaku.Yakuman
+
 type YakuResultSet map[yaku.Yaku]int
 type YakumanSet map[yaku.Yakuman]bool
+
+var _ sort.Interface = YakuResults{}
+var _ sort.Interface = Yakumans{}
+
+func (a YakuResults) Len() int           { return len(a) }
+func (a YakuResults) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a YakuResults) Less(i, j int) bool { return a[i].Key < a[j].Key }
+
+func (a Yakumans) Len() int           { return len(a) }
+func (a Yakumans) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a Yakumans) Less(i, j int) bool { return a[i] < a[j] }
+
+func YakusFromCore(in yaku.YakuSet) (ret YakuResults) {
+	for k, v := range in {
+		ret = append(ret, YakuResult{k, int(v)})
+	}
+	sort.Sort(ret)
+	return
+}
+
+func YakumansFromCore(in yaku.YakumanSet) (ret Yakumans) {
+	for k := range in {
+		ret = append(ret, k)
+	}
+	sort.Sort(ret)
+	return
+}
 
 func (this YakuResults) ToSet() YakuResultSet {
 	result := make(YakuResultSet, len(this))

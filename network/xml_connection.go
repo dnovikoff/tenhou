@@ -4,26 +4,35 @@ import (
 	"bufio"
 	"context"
 	"errors"
+	"io"
 	"net"
 	"strings"
 )
 
 const terminator = byte(0)
 
-type XMLConnection struct {
+type XMLConnection interface {
+	io.Closer
+	Read(context.Context) (string, error)
+	Write(context.Context, string) error
+}
+
+type xmlConnection struct {
 	impl   net.Conn
 	reader *bufio.Reader
 }
 
-func NewXMLConnection(impl net.Conn) *XMLConnection {
-	return &XMLConnection{
+var _ XMLConnection = &xmlConnection{}
+
+func NewXMLConnection(impl net.Conn) *xmlConnection {
+	return &xmlConnection{
 		impl:   impl,
 		reader: bufio.NewReader(impl),
 	}
 }
 
 // Not thread safe
-func (this *XMLConnection) Read(ctx context.Context) (str string, err error) {
+func (this *xmlConnection) Read(ctx context.Context) (str string, err error) {
 	type result struct {
 		str string
 		err error
@@ -45,12 +54,12 @@ func (this *XMLConnection) Read(ctx context.Context) (str string, err error) {
 	return
 }
 
-func (this *XMLConnection) Close() {
-	this.impl.Close()
+func (this *xmlConnection) Close() error {
+	return this.impl.Close()
 }
 
 // Not thread safe
-func (this *XMLConnection) Write(ctx context.Context, str string) (err error) {
+func (this *xmlConnection) Write(ctx context.Context, str string) (err error) {
 	ch := make(chan error, 1)
 	go func() {
 		_, writeError := this.impl.Write(append([]byte(str), terminator))
