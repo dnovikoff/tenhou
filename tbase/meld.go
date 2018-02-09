@@ -176,6 +176,14 @@ func NewTenhouMeld(in meld.Meld) Meld {
 	return 0
 }
 
+func NewTenhouMelds(in meld.Melds) Melds {
+	x := make(Melds, len(in))
+	for k, v := range in {
+		x[k] = NewTenhouMeld(v)
+	}
+	return x
+}
+
 func NewCoreMeld(in Meld) meld.Meld {
 	switch in.Type() {
 	case MeldTypeKan:

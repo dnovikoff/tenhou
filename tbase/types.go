@@ -4,6 +4,7 @@ import (
 	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/score"
 	"github.com/dnovikoff/tempai-core/tile"
+	"github.com/dnovikoff/tempai-core/yaku"
 )
 
 type User struct {
@@ -31,12 +32,18 @@ type TableStatus struct {
 	Sticks score.RiichiSticks
 }
 
+type Score struct {
+	Fu     yaku.FuPoints
+	Total  score.Money
+	Riichi score.RiichiSticks
+}
+
 type Agari struct {
 	Who            base.Opponent
 	From           base.Opponent
 	Pao            *base.Opponent
 	Status         TableStatus
-	Scores         Scores
+	Score          Score
 	FinalScores    ScoreChanges
 	Changes        ScoreChanges
 	Hand           tile.Instances

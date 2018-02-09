@@ -213,7 +213,7 @@ func (w XMLWriter) WriteAgari(a *tbase.Agari, floatFormat bool) {
 		w.WriteArg("m", util.MeldString(a.Melds))
 	}
 	w.WriteIntArg("machi", int(a.WinTile))
-	w.WriteArg("ten", util.ScoreString(a.Scores))
+	w.WriteFmtArg("ten", "%d,%d,%d", a.Score.Fu, a.Score.Total, a.Score.Riichi)
 	if len(a.Yakus) > 0 {
 		w.WriteArg("yaku", util.YakuString(a.Yakus))
 	}

@@ -10,6 +10,10 @@ import (
 type Suggest int
 
 const (
+	SuggestNone Suggest = 0
+)
+
+const (
 	SuggestKan      Suggest = 1 << iota
 	SuggestPon              // 2
 	SuggestChi              // 4

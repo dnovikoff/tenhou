@@ -1,6 +1,11 @@
 package parser
 
 import (
+	"fmt"
+
+	"github.com/dnovikoff/tempai-core/score"
+	"github.com/dnovikoff/tempai-core/yaku"
+
 	"github.com/dnovikoff/tenhou/tbase"
 	"github.com/facebookgo/stackerr"
 )
@@ -17,7 +22,15 @@ func ParseAgari(node *Node) (result *tbase.Agari, err error) {
 		x := node.GetOpponent("paoWho")
 		agari.Pao = &x
 	}
-	agari.Scores = node.GetScores()
+	ints := node.IntList("ten")
+	if len(ints) != 3 {
+		err = fmt.Errorf("ten length for agari should be 3 != %v", len(ints))
+		return
+	}
+	agari.Score = tbase.Score{
+		yaku.FuPoints(ints[0]),
+		score.Money(ints[1]),
+		score.RiichiSticks(ints[2])}
 	agari.Changes = node.GetScoreChanges()
 	agari.Hand = node.GetHai("hai")
 	agari.DoraIndicators = node.GetHai("doraHai")
@@ -31,7 +44,7 @@ func ParseAgari(node *Node) (result *tbase.Agari, err error) {
 	agari.WinTile = machi[0]
 	agari.FinalScores = node.GetFinalScores()
 
-	ints := node.IntList("yakuman")
+	ints = node.IntList("yakuman")
 	if len(ints) > 0 {
 		agari.TenhouYakumans = ints
 		yakuman := make(tbase.Yakumans, len(ints))

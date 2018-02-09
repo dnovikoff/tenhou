@@ -57,17 +57,18 @@ Get: <LN n="by1aL1Ph1BC" j="B4B4D4B8C3B5B8D4D12B12C3B5C1B4B" g="o4CM3E1Q12Co4k12
 Send: <PXR V="129" />
 ```
 
-## Howto use example server
-It is a small demo of tenhou server mock
+## pimbooo example server
+Pimboo (Pin-Man-Bamboo) is a small example server for a game of two players.
+The server is created in demonstration purposes only and does not aim for a production.
 
 Download example server
 ```
-go get -u github.com/dnovikoff/tenhou/cmd/tenhou-example-server
+go get -u github.com/dnovikoff/tenhou/cmd/pimboo-server
 ```
 
 Run application
 ```
-$GOPATH/bin/tenhou-example-server
+$GOPATH/bin/pimboo-server
 ```
 
 Add to your `hosts` file
@@ -79,4 +80,9 @@ Add to your `hosts` file
 2. Click on any lobby
 3. See start of the game
 
-The example of use ends at this point
+![Example of game](https://raw.githubusercontent.com/dnovikoff/tenhou/master/cmd/pimboo-server/example.gif)
+
+The server suggests Ron on any opponent drop and Tsumo on any take.
+If you call a Noten-agari, a Furiten-Ron or agari on a wrong tile, you will pay a penalty.
+
+The game continues until one of the opponents will drop under zero points.
