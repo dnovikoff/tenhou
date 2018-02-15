@@ -21,7 +21,7 @@ var tenhouAddr = flag.String("remote-host", "133.242.10.78:10080", "tenhou flash
 
 func proxy(ctx context.Context, from, to network.XMLConnection, prefix string, logs chan string) {
 	for {
-		nctx, _ := context.WithTimeout(ctx, time.Second*30)
+		nctx, _ := context.WithTimeout(ctx, time.Second*60)
 		message, err := from.Read(nctx)
 		message = strings.Replace(message, `<HELO name="NoName" tid="f0" sx="M" />`, `<HELO name="NoName" tid="f0" sx="C" />`, 1)
 		if !checkSuccess(err) {
