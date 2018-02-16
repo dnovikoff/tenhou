@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
 	"net"
 	"os"
@@ -39,7 +40,10 @@ func handle(sConn net.Conn) {
 
 func handleImpl(sConn net.Conn) {
 	impl := network.NewXMLConnection(sConn)
-	con := network.NewXMLConnectionDebugger(impl, os.Stdout)
+	logger := func(format string, args ...interface{}) {
+		fmt.Fprintf(os.Stdout, format+"\n", args...)
+	}
+	con := network.NewXMLConnectionDebugger(impl, logger)
 
 	parentCtx, _ := context.WithCancel(context.Background())
 	ctx, _ := context.WithTimeout(parentCtx, time.Second*10)

@@ -14,20 +14,46 @@ import (
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/dnovikoff/tenhou/network"
+	"github.com/dnovikoff/tenhou/util"
 )
 
 var addrFlag = flag.String("addr", ":10080", "listen addr")
 var tenhouAddr = flag.String("remote-host", "133.242.10.78:10080", "tenhou flash client port")
+var sexComputer = flag.Bool("sex-c", false, "change gender to C, send by client")
 
-func proxy(ctx context.Context, from, to network.XMLConnection, prefix string, logs chan string) {
+func proxy(ctx context.Context, from, to network.XMLConnection) {
 	for {
 		nctx, _ := context.WithTimeout(ctx, time.Second*60)
 		message, err := from.Read(nctx)
-		message = strings.Replace(message, `<HELO name="NoName" tid="f0" sx="M" />`, `<HELO name="NoName" tid="f0" sx="C" />`, 1)
+		if strings.HasPrefix(message, `<cross-domain-policy>`) {
+			ports := "80,443,843,10080"
+			w := util.NewXMLWriter()
+			w.Write("<cross-domain-policy>")
+			for _, domain := range []string{
+				"*.mjv.jp",
+				"*.tenhou.net",
+				"localhost",
+				// Add your domain here if needed
+			} {
+				w.Begin("allow-access-from").
+					WriteArg("domain", domain).
+					WriteArg("to-ports", ports).
+					End()
+			}
+			w.Write("</cross-domain-policy>")
+			message = w.String()
+		} else if *sexComputer && strings.HasPrefix(message, `<HELO name="`) {
+			sxStr := ` sx="`
+			n := strings.Index(message, sxStr)
+			if n > 0 {
+				idx := n + len(sxStr)
+				message = message[:idx] + "C" + message[idx+1:]
+			}
+		}
+
 		if !checkSuccess(err) {
 			return
 		}
-		logs <- prefix + message
 		err = to.Write(nctx, message)
 		if !checkSuccess(err) {
 			return
@@ -49,27 +75,18 @@ func handle(sConn net.Conn, filename string) {
 	defer cConn.Close()
 
 	server := network.NewXMLConnection(sConn)
-	client := network.NewXMLConnection(cConn)
-	logs := make(chan string, 1024)
+	clientImpl := network.NewXMLConnection(cConn)
+	client := network.NewXMLConnectionDebugger(clientImpl, network.NewMutexLogger(file))
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	go func() {
-		proxy(ctx, server, client, "Send: ", logs)
+		proxy(ctx, server, client)
 		cancel()
 	}()
-	go func() {
-		proxy(ctx, client, server, "Get: ", logs)
-		cancel()
-	}()
-	for {
-		select {
-		case log := <-logs:
-			fmt.Fprintln(file, log)
-		case <-ctx.Done():
-			return
-		}
-	}
+	proxy(ctx, client, server)
+	cancel()
+
 }
 
 func checkSuccess(err error) bool {
