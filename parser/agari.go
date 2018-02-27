@@ -3,11 +3,11 @@ package parser
 import (
 	"fmt"
 
+	"github.com/facebookgo/stackerr"
+
 	"github.com/dnovikoff/tempai-core/score"
 	"github.com/dnovikoff/tempai-core/yaku"
-
 	"github.com/dnovikoff/tenhou/tbase"
-	"github.com/facebookgo/stackerr"
 )
 
 func ParseAgari(node *Node) (result *tbase.Agari, err error) {
@@ -44,28 +44,8 @@ func ParseAgari(node *Node) (result *tbase.Agari, err error) {
 	agari.WinTile = machi[0]
 	agari.FinalScores = node.GetFinalScores()
 
-	ints = node.IntList("yakuman")
-	if len(ints) > 0 {
-		agari.TenhouYakumans = ints
-		yakuman := make(tbase.Yakumans, len(ints))
-		for k, v := range ints {
-			yakuman[k] = tbase.YakumanMap[v]
-		}
-		agari.Yakumans = yakuman
-	}
-
-	ints = node.IntList("yaku")
-	if len(ints) > 0 {
-		agari.TenhouYakus = ints
-		l := len(ints) / 2
-		yaku := make([]tbase.YakuResult, l)
-		for k := 0; k < l; k++ {
-			key := ints[k*2]
-			value := ints[k*2+1]
-			yaku[k] = tbase.YakuResult{tbase.YakuMap[key], value}
-		}
-		agari.Yakus = yaku
-	}
+	agari.Yakumans = tbase.YakumansFromInts(node.IntList("yakuman"))
+	agari.Yakus = tbase.YakusFromInts(node.IntList("yaku"))
 
 	ints = node.IntList("m")
 	if len(ints) > 0 {

@@ -5,8 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/dnovikoff/tenhou/tbase"
-
 	multierror "github.com/hashicorp/go-multierror"
 
 	"github.com/dnovikoff/tempai-core/base"
@@ -15,6 +13,7 @@ import (
 	"github.com/dnovikoff/tempai-core/score"
 	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tempai-core/yaku"
+	"github.com/dnovikoff/tenhou/tbase"
 )
 
 func NewValidator(err *error) *AgariExtractor {
@@ -33,8 +32,8 @@ type AgariReport struct {
 	Melds          tbase.Melds    `json:"melds,omitempty"`
 	DoraIndicators tile.Instances `json:"dora-indicators"`
 	UraIndicators  tile.Instances `json:"ura-indicators,omitempty"`
-	Yaku           []int          `json:"yaku,omitempty"`
-	Yakuman        []int          `json:"yakuman,omitempty"`
+	Yaku           tbase.Yakus    `json:"yaku,omitempty"`
+	Yakuman        tbase.Yakumans `json:"yakuman,omitempty"`
 }
 
 func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Context, w base.Wind, scoring *score.Rules) {
@@ -78,8 +77,8 @@ func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Co
 		Score:          baseScore.GetChanges(ctx.SelfWind, w, 0).TotalWin(),
 		DoraIndicators: agari.DoraIndicators,
 		UraIndicators:  agari.UraIndicators,
-		Yaku:           agari.TenhouYakus,
-		Yakuman:        agari.TenhouYakumans,
+		Yaku:           agari.Yakus,
+		Yakuman:        agari.Yakumans,
 		Log:            &info.FullName,
 	}
 

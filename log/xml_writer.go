@@ -3,9 +3,6 @@ package log
 import (
 	"strconv"
 
-	"github.com/dnovikoff/tempai-core/base"
-	"github.com/dnovikoff/tempai-core/score"
-	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tenhou/client"
 	"github.com/dnovikoff/tenhou/tbase"
 	"github.com/dnovikoff/tenhou/util"
@@ -18,7 +15,7 @@ type XMLWriter struct {
 
 var _ Controller = &XMLWriter{}
 
-func (w XMLWriter) Open(*Info) bool {
+func (w XMLWriter) Open(Info) bool {
 	w.Write(`<mjloggm ver="2.3">`)
 	return true
 }
@@ -35,73 +32,67 @@ func (this XMLWriter) client() client.XMLWriter {
 	return this.XMLWriter
 }
 
-func (this XMLWriter) Shuffle(seed, ref string) {
+func (this XMLWriter) Shuffle(params Shuffle) {
 	this.Begin("SHUFFLE").
-		WriteArg("seed", seed).
-		WriteArg("ref", ref).
+		WriteArg("seed", params.Seed).
+		WriteArg("ref", params.Ref).
 		End()
 }
 
-func (this XMLWriter) Go(t int, lobby int) {
-	this.client().Go("", t, lobby)
+func (this XMLWriter) Go(params client.WithLobby) {
+	this.client().Go(client.Go{WithLobby: params})
 }
 
-func (this XMLWriter) UserList(users tbase.UserList) {
-	this.WriteUserList(users, this.FloatFormat)
+func (this XMLWriter) UserList(params client.UserList) {
+	this.WriteUserList(params.Users, this.FloatFormat)
 }
 
-func (this XMLWriter) Start(d base.Opponent) {
-	this.LogInfo(d, "")
+func (this XMLWriter) Start(params client.WithDealer) {
+	this.LogInfo(client.LogInfo{WithDealer: params})
 }
 
-func (this XMLWriter) Init(in *Init) {
+func (this XMLWriter) Init(params Init) {
 	this.Begin("INIT").
-		WriteArg("seed", in.Seed.String()).
-		WriteArg("ten", util.ScoreString(in.Scores)).
-		WriteDealer(in.Dealer)
-	for k, v := range in.Hands {
+		WriteArg("seed", params.Seed.String()).
+		WriteArg("ten", util.ScoreString(params.Scores)).
+		WriteDealer(params.Dealer)
+	for k, v := range params.Hands {
 		this.WriteArg("hai"+strconv.Itoa(k), util.InstanceString(v))
 	}
-	if in.Shuffle != "" {
-		this.WriteArg("shuffle", in.Shuffle)
+	if params.Shuffle != "" {
+		this.WriteArg("shuffle", params.Shuffle)
 	}
 	this.End()
 }
 
-func (this XMLWriter) Draw(o base.Opponent, t tile.Instance) {
-	this.WriteTake(o, t, 0, false)
+func (this XMLWriter) Draw(params WithOpponentAndInstance) {
+	this.WriteTake(params.Opponent, params.Instance, 0, false)
 }
 
-func (this XMLWriter) Discard(o base.Opponent, t tile.Instance) {
-	this.client().Drop(o, t, false, 0)
+func (this XMLWriter) Discard(params WithOpponentAndInstance) {
+	x := client.Drop{}
+	x.WithInstance = params.WithInstance
+	x.WithOpponent = params.WithOpponent
+	this.client().Drop(x)
 }
 
-func (this XMLWriter) Declare(o base.Opponent, m tbase.Meld) {
-	this.client().Declare(o, m, 0)
+func (this XMLWriter) Declare(params Declare) {
+	x := client.Declare{}
+	x.WithOpponent = params.WithOpponent
+	x.Meld = params.Meld
+	this.client().Declare(x)
 }
 
-func (this XMLWriter) Ryuukyoku(a *tbase.Ryuukyoku) {
-	this.WriteRyuukyoku(a, this.FloatFormat)
+func (this XMLWriter) Ryuukyoku(params tbase.Ryuukyoku) {
+	this.WriteRyuukyoku(&params, this.FloatFormat)
 }
 
-func (this XMLWriter) Reach(o base.Opponent, step int, score []score.Money) {
-	this.client().Reach(o, step, score)
+func (this XMLWriter) Agari(params tbase.Agari) {
+	this.WriteAgari(&params, this.FloatFormat)
 }
 
-func (this XMLWriter) Agari(a *tbase.Agari) {
-	this.WriteAgari(a, this.FloatFormat)
-}
-
-func (this XMLWriter) Indicator(x tile.Instance) {
-	this.client().Indicator(x)
-}
-
-func (this XMLWriter) Disconnect(x base.Opponent) {
+func (this XMLWriter) Disconnect(params client.WithOpponent) {
 	this.Begin("BYE").
-		WriteOpponent("who", x).
+		WriteOpponent("who", params.Opponent).
 		End()
-}
-
-func (this XMLWriter) Reconnect(x base.Opponent, name string) {
-	this.client().Reconnect(x, name)
 }

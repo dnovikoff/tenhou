@@ -32,26 +32,29 @@ func TestAkasValidate(t *testing.T) {
 	assert.Equal(t, []tile.Instance{tile.Instance(16), tile.Instance(52), tile.Instance(88)}, yaku.RulesTenhouRed.AkaDoras)
 }
 
-func processXMLFiles(t util.TestingT, f func(data string, nodes parser.Nodes)) {
+func processXMLFiles(t *testing.T, f func(t *testing.T, data string, nodes parser.Nodes)) {
 	dir := "./test_data/"
 	infos, err := ioutil.ReadDir(dir)
 	require.NoError(t, err)
 	tested := false
 	for _, info := range infos {
 		name := info.Name()
-		if strings.HasSuffix(name, ".xml") {
+		if !strings.HasSuffix(name, ".xml") {
+			continue
+		}
+		t.Run(name, func(t *testing.T) {
 			t.Log("Processing " + name)
 			data := loadTestData(t, name)
 			nodes := loadTestXml(t, data)
-			f(string(data), nodes)
+			f(t, string(data), nodes)
 			tested = true
-		}
+		})
 	}
 	require.True(t, tested)
 }
 
 func TestLogValidate(t *testing.T) {
-	processXMLFiles(t, func(_ string, nodes parser.Nodes) {
+	processXMLFiles(t, func(t *testing.T, _ string, nodes parser.Nodes) {
 		var validateError error
 		c := NewValidator(&validateError)
 		c.Info = &Info{}
@@ -61,18 +64,33 @@ func TestLogValidate(t *testing.T) {
 }
 
 func TestLogReadAndWrite(t *testing.T) {
-	processXMLFiles(t, func(data string, nodes parser.Nodes) {
+	processXMLFiles(t, func(t *testing.T, data string, nodes parser.Nodes) {
 		w := &XMLWriter{client.NewXMLWriter(), false}
 		w.AddSpaces = false
-		w.Open(nil)
+		w.Open(Info{})
 		require.NoError(t, ProcessXMLNodes(nodes, w))
 		w.Close()
 
 		expected := util.FixLine(data)
 		actual := util.FixLine(w.String())
 		if !assert.Equal(t, expected, actual) {
-			// cmp := expected + "\n" + actual
-			// ioutil.WriteFile("cmp.txt", []byte(cmp), 0644)
+			min := len(expected)
+			if len(actual) < min {
+				min = len(actual)
+			}
+			start := 0
+			for k := range expected {
+				if expected[k] != actual[k] {
+					start = k
+					break
+				}
+			}
+
+			ioutil.WriteFile("cmp.txt", []byte(strings.Join(
+				[]string{expected, actual, expected[start:], actual[start:]},
+				"\n",
+			)), 0644)
+
 			t.Fail()
 		}
 	})
@@ -82,5 +100,5 @@ func TestLogCheckOpenCondition(t *testing.T) {
 	info, err := ParseLogInfo("2009061806gm-00a9-0000-6d13c207")
 	require.NoError(t, err)
 	x := NewValidator(nil)
-	require.True(t, x.Open(info))
+	require.True(t, x.Open(*info))
 }

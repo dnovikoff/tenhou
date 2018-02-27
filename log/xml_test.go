@@ -5,10 +5,10 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/dnovikoff/tenhou/parser"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/dnovikoff/tenhou/parser"
 )
 
 func TestXML(t *testing.T) {

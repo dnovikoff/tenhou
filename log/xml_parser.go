@@ -4,11 +4,12 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/facebookgo/stackerr"
+
 	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tenhou/client"
 	"github.com/dnovikoff/tenhou/parser"
-	"github.com/facebookgo/stackerr"
 )
 
 func ProcessXMLNodes(nodes parser.Nodes, c Controller) (err error) {
@@ -25,13 +26,12 @@ func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 	name := node.Name
 	switch name {
 	case "SHUFFLE":
-		c.Shuffle(node.String("seed"), node.String("ref"))
+		c.Shuffle(Shuffle{
+			Seed: node.String("seed"),
+			Ref:  node.String("ref"),
+		})
 	case "GO":
-		l := -1
-		if node.Check("lobby") {
-			l = node.Int("lobby")
-		}
-		c.Go(node.Int("type"), l)
+		c.Go(client.GetWithLobby(node))
 	case "UN":
 		floatFormat := strings.Contains(node.Attributes["rate"], ".")
 		if floatFormat {
@@ -39,21 +39,26 @@ func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 		}
 		err = client.ProcessUserList(node, c)
 	case "REACH":
-		c.Reach(node.GetWho(), node.Int("step"), node.GetScores())
+		params := client.Reach{Step: node.Int("step"), Score: node.GetScores()}
+		params.Opponent = node.GetWho()
+		c.Reach(params)
 	case "TAIKYOKU":
-		c.Start(node.GetDealer())
+		c.Start(client.WithDealer{node.GetDealer()})
 	case "INIT":
 		x, err := node.GetInit()
 		if err != nil {
 			return err
 		}
-		c.Init(&Init{
+		c.Init(Init{
 			x,
 			node.GetHands(),
 			node.String("shuffle"),
 		})
 	case "N":
-		c.Declare(node.GetWho(), node.GetMeld())
+		params := Declare{}
+		params.Opponent = node.GetWho()
+		params.Meld = node.GetMeld()
+		c.Declare(params)
 	case "AGARI":
 		floatFormat := strings.Contains(node.Attributes["owari"], ".")
 		agari, err := parser.ParseAgari(node)
@@ -63,7 +68,7 @@ func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 		if floatFormat {
 			c.SetFloatFormat()
 		}
-		c.Agari(agari)
+		c.Agari(*agari)
 	case "RYUUKYOKU":
 		floatFormat := strings.Contains(node.Attributes["owari"], ".")
 		r, err := parser.ParseRyuukyoku(node)
@@ -73,15 +78,16 @@ func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 		if floatFormat {
 			c.SetFloatFormat()
 		}
-		c.Ryuukyoku(r)
+		c.Ryuukyoku(*r)
 	case "BYE":
-		c.Disconnect(node.GetWho())
+		params := client.WithOpponent{node.GetWho()}
+		c.Disconnect(params)
 	case "DORA":
 		i := node.GetInstance("hai")
 		if i.IsNull() {
 			return stackerr.Newf("Unexpected hai value")
 		}
-		c.Indicator(i)
+		c.Indicator(client.WithInstance{i})
 	default:
 		if !tryDefault(node, c) {
 			return stackerr.Newf("Unexpected node %v", name)
@@ -104,12 +110,15 @@ func tryDefault(in *parser.Node, c Controller) bool {
 	if err != nil {
 		return false
 	}
-	instance := tile.Instance(x)
+	params := WithOpponentAndInstance{}
+	params.Instance = tile.Instance(x)
 	if first >= 'T' && first <= 'W' {
-		c.Draw(base.Opponent(first-'T'), instance)
+		params.Opponent = base.Opponent(first - 'T')
+		c.Draw(params)
 		return true
 	} else if first >= 'D' && first <= 'G' {
-		c.Discard(base.Opponent(first-'D'), instance)
+		params.Opponent = base.Opponent(first - 'D')
+		c.Discard(params)
 		return true
 	}
 	return false

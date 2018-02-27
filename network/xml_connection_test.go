@@ -9,7 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tenhou/client"
 )
@@ -62,8 +61,10 @@ func TestConnectionSend(t *testing.T) {
 	ctx, _ := context.WithTimeout(context.Background(), time.Second)
 	go func() {
 		c := client.NewXMLWriter()
-		c.Reach(base.Self, 1, nil)
-		c.Take(base.Self, tile.Pin1.Instance(0), 0)
+		c.Reach(client.Reach{Step: 1})
+		t := client.Take{}
+		t.Instance = tile.Pin1.Instance(0)
+		c.Take(t)
 		s.Write(ctx, c.String())
 	}()
 	data, err := c.Read(ctx)
