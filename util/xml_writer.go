@@ -76,6 +76,10 @@ func (this XMLWriter) WriteDealer(d base.Opponent) XMLWriter {
 	return this.WriteOpponent("oya", d)
 }
 
+func (this XMLWriter) WriteWho(d base.Opponent) XMLWriter {
+	return this.WriteOpponent("who", d)
+}
+
 func (this XMLWriter) WriteTableStatus(status tbase.TableStatus) XMLWriter {
 	return this.WriteArg("ba", fmt.Sprintf("%d,%d", status.Honba, status.Sticks))
 }

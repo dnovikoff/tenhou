@@ -64,7 +64,7 @@ func handleImpl(sConn net.Conn) {
 	cb := &server.Callbacks{}
 	game := game.NewGame(con)
 	cb.CbHello = func(name string, tid string, sex tbase.Sex) {
-		game.Client.Hello(name, "20180117-e7b5e83e", client.HelloStats{})
+		game.Client.Hello(client.Hello{Name: name, Auth: "20180117-e7b5e83e"})
 		game.Send()
 	}
 	if !game.ProcessOne(cb) {

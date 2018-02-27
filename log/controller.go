@@ -3,32 +3,43 @@ package log
 import (
 	"github.com/dnovikoff/tenhou/client"
 	"github.com/dnovikoff/tenhou/tbase"
-
-	"github.com/dnovikoff/tempai-core/base"
-	"github.com/dnovikoff/tempai-core/score"
-	"github.com/dnovikoff/tempai-core/tile"
 )
 
 type Controller interface {
 	// Should return false if not interested
-	Open(*Info) bool
+	Open(Info) bool
 	Close()
 	SetFloatFormat()
 
-	Shuffle(seed, ref string)
-	Go(t int, lobby int)
-	Start(base.Opponent)
-	Init(*Init)
-	Draw(base.Opponent, tile.Instance)
-	Discard(base.Opponent, tile.Instance)
-	Declare(base.Opponent, tbase.Meld)
-	Ryuukyoku(*tbase.Ryuukyoku)
-	Reach(base.Opponent, int, []score.Money)
-	Agari(*tbase.Agari)
-	Indicator(tile.Instance)
-	Disconnect(base.Opponent)
+	Shuffle(Shuffle)
+	Go(client.WithLobby)
+	Start(client.WithDealer)
+	Init(Init)
+	Draw(WithOpponentAndInstance)
+	Discard(WithOpponentAndInstance)
+	Declare(Declare)
+	Ryuukyoku(tbase.Ryuukyoku)
+	Reach(client.Reach)
+	Agari(tbase.Agari)
+	Indicator(client.WithInstance)
+	Disconnect(client.WithOpponent)
 
 	client.UNController
+}
+
+type Shuffle struct {
+	Seed string
+	Ref  string
+}
+
+type Declare struct {
+	client.WithOpponent
+	Meld tbase.Meld
+}
+
+type WithOpponentAndInstance struct {
+	client.WithOpponent
+	client.WithInstance
 }
 
 type Init struct {

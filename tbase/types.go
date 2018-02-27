@@ -50,12 +50,9 @@ type Agari struct {
 	DoraIndicators tile.Instances
 	UraIndicators  tile.Instances
 	WinTile        tile.Instance
-	TenhouYakus    []int
-	TenhouYakumans []int
-	// TODO: switch to tenhou (do not convert)
-	Yakumans Yakumans
-	Yakus    YakuResults
-	Melds    Melds
+	Yakus          Yakus
+	Yakumans       Yakumans
+	Melds          Melds
 	// TODO: research
 	Ratio string
 }

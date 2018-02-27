@@ -3,8 +3,6 @@ package client
 import (
 	"testing"
 
-	"github.com/dnovikoff/tenhou/tbase"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -13,39 +11,62 @@ import (
 	"github.com/dnovikoff/tempai-core/meld"
 	"github.com/dnovikoff/tempai-core/score"
 	"github.com/dnovikoff/tempai-core/tile"
+	"github.com/dnovikoff/tenhou/tbase"
 )
 
 func TestSMessageDrop(t *testing.T) {
 	c := NewXMLWriter()
-	c.Drop(base.Self, tile.Green.Instance(0), false, 0)
-	c.Drop(base.Self, tile.Green.Instance(0), true, 0)
+	test := func(o base.Opponent, i tile.Instance, isTg bool, s Suggest) {
+		params := Drop{}
+		params.Opponent = o
+		params.Instance = i
+		params.IsTsumogiri = isTg
+		params.Suggest = s
+		c.Drop(params)
+	}
+	test(base.Self, tile.Green.Instance(0), false, 0)
+	test(base.Self, tile.Green.Instance(0), true, 0)
 
-	c.Drop(base.Right, tile.Man1.Instance(0), false, 0)
-	c.Drop(base.Right, tile.Man1.Instance(0), true, 0)
+	test(base.Right, tile.Man1.Instance(0), false, 0)
+	test(base.Right, tile.Man1.Instance(0), true, 0)
 
-	c.Drop(base.Front, tile.Man2.Instance(0), false, 0)
-	c.Drop(base.Front, tile.Man2.Instance(0), true, 0)
+	test(base.Front, tile.Man2.Instance(0), false, 0)
+	test(base.Front, tile.Man2.Instance(0), true, 0)
 
-	c.Drop(base.Left, tile.Man1.Instance(1), false, 0)
-	c.Drop(base.Left, tile.Man1.Instance(1), true, 1)
+	test(base.Left, tile.Man1.Instance(1), false, 0)
+	test(base.Left, tile.Man1.Instance(1), true, 1)
 
 	assert.Equal(t, `<D128/> <d128/> <E0/> <e0/> <F4/> <f4/> <G1/> <g1 t="1"/>`, c.String())
 }
 
 func TestSMessageTake(t *testing.T) {
 	c := NewXMLWriter()
-	c.Take(base.Self, tile.Pin1.Instance(0), 0)
-	c.Take(base.Self, tile.Pin1.Instance(0), 1)
-	c.Take(base.Right, tile.Pin1.Instance(0), 0)
-	c.Take(base.Front, tile.Pin1.Instance(0), 0)
-	c.Take(base.Left, tile.Pin1.Instance(0), 1)
+	test := func(o base.Opponent, i tile.Instance, s Suggest) {
+		params := Take{}
+		params.Opponent = o
+		params.Instance = i
+		params.Suggest = s
+		c.Take(params)
+	}
+	test(base.Self, tile.Pin1.Instance(0), 0)
+	test(base.Self, tile.Pin1.Instance(0), 1)
+	test(base.Right, tile.Pin1.Instance(0), 0)
+	test(base.Front, tile.Pin1.Instance(0), 0)
+	test(base.Left, tile.Pin1.Instance(0), 1)
 	assert.Equal(t, `<T36/> <T36 t="1"/> <U/> <V/> <W/>`, c.String())
 }
 
 func TestSMessageReach(t *testing.T) {
 	c := NewXMLWriter()
-	c.Reach(base.Front, 1, nil)
-	c.Reach(base.Self, 2, []score.Money{25000, 25000, 25000, 24000})
+	test := func(o base.Opponent, step int, sc []score.Money) {
+		params := Reach{}
+		params.Opponent = o
+		params.Step = step
+		params.Score = sc
+		c.Reach(params)
+	}
+	test(base.Front, 1, nil)
+	test(base.Self, 2, []score.Money{25000, 25000, 25000, 24000})
 
 	assert.Equal(t, `<REACH who="2" step="1"/> <REACH who="0" ten="250,250,250,240" step="2"/>`, c.String())
 }
@@ -53,7 +74,10 @@ func TestSMessageReach(t *testing.T) {
 func TestSDeclare(t *testing.T) {
 	c := NewXMLWriter()
 	x := meld.NewPonOpened(tile.Sou4, 3, 2, base.Front).Meld()
-	c.Declare(base.Self, tbase.NewTenhouMeld(x), 0)
+	params := Declare{}
+	params.Opponent = base.Self
+	params.Meld = tbase.NewTenhouMeld(x)
+	c.Declare(params)
 	assert.Equal(t, `<N who="0" m="33354"/>`, c.String())
 }
 
@@ -81,24 +105,24 @@ func TestSInit(t *testing.T) {
 
 func TestSLogInfo(t *testing.T) {
 	c := NewXMLWriter()
-	c.LogInfo(base.Front, "2018011712gm-0009-0000-84f0883b")
+	c.LogInfo(LogInfo{WithDealer{base.Front}, "2018011712gm-0009-0000-84f0883b"})
 	assert.Equal(t, `<TAIKYOKU oya="2" log="2018011712gm-0009-0000-84f0883b"/>`, c.String())
 }
 
 func TestSGo(t *testing.T) {
 	c := NewXMLWriter()
-	c.Go("12D32385-4987D01D", 9, 0)
+	c.Go(Go{WithLobby{0, 9}, "12D32385-4987D01D"})
 	assert.Equal(t, `<GO type="9" lobby="0" gpid="12D32385-4987D01D"/>`, c.String())
 }
 
 func TestSUN(t *testing.T) {
 	c := NewXMLWriter()
-	c.UserList(tbase.UserList{
+	c.UserList(UserList{tbase.UserList{
 		tbase.User{Name: "NoName", Rate: 1500.00, Sex: tbase.SexMale, Dan: 0},
 		tbase.User{Name: "@yukimi", Rate: 1499.99, Sex: tbase.SexFemale, Dan: 2},
 		tbase.User{Name: "さあ、行くぞ", Rate: 1467.57, Sex: tbase.SexMale, Dan: 10},
 		tbase.User{Name: "pjgwpdjw", Rate: 1500.00, Sex: tbase.SexMale, Dan: 0},
-	})
+	}})
 
 	assert.Equal(t, `<UN n0="%4E%6F%4E%61%6D%65" n1="%40%79%75%6B%69%6D%69" n2="%E3%81%95%E3%81%82%E3%80%81%E8%A1%8C%E3%81%8F%E3%81%9E" n3="%70%6A%67%77%70%64%6A%77" dan="0,2,10,0" rate="1500.00,1499.99,1467.57,1500.00" sx="M,F,M,M"/>`,
 		c.String())
@@ -106,7 +130,10 @@ func TestSUN(t *testing.T) {
 
 func TestSHello(t *testing.T) {
 	c := NewXMLWriter()
-	c.Hello("NoName", "20180117-e7b5e83e", HelloStats{RatingScale: DefaultRatingScale})
+	c.Hello(Hello{
+		Name:        "NoName",
+		Auth:        "20180117-e7b5e83e",
+		RatingScale: DefaultRatingScale})
 	assert.Equal(t, `<HELO uname="%4E%6F%4E%61%6D%65" auth="20180117-e7b5e83e" ratingscale="PF3=1.000000&PF4=1.000000&PF01C=0.582222&PF02C=0.501632&PF03C=0.414869&PF11C=0.823386&PF12C=0.709416&PF13C=0.586714&PF23C=0.378722&PF33C=0.535594&PF1C00=8.000000"/>`,
 		c.String())
 }

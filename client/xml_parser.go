@@ -29,13 +29,41 @@ func ProcessXMLMessage(message string, c Controller) (err error) {
 	return
 }
 
+func GetWithOpponent(node *parser.Node) WithOpponent {
+	return WithOpponent{node.GetWho()}
+}
+
+func GetWithDealer(node *parser.Node) WithDealer {
+	return WithDealer{node.GetDealer()}
+}
+
+func getWithSuggest(node *parser.Node) WithSuggest {
+	return WithSuggest{Suggest(node.Int("t"))}
+}
+
+func GetWithLobby(node *parser.Node) WithLobby {
+	l := -1
+	if node.Check("lobby") {
+		l = node.Int("lobby")
+	}
+	return WithLobby{
+		LobbyType:   node.Int("type"),
+		LobbyNumber: l,
+	}
+}
+
 func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 	switch node.Name {
 	case "REACH":
-		c.Reach(node.GetWho(), node.Int("step"), node.GetScores())
+		c.Reach(Reach{
+			GetWithOpponent(node),
+			node.GetScores(),
+			node.Int("step")})
 	case "N":
-		s := Suggest(node.Int("t"))
-		c.Declare(node.GetWho(), node.GetMeld(), s)
+		c.Declare(Declare{
+			GetWithOpponent(node),
+			getWithSuggest(node),
+			node.GetMeld()})
 	case "INIT":
 		i, err := getInit(node)
 		if err != nil {
@@ -71,9 +99,15 @@ func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 		}
 		c.Reinit(r)
 	case "TAIKYOKU":
-		c.LogInfo(node.GetDealer(), node.String("log"))
+		c.LogInfo(LogInfo{
+			GetWithDealer(node),
+			node.String("log"),
+		})
 	case "GO":
-		c.Go(node.String("gpid"), node.Int("type"), node.Int("lobby"))
+		c.Go(Go{
+			WithLobby: GetWithLobby(node),
+			GpID:      node.String("gpid"),
+		})
 	case "HELO":
 		name := node.String("uname")
 		name, err := url.QueryUnescape(name)
@@ -84,47 +118,63 @@ func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 		if err != nil {
 			return stackerr.Wrap(err)
 		}
-		stats := HelloStats{
+		c.Hello(Hello{
+			Name:        name,
+			Auth:        node.String("auth"),
 			RatingScale: node.String("ratingscale"),
 			PF4:         node.String("PF4"),
 			RR:          node.String("rr"),
 			Expire:      node.Int("expire"),
 			ExpireDays:  node.Int("expiredays"),
 			Message:     message,
-		}
-		c.Hello(name, node.String("auth"), stats)
+		})
 	case "UN":
 		err = ProcessUserList(node, c)
 	case "LN":
-		c.LobbyStats(node.String("n"), node.String("j"), node.String("g"))
+		c.LobbyStats(LobbyStats{
+			N: node.String("n"),
+			J: node.String("j"),
+			G: node.String("g"),
+		})
 	case "AGARI":
 		result, err := parser.ParseAgari(node)
 		if err != nil {
 			return err
 		}
-		c.Agari(result)
+		c.Agari(*result)
 	case "DORA":
-		c.Indicator(tile.Instance(node.Int("hai")))
+		c.Indicator(WithInstance{
+			tile.Instance(node.Int("hai"))})
 	case "PROF":
-		c.EndButton(node.Int("lobby"), node.Int("type"), node.String("add"))
+		c.EndButton(EndButton{
+			WithLobby: GetWithLobby(node),
+			Add:       node.String("add"),
+		})
 	case "FURITEN":
-		c.Furiten(node.String("show") == "1")
+		c.Furiten(Furiten{
+			node.String("show") == "1"})
 	case "RYUUKYOKU":
 		r, err := parser.ParseRyuukyoku(node)
 		if err != nil {
 			return err
 		}
-		c.Ryuukyoku(r)
+		c.Ryuukyoku(*r)
 	case "REJOIN":
 		n, t, rejoin, err := util.ParseJoinString(node.String("t"))
 		if err != nil {
 			return err
 		}
-		c.Rejoin(n, t, rejoin)
+		c.Rejoin(Rejoin{
+			WithLobby: WithLobby{
+				LobbyNumber: n,
+				LobbyType:   t,
+			},
+			Rejoin: rejoin,
+		})
 	case "BYE":
-		c.Disconnect(node.GetWho())
+		c.Disconnect(GetWithOpponent(node))
 	case "RANKING":
-		c.Ranking(node.String("v2"))
+		c.Ranking(Ranking{node.String("v2")})
 	case "CHAT":
 		name, err := url.PathUnescape(node.String("uname"))
 		if err != nil {
@@ -134,28 +184,45 @@ func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 		if err != nil {
 			return stackerr.Wrap(err)
 		}
-		c.Chat(name, text)
+		c.Chat(Chat{name, text})
 	case "SAIKAI":
 		ch := node.GetScoreChanges()
 		status, err := node.GetTableStatus()
 		if err != nil {
 			return err
 		}
-		c.Recover(status, node.GetDealer(), ch)
+		c.Recover(Recover{
+			GetWithDealer(node),
+			status,
+			ch})
 	default:
 		_, o, t := parseLetterNode(node.Name, 'D')
 		if !t.IsNull() {
-			c.Drop(o, t, false, Suggest(node.Int("t")))
+			c.Drop(Drop{
+				WithOpponent{o},
+				WithInstance{t},
+				getWithSuggest(node),
+				false,
+			})
 			return
 		}
 		_, o, t = parseLetterNode(node.Name, 'd')
 		if !t.IsNull() {
-			c.Drop(o, t, true, Suggest(node.Int("t")))
+			c.Drop(Drop{
+				WithOpponent{o},
+				WithInstance{t},
+				getWithSuggest(node),
+				true,
+			})
 			return
 		}
 		ok, o, t := parseLetterNode(node.Name, 'T')
 		if ok {
-			c.Take(o, t, Suggest(node.Int("t")))
+			c.Take(Take{
+				WithOpponent{o},
+				WithInstance{t},
+				getWithSuggest(node),
+			})
 			return
 		}
 		return stackerr.Newf("Unexpectd node '%v'", node.Name)
@@ -183,7 +250,8 @@ func ProcessUserList(node *parser.Node, c UNController) error {
 			if err != nil {
 				return stackerr.Wrap(err)
 			}
-			c.Reconnect(o, name)
+			c.Reconnect(Reconnect{
+				WithOpponent{o}, name})
 		}
 		return nil
 	}
@@ -215,7 +283,7 @@ func ProcessUserList(node *parser.Node, c UNController) error {
 			Rc:   r,
 		}
 	}
-	c.UserList(ul)
+	c.UserList(UserList{ul})
 	return nil
 }
 

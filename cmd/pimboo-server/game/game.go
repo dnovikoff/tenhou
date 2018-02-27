@@ -8,12 +8,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/dnovikoff/tenhou/network"
-	"github.com/dnovikoff/tenhou/parser"
-	"github.com/dnovikoff/tenhou/server"
-	"github.com/dnovikoff/tenhou/tbase"
-	"github.com/dnovikoff/tenhou/util"
-
 	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/compact"
 	"github.com/dnovikoff/tempai-core/hand/effective"
@@ -23,6 +17,11 @@ import (
 	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tempai-core/yaku"
 	"github.com/dnovikoff/tenhou/client"
+	"github.com/dnovikoff/tenhou/network"
+	"github.com/dnovikoff/tenhou/parser"
+	"github.com/dnovikoff/tenhou/server"
+	"github.com/dnovikoff/tenhou/tbase"
+	"github.com/dnovikoff/tenhou/util"
 )
 
 type Player struct {
@@ -234,13 +233,20 @@ func (this *Game) doAgari(
 		DoraIndicators: indicators,
 		WinTile:        winTile,
 		Melds:          tbase.NewTenhouMelds(melds),
-		Yakumans:       tbase.YakumansFromCore(yakuman),
-		Yakus:          tbase.YakusFromCore(yaku),
+	}
+	var err error
+	a.Yakus, err = tbase.YakusFromCore(yaku)
+	if err != nil {
+		this.logger.Printf("Error converting yakus: %v", err)
+	}
+	a.Yakumans, err = tbase.YakumansFromCore(yakuman)
+	if err != nil {
+		this.logger.Printf("Error converting yakumans: %v", err)
 	}
 	if len(indicators) > 5 {
 		a.DoraIndicators, a.UraIndicators = indicators[:5], indicators[5:]
 	}
-	this.Client.Agari(&a)
+	this.Client.Agari(a)
 	this.Send()
 	this.wait()
 }
@@ -360,8 +366,12 @@ func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 }
 
 func (this *Game) RobotTurn() (result bool) {
-	this.Client.Take(base.Front, 0, 0)
-	this.Send()
+	{
+		params := client.Take{}
+		params.Opponent = base.Front
+		this.Client.Take(params)
+		this.Send()
+	}
 	t := this.take()
 	p := this.Robot
 	p.take(t)
@@ -381,8 +391,12 @@ func (this *Game) RobotTurn() (result bool) {
 	bestTile := x.Best().Tile
 	toDrop := p.Hand.GetMask(bestTile).First()
 	p.drop(toDrop)
-	sg := client.SuggestRon
-	this.Client.Drop(base.Front, toDrop, toDrop == t, sg)
+	params := client.Drop{}
+	params.Instance = t
+	params.Suggest = client.SuggestRon
+	params.IsTsumogiri = (toDrop == t)
+	params.Opponent = base.Front
+	this.Client.Drop(params)
 	this.Send()
 	cb := &server.Callbacks{}
 	cb.CbCall = func(x server.Answer, t tile.Instances) {
@@ -403,8 +417,11 @@ func (this *Game) RobotTurn() (result bool) {
 
 func (this *Game) HumanTurn() (result bool) {
 	t := this.take()
-	sg := client.SuggestTsumo
-	this.Client.Take(base.Self, t, sg)
+	params := client.Take{}
+	params.Opponent = base.Self
+	params.Instance = t
+	params.Suggest = client.SuggestTsumo
+	this.Client.Take(params)
 	this.Send()
 	p := this.Human
 	p.take(t)
@@ -417,7 +434,11 @@ func (this *Game) HumanTurn() (result bool) {
 			return
 		}
 		p.drop(i)
-		this.Client.Drop(base.Self, i, i == t, client.SuggestNone)
+		params := client.Drop{}
+		params.Opponent = base.Self
+		params.Instance = t
+		params.IsTsumogiri = (i == t)
+		this.Client.Drop(params)
 		this.Send()
 		result = !this.tryWin(i, false, false)
 	}
@@ -439,7 +460,10 @@ func (this *Game) HumanTurn() (result bool) {
 			this.Rinshan = true
 			p.Melds = append(p.Melds, m.Meld())
 			p.Hand.SetCount(first.Tile(), 0)
-			this.Client.Declare(base.Self, tbase.NewTenhouMeld(m.Meld()), client.SuggestNone)
+			params := client.Declare{}
+			params.Opponent = base.Self
+			params.Meld = tbase.NewTenhouMeld(m.Meld())
+			this.Client.Declare(params)
 			this.Send()
 			extraTurn = true
 		case server.AnswerSkip:
@@ -477,7 +501,7 @@ func (this *Game) MakeDraw() {
 	rk := tbase.Ryuukyoku{
 		DrawType: tbase.DrawEnd,
 	}
-	this.Client.Ryuukyoku(&rk)
+	this.Client.Ryuukyoku(rk)
 	this.Send()
 	this.wait()
 }
@@ -498,16 +522,18 @@ func (this *Game) MakeTurn() (x bool) {
 
 func (this *Game) Run() {
 	this.wait()
-	this.Client.Go("", 11, 0)
+	params := client.Go{}
+	params.LobbyType = 11
+	this.Client.Go(params)
 	this.Send()
-	this.Client.UserList(tbase.UserList{
+	this.Client.UserList(client.UserList{tbase.UserList{
 		tbase.User{Num: 0, Name: "Player", Sex: tbase.SexMale, Rate: 1500},
 		tbase.User{Num: 1, Name: "_", Sex: tbase.SexFemale, Rate: 1500},
 		tbase.User{Num: 2, Name: "Robot", Sex: tbase.SexComputer, Rate: 1500},
 		tbase.User{Num: 3, Name: "_", Sex: tbase.SexFemale, Rate: 1500},
-	})
+	}})
 	this.Send()
-	this.Client.LogInfo(base.Self, "")
+	this.Client.LogInfo(client.LogInfo{})
 	this.Send()
 	this.wait() // Ok
 	//	this.wait() // Ready

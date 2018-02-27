@@ -126,20 +126,12 @@ func ParseJoinString(in string) (n, t int, rejoin bool, err error) {
 	return
 }
 
-func YakuString(y tbase.YakuResults) string {
-	tmp := make([]string, len(y))
-	for k, v := range y {
-		tmp[k] = fmt.Sprintf("%d,%d", tbase.ReverseYakuMap[v.Key], v.Value)
-	}
-	return strings.Join(tmp, ",")
+func YakuString(y tbase.Yakus) string {
+	return IntsString(y.Ints())
 }
 
 func YakumanString(y tbase.Yakumans) string {
-	tmp := make([]string, len(y))
-	for k, v := range y {
-		tmp[k] = strconv.Itoa(tbase.ReverseYakumanMap[v])
-	}
-	return strings.Join(tmp, ",")
+	return IntsString(y.Ints())
 }
 
 func FinalsString(ch tbase.ScoreChanges, floats bool) string {
