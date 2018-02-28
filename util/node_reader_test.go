@@ -1,22 +1,30 @@
 package util
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
+	"github.com/dnovikoff/tenhou/parser"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/dnovikoff/tenhou/parser"
 )
 
 type nodeReaderTester struct {
 	NodeReader
+	cancel func()
 }
 
-func (r *nodeReaderTester) mustError(t *testing.T) {
+func (r *nodeReaderTester) Stop() {
+	r.cancel()
+	r.Wait()
+}
+
+func (r *nodeReaderTester) mustError(t *testing.T) string {
 	_, err := r.Next()
 	require.Error(t, err)
+	return err.Error()
 }
 
 func (r *nodeReaderTester) mustNext(t *testing.T) *parser.Node {
@@ -27,29 +35,36 @@ func (r *nodeReaderTester) mustNext(t *testing.T) *parser.Node {
 }
 
 func newNRTester(messages ...string) *nodeReaderTester {
-	return &nodeReaderTester{
-		NodeReader{Read: func() (string, error) {
-			if len(messages) == 0 {
-				return "", fmt.Errorf("No more messages")
-			}
-			x := messages[0]
-			messages = messages[1:]
-			return x, nil
-		}}}
+	ctx, cancel := context.WithCancel(context.Background())
+	x := &nodeReaderTester{NodeReader{}, cancel}
+
+	x.Start(ctx, func(ctx context.Context) (string, error) {
+		if len(messages) == 0 {
+			return "", fmt.Errorf("No more messages")
+		}
+		x := messages[0]
+		messages = messages[1:]
+		return x, nil
+	})
+	return x
 }
 
 func TestNodeReaderEmpty(t *testing.T) {
-	newNRTester().mustError(t)
+	r := newNRTester()
+	defer r.Stop()
+	r.mustError(t)
 }
 
 func TestNodeReaderOne(t *testing.T) {
 	r := newNRTester("<A/>")
+	defer r.Stop()
 	assert.Equal(t, "A", r.mustNext(t).Name)
 	r.mustError(t)
 }
 
 func TestNodeReaderMany(t *testing.T) {
 	r := newNRTester("<A/><B/><C/>")
+	defer r.Stop()
 	assert.Equal(t, "A", r.mustNext(t).Name)
 	assert.Equal(t, "B", r.mustNext(t).Name)
 	assert.Equal(t, "C", r.mustNext(t).Name)
@@ -63,11 +78,28 @@ func TestNodeReaderMulti(t *testing.T) {
 		"",
 		"",
 		"<D/>")
+	defer r.Stop()
 	assert.Equal(t, "A", r.mustNext(t).Name)
 	assert.Equal(t, "B", r.mustNext(t).Name)
 	assert.Equal(t, "C", r.mustNext(t).Name)
 	assert.Equal(t, "D", r.mustNext(t).Name)
 	r.mustError(t)
+}
+
+func TestNodeReaderNotStarted(t *testing.T) {
+	r := NewNodeReader()
+	node, err := r.Next()
+	require.Error(t, err)
+	require.Equal(t, "NodeReader stopped", err.Error())
+	require.Nil(t, node)
+}
+
+func TestNodeReaderStopped(t *testing.T) {
+	r := newNRTester("<A/>")
+	assert.Equal(t, "A", r.mustNext(t).Name)
+	r.Stop()
+	require.Equal(t, "No more messages", r.mustError(t))
+	require.Equal(t, "NodeReader stopped", r.mustError(t))
 }
 
 func TestNodeReaderMultiError(t *testing.T) {
@@ -78,6 +110,7 @@ func TestNodeReaderMultiError(t *testing.T) {
 		"<<<<>>>>>garbage here",
 		"",
 		"<D/>")
+	defer r.Stop()
 	assert.Equal(t, "A", r.mustNext(t).Name)
 	assert.Equal(t, "B", r.mustNext(t).Name)
 	assert.Equal(t, "C", r.mustNext(t).Name)

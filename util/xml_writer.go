@@ -14,10 +14,11 @@ import (
 type XMLWriter struct {
 	buf       *bytes.Buffer
 	AddSpaces bool
+	Commit    func(string)
 }
 
 func NewXMLWriter() XMLWriter {
-	return XMLWriter{&bytes.Buffer{}, true}
+	return XMLWriter{&bytes.Buffer{}, true, nil}
 }
 
 func (this XMLWriter) Reset() {
@@ -39,6 +40,10 @@ func (this XMLWriter) Begin(tag string) XMLWriter {
 
 func (this XMLWriter) End() {
 	this.buf.WriteString("/>")
+	if this.Commit != nil {
+		this.Commit(this.String())
+		this.Reset()
+	}
 }
 
 func (this XMLWriter) AddTrailingSpace() XMLWriter {

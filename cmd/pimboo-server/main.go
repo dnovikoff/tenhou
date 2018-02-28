@@ -9,11 +9,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/dnovikoff/tenhou/client"
 	"github.com/dnovikoff/tenhou/cmd/pimboo-server/game"
 	"github.com/dnovikoff/tenhou/network"
-	"github.com/dnovikoff/tenhou/server"
-	"github.com/dnovikoff/tenhou/tbase"
 )
 
 var addrFlag = flag.String("addr", ":10080", "listen addr")
@@ -61,20 +58,7 @@ func handleImpl(sConn net.Conn) {
 		checkSuccess(err)
 		return
 	}
-	cb := &server.Callbacks{}
 	game := game.NewGame(con)
-	cb.CbHello = func(name string, tid string, sex tbase.Sex) {
-		game.Client.Hello(client.Hello{Name: name, Auth: "20180117-e7b5e83e"})
-		game.Send()
-	}
-	if !game.ProcessOne(cb) {
-		return
-	}
-	cb.CbHello = nil
-	cb.CbAuth = func(string) {}
-	if !game.ProcessOne(cb) {
-		return
-	}
 	game.Run()
 }
 

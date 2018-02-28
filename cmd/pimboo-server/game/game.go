@@ -55,7 +55,7 @@ type Game struct {
 	Human      *Player
 	Robot      *Player
 	Wall       tile.Instances
-	Client     client.XMLWriter
+	Client     client.Controller
 	Connection network.XMLConnection
 	rnd        *rand.Rand
 	Turn       bool
@@ -71,10 +71,8 @@ var indicators = tile.Instances{indicator}
 func NewGame(c network.XMLConnection) *Game {
 	src := rand.NewSource(time.Now().UTC().UnixNano())
 	rnd := rand.New(src)
-	w := client.NewXMLWriter()
 	this := &Game{
 		Connection: c,
-		Client:     w,
 		Dealer:     true,
 		Turn:       true,
 		Human:      NewPlayer(120000),
@@ -82,23 +80,24 @@ func NewGame(c network.XMLConnection) *Game {
 		rnd:        rnd,
 		Context:    context.Background(),
 	}
+	writer := client.NewXMLWriter()
+	writer.Commit = this.commit
+	this.Client = writer
 	this.logger = log.New(os.Stdout, "", log.LstdFlags)
-	this.reader = &util.NodeReader{}
+	this.reader = util.NewNodeReader()
 	return this
 }
 
-func (this *Game) ctx() context.Context {
-	c, _ := context.WithTimeout(this.Context, time.Second*30)
+func ctxTimeout(ctx context.Context) context.Context {
+	c, _ := context.WithTimeout(ctx, time.Second*30)
 	return c
 }
 
-func (this *Game) Send() {
-	data := this.Client.String()
+func (this *Game) commit(data string) {
 	if data == "" {
 		return
 	}
-	this.check(this.Connection.Write(this.ctx(), data))
-	this.Client.Reset()
+	this.check(this.Connection.Write(ctxTimeout(this.Context), data))
 }
 
 func (this *Game) GetHand() compact.Instances {
@@ -151,9 +150,6 @@ func (this *Game) diff(who bool, m score.Money) tbase.ScoreChanges {
 }
 
 func (this *Game) ProcessOne(cb *server.Callbacks) bool {
-	this.reader.Read = func() (string, error) {
-		return this.Connection.Read(this.ctx())
-	}
 	repeat := false
 	badRequest := false
 	cb.CbPing = func() {
@@ -247,7 +243,6 @@ func (this *Game) doAgari(
 		a.DoraIndicators, a.UraIndicators = indicators[:5], indicators[5:]
 	}
 	this.Client.Agari(a)
-	this.Send()
 	this.wait()
 }
 
@@ -370,7 +365,6 @@ func (this *Game) RobotTurn() (result bool) {
 		params := client.Take{}
 		params.Opponent = base.Front
 		this.Client.Take(params)
-		this.Send()
 	}
 	t := this.take()
 	p := this.Robot
@@ -392,12 +386,11 @@ func (this *Game) RobotTurn() (result bool) {
 	toDrop := p.Hand.GetMask(bestTile).First()
 	p.drop(toDrop)
 	params := client.Drop{}
-	params.Instance = t
+	params.Instance = toDrop
 	params.Suggest = client.SuggestRon
 	params.IsTsumogiri = (toDrop == t)
 	params.Opponent = base.Front
 	this.Client.Drop(params)
-	this.Send()
 	cb := &server.Callbacks{}
 	cb.CbCall = func(x server.Answer, t tile.Instances) {
 		switch x {
@@ -422,7 +415,6 @@ func (this *Game) HumanTurn() (result bool) {
 	params.Instance = t
 	params.Suggest = client.SuggestTsumo
 	this.Client.Take(params)
-	this.Send()
 	p := this.Human
 	p.take(t)
 
@@ -439,7 +431,6 @@ func (this *Game) HumanTurn() (result bool) {
 		params.Instance = t
 		params.IsTsumogiri = (i == t)
 		this.Client.Drop(params)
-		this.Send()
 		result = !this.tryWin(i, false, false)
 	}
 	cb.CbCall = func(x server.Answer, i tile.Instances) {
@@ -464,7 +455,6 @@ func (this *Game) HumanTurn() (result bool) {
 			params.Opponent = base.Self
 			params.Meld = tbase.NewTenhouMeld(m.Meld())
 			this.Client.Declare(params)
-			this.Send()
 			extraTurn = true
 		case server.AnswerSkip:
 			result = true
@@ -502,7 +492,6 @@ func (this *Game) MakeDraw() {
 		DrawType: tbase.DrawEnd,
 	}
 	this.Client.Ryuukyoku(rk)
-	this.Send()
 	this.wait()
 }
 
@@ -520,21 +509,47 @@ func (this *Game) MakeTurn() (x bool) {
 	return
 }
 
+func (this *Game) auth() bool {
+	cb := &server.Callbacks{}
+	cb.CbHello = func(name string, tid string, sex tbase.Sex) {
+		this.Client.Hello(client.Hello{Name: name, Auth: "20180117-e7b5e83e"})
+	}
+	if !this.ProcessOne(cb) {
+		return false
+	}
+	cb.CbHello = nil
+	cb.CbAuth = func(string) {}
+	if !this.ProcessOne(cb) {
+		return false
+	}
+	return true
+}
+
 func (this *Game) Run() {
+	ctx, stop := context.WithCancel(this.Context)
+	this.reader.Start(ctx, func(ctx context.Context) (string, error) {
+		ctx = ctxTimeout(ctx)
+		return this.Connection.Read(ctx)
+	})
+	defer func() {
+		stop()
+		this.reader.Wait()
+		this.Connection.Close()
+	}()
+	if !this.auth() {
+		return
+	}
 	this.wait()
 	params := client.Go{}
 	params.LobbyType = 11
 	this.Client.Go(params)
-	this.Send()
 	this.Client.UserList(client.UserList{tbase.UserList{
 		tbase.User{Num: 0, Name: "Player", Sex: tbase.SexMale, Rate: 1500},
 		tbase.User{Num: 1, Name: "_", Sex: tbase.SexFemale, Rate: 1500},
 		tbase.User{Num: 2, Name: "Robot", Sex: tbase.SexComputer, Rate: 1500},
 		tbase.User{Num: 3, Name: "_", Sex: tbase.SexFemale, Rate: 1500},
 	}})
-	this.Send()
 	this.Client.LogInfo(client.LogInfo{})
-	this.Send()
 	this.wait() // Ok
 	//	this.wait() // Ready
 	rnd := 0
@@ -544,7 +559,6 @@ func (this *Game) Run() {
 		this.Dealer = !this.Dealer
 	}
 	this.wait()
-	this.Connection.Close()
 }
 
 func (this *Game) RunOne(rnd int, startTile tile.Tile) bool {
@@ -566,7 +580,6 @@ func (this *Game) RunOne(rnd int, startTile tile.Tile) bool {
 		},
 		Hand: this.Human.Hand.Instances(),
 	})
-	this.Send()
 
 	for this.MakeTurn() {
 		if this.err != nil {
