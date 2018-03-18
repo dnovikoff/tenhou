@@ -14,9 +14,8 @@ type readResult struct {
 }
 
 type NodeReader struct {
-	resultCh chan readResult
-
-	wg sync.WaitGroup
+	resultCh     chan readResult
+	ReadCallback func(context.Context) (string, error)
 }
 
 func NewNodeReader() *NodeReader {
@@ -27,15 +26,14 @@ func NewNodeReader() *NodeReader {
 
 }
 
-func (this *NodeReader) run(ctx context.Context, readF func(context.Context) (string, error)) {
+func (this *NodeReader) run(ctx context.Context) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer func() {
 		cancel()
-		this.wg.Done()
 		close(this.resultCh)
 	}()
 	for {
-		message, err := readF(ctx)
+		message, err := this.ReadCallback(ctx)
 		if err != nil {
 			this.resultCh <- readResult{err: err}
 			return
@@ -56,15 +54,15 @@ func (this *NodeReader) run(ctx context.Context, readF func(context.Context) (st
 	}
 }
 
-func (this *NodeReader) Wait() {
-	this.wg.Wait()
-}
-
-func (this *NodeReader) Start(ctx context.Context, read func(context.Context) (string, error)) {
+func (this *NodeReader) Start(ctx context.Context) func() {
 	this.resultCh = make(chan readResult, 1024)
-
-	this.wg.Add(1)
-	go this.run(ctx, read)
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		this.run(ctx)
+		wg.Done()
+	}()
+	return wg.Wait
 }
 
 func (this *NodeReader) Next() (node *parser.Node, err error) {

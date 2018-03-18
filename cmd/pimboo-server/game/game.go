@@ -527,13 +527,14 @@ func (this *Game) auth() bool {
 
 func (this *Game) Run() {
 	ctx, stop := context.WithCancel(this.Context)
-	this.reader.Start(ctx, func(ctx context.Context) (string, error) {
+	this.reader.ReadCallback = func(ctx context.Context) (string, error) {
 		ctx = ctxTimeout(ctx)
 		return this.Connection.Read(ctx)
-	})
+	}
+	waitForExit := this.reader.Start(ctx)
 	defer func() {
 		stop()
-		this.reader.Wait()
+		waitForExit()
 		this.Connection.Close()
 	}()
 	if !this.auth() {
