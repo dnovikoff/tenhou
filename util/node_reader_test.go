@@ -5,20 +5,21 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/dnovikoff/tenhou/parser"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/dnovikoff/tenhou/parser"
 )
 
 type nodeReaderTester struct {
 	NodeReader
 	cancel func()
+	wait   func()
 }
 
 func (r *nodeReaderTester) Stop() {
 	r.cancel()
-	r.Wait()
+	r.wait()
 }
 
 func (r *nodeReaderTester) mustError(t *testing.T) string {
@@ -36,16 +37,16 @@ func (r *nodeReaderTester) mustNext(t *testing.T) *parser.Node {
 
 func newNRTester(messages ...string) *nodeReaderTester {
 	ctx, cancel := context.WithCancel(context.Background())
-	x := &nodeReaderTester{NodeReader{}, cancel}
-
-	x.Start(ctx, func(ctx context.Context) (string, error) {
+	x := &nodeReaderTester{NodeReader{}, cancel, nil}
+	x.ReadCallback = func(ctx context.Context) (string, error) {
 		if len(messages) == 0 {
 			return "", fmt.Errorf("No more messages")
 		}
 		x := messages[0]
 		messages = messages[1:]
 		return x, nil
-	})
+	}
+	x.wait = x.Start(ctx)
 	return x
 }
 
