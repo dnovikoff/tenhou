@@ -70,7 +70,7 @@ func (this XMLWriter) WriteIntArg(key string, value int) XMLWriter {
 }
 
 func (this XMLWriter) WriteInstance(key string, value tile.Instance) XMLWriter {
-	return this.WriteIntArg(key, int(value))
+	return this.WriteIntArg(key, InstanceToTenhou(value))
 }
 
 func (this XMLWriter) WriteOpponent(key string, d base.Opponent) XMLWriter {

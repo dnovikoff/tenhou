@@ -29,7 +29,12 @@ func loadTestXml(t require.TestingT, data []byte) parser.Nodes {
 }
 
 func TestAkasValidate(t *testing.T) {
-	assert.Equal(t, []tile.Instance{tile.Instance(16), tile.Instance(52), tile.Instance(88)}, yaku.RulesTenhouRed.AkaDoras)
+	assert.Equal(t,
+		[]tile.Instance{
+			tile.Man5.Instance(0),
+			tile.Pin5.Instance(0),
+			tile.Sou5.Instance(0),
+		}, yaku.RulesTenhouRed.AkaDoras)
 }
 
 func processXMLFiles(t *testing.T, f func(t *testing.T, data string, nodes parser.Nodes)) {
@@ -85,9 +90,22 @@ func TestLogReadAndWrite(t *testing.T) {
 					break
 				}
 			}
+			start2 := start - 80
+			if start2 < 0 {
+				start2 = 0
+			}
 
 			ioutil.WriteFile("cmp.txt", []byte(strings.Join(
-				[]string{expected, actual, expected[start:], actual[start:]},
+				[]string{
+					expected,
+					actual,
+					"",
+					expected[start:],
+					actual[start:],
+					"",
+					expected[start2:],
+					actual[start2:],
+				},
 				"\n",
 			)), 0644)
 

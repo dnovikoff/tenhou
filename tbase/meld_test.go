@@ -2,6 +2,7 @@ package tbase
 
 import (
 	"fmt"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,9 +16,9 @@ import (
 func TestMeldChi(t *testing.T) {
 	instance := tile.Instance(57)
 	require.Equal(t, 1, Meld(37199).Extract(13, 14))
-	assert.Equal(t, "6p", instance.StringOrNull())
+	assert.Equal(t, "6p", instance.Tile().String())
 	assert.Equal(t, "1001000101001111", fmt.Sprintf("%b", 37199))
-	fmt.Printf(NewCoreMeld(37199).Instances().String())
+	t.Log(NewCoreMeld(37199).Instances().String())
 	assert.EqualValues(t, meld.NewSeq(tile.Pin6, meld.OpenCopy(1), 2, 2), NewCoreMeld(37199))
 }
 
@@ -35,15 +36,15 @@ func TestMelds(t *testing.T) {
 	m := func(x int) meld.Meld {
 		return NewCoreMeld(Meld(x))
 	}
-	assert.EqualValues(t, meld.NewPonOpened(tile.North, 2, 1, base.Right), m(46633))
-	assert.EqualValues(t, meld.NewPonOpened(tile.White, 0, 2, base.Front), m(47690))
-	assert.EqualValues(t, meld.NewPonOpened(tile.Green, 2, 1, base.Right), m(49705))
-	assert.EqualValues(t, meld.NewKanUpgraded(tile.White, 0, 1, base.Front), m(47666))
-	assert.EqualValues(t, meld.NewKanOpened(tile.Man2, 2, base.Left), m(1539))
-	assert.EqualValues(t, meld.NewKanOpened(tile.East, 1, base.Front), m(27906))
-	assert.EqualValues(t, meld.NewKanOpened(tile.Pin1, 0, base.Right), m(9217))
+	assert.EqualValues(t, meld.NewPonOpened(tile.North.Instance(2), 1, base.Right), m(46633))
+	assert.EqualValues(t, meld.NewPonOpened(tile.White.Instance(0), 2, base.Front), m(47690))
+	assert.EqualValues(t, meld.NewPonOpened(tile.Green.Instance(2), 1, base.Right), m(49705))
+	assert.EqualValues(t, meld.NewKanUpgraded(tile.White.Instance(0), 1, base.Front), m(47666))
+	assert.EqualValues(t, meld.NewKanOpened(tile.Man2.Instance(2), base.Left), m(1539))
+	assert.EqualValues(t, meld.NewKanOpened(tile.East.Instance(1), base.Front), m(27906))
+	assert.EqualValues(t, meld.NewKanOpened(tile.Pin1.Instance(0), base.Right), m(9217))
 
-	assert.EqualValues(t, meld.NewPonOpened(tile.Sou4, 3, 2, base.Front), m(33354))
+	assert.EqualValues(t, meld.NewPonOpened(tile.Sou4.Instance(3), 2, base.Front), m(33354))
 }
 
 func TestMeldsReconvert(t *testing.T) {
@@ -56,15 +57,19 @@ func TestMeldsReconvert(t *testing.T) {
 	reconvert := func(x Meld) Meld {
 		return c2t(t2c(x))
 	}
-
-	// chi [6]78p
-	assert.EqualValues(t, 37199, reconvert(37199))
-	assert.EqualValues(t, 33354, reconvert(33354))
-
-	// Closed green kan with copyId = 1
-	assert.EqualValues(t, 33024, reconvert(33024))
-	// Closed green kan with copyId = 0
-	assert.EqualValues(t, 32768, reconvert(32768))
+	for _, v := range []Meld{
+		// chi [6]78p
+		37199,
+		33354,
+		// Closed green kan with copyId = 1
+		33024,
+		// Closed green kan with copyId = 0
+		32768,
+	} {
+		t.Run(strconv.Itoa(int(v)), func(t *testing.T) {
+			assert.Equal(t, v, reconvert(v))
+		})
+	}
 }
 
 func TestMeldsReconvert2(t *testing.T) {
@@ -81,12 +86,12 @@ func TestMeldsReconvert2(t *testing.T) {
 		return x == x2
 	}
 
-	assert.True(t, tst(meld.NewPonOpened(tile.North, 2, 1, base.Right)))
-	assert.True(t, tst(meld.NewPonOpened(tile.White, 0, 2, base.Front)))
-	assert.True(t, tst(meld.NewPonOpened(tile.Green, 2, 1, base.Right)))
-	assert.True(t, tst(meld.NewKanUpgraded(tile.White, 0, 1, base.Front)))
-	assert.True(t, tst(meld.NewKanOpened(tile.Man2, 2, base.Left)))
-	assert.True(t, tst(meld.NewKanOpened(tile.East, 1, base.Front)))
-	assert.True(t, tst(meld.NewKanOpened(tile.Pin1, 0, base.Right)))
-	assert.True(t, tst(meld.NewPonOpened(tile.Sou4, 3, 2, base.Front)))
+	assert.True(t, tst(meld.NewPonOpened(tile.North.Instance(2), 1, base.Right)))
+	assert.True(t, tst(meld.NewPonOpened(tile.White.Instance(0), 2, base.Front)))
+	assert.True(t, tst(meld.NewPonOpened(tile.Green.Instance(2), 1, base.Right)))
+	assert.True(t, tst(meld.NewKanUpgraded(tile.White.Instance(0), 1, base.Front)))
+	assert.True(t, tst(meld.NewKanOpened(tile.Man2.Instance(2), base.Left)))
+	assert.True(t, tst(meld.NewKanOpened(tile.East.Instance(1), base.Front)))
+	assert.True(t, tst(meld.NewKanOpened(tile.Pin1.Instance(0), base.Right)))
+	assert.True(t, tst(meld.NewPonOpened(tile.Sou4.Instance(3), 2, base.Front)))
 }

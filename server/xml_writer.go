@@ -68,10 +68,11 @@ func (w XMLWriter) Call(t Answer, tiles tile.Instances) {
 	w.Begin("N")
 	w.Write(` type="%d"`, t)
 	if len(tiles) == 1 {
-		w.Write(` hai="%d" `, tiles[0])
+
+		w.Write(` hai="%d" `, util.InstanceToTenhou(tiles[0]))
 	} else {
 		for k, v := range tiles {
-			w.Write(` hai%d="%d"`, k, v)
+			w.Write(` hai%d="%d"`, k, util.InstanceToTenhou(v))
 		}
 		w.AddTrailingSpace()
 	}
@@ -79,7 +80,10 @@ func (w XMLWriter) Call(t Answer, tiles tile.Instances) {
 }
 
 func (w XMLWriter) Reach(t tile.Instance) {
-	w.WriteBody(`REACH hai="%d" `, t)
+	w.Begin("REACH").
+		WriteInstance("hai", t).
+		AddTrailingSpace().
+		End()
 }
 
 func (w XMLWriter) Ping() {

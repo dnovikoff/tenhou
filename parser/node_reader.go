@@ -1,15 +1,13 @@
-package util
+package parser
 
 import (
 	"context"
 	"errors"
 	"sync"
-
-	"github.com/dnovikoff/tenhou/parser"
 )
 
 type readResult struct {
-	node parser.Node
+	node Node
 	err  error
 }
 
@@ -65,7 +63,7 @@ func (this *NodeReader) Start(ctx context.Context) func() {
 	return wg.Wait
 }
 
-func (this *NodeReader) Next() (node *parser.Node, err error) {
+func (this *NodeReader) Next() (node *Node, err error) {
 	r, ok := <-this.resultCh
 	if !ok {
 		err = errors.New("NodeReader stopped")

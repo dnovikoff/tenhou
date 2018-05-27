@@ -14,7 +14,7 @@ import (
 )
 
 func ProcessXMLMessage(message string, c Controller) (err error) {
-	nodes, err := util.ParseXML(message)
+	nodes, err := parser.ParseXML(message)
 	if err != nil {
 		return
 	}
@@ -144,7 +144,8 @@ func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 		c.Agari(*result)
 	case "DORA":
 		c.Indicator(WithInstance{
-			tile.Instance(node.Int("hai"))})
+			node.GetInstance("hai"),
+		})
 	case "PROF":
 		c.EndButton(EndButton{
 			WithLobby: GetWithLobby(node),
@@ -197,7 +198,7 @@ func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 			ch})
 	default:
 		_, o, t := parseLetterNode(node.Name, 'D')
-		if !t.IsNull() {
+		if t != tile.InstanceNull {
 			c.Drop(Drop{
 				WithOpponent{o},
 				WithInstance{t},
@@ -207,7 +208,7 @@ func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 			return
 		}
 		_, o, t = parseLetterNode(node.Name, 'd')
-		if !t.IsNull() {
+		if t != tile.InstanceNull {
 			c.Drop(Drop{
 				WithOpponent{o},
 				WithInstance{t},
@@ -318,6 +319,6 @@ func parseLetterNode(in string, first byte) (ok bool, o base.Opponent, t tile.In
 		return
 	}
 	ok = true
-	t = tile.Instance(num)
+	t = util.InstanceFromTenhou(num)
 	return
 }

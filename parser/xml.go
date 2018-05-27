@@ -16,7 +16,7 @@ type Root struct {
 }
 
 func (node *Node) GetInit() (x tbase.Init, err error) {
-	x.Seed, err = tbase.ParseSeed(node.String("seed"))
+	x.Seed, err = ParseSeed(node.String("seed"))
 	if err != nil {
 		return
 	}

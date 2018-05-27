@@ -73,7 +73,7 @@ func TestSMessageReach(t *testing.T) {
 
 func TestSDeclare(t *testing.T) {
 	c := NewXMLWriter()
-	x := meld.NewPonOpened(tile.Sou4, 3, 2, base.Front).Meld()
+	x := meld.NewPonOpened(tile.Sou4.Instance(3), 2, base.Front).Meld()
 	params := Declare{}
 	params.Opponent = base.Self
 	params.Meld = tbase.NewTenhouMeld(x)

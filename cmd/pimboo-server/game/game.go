@@ -21,7 +21,6 @@ import (
 	"github.com/dnovikoff/tenhou/parser"
 	"github.com/dnovikoff/tenhou/server"
 	"github.com/dnovikoff/tenhou/tbase"
-	"github.com/dnovikoff/tenhou/util"
 )
 
 type Player struct {
@@ -60,7 +59,7 @@ type Game struct {
 	rnd        *rand.Rand
 	Turn       bool
 	Rinshan    bool
-	reader     *util.NodeReader
+	reader     *parser.NodeReader
 	err        error
 	logger     *log.Logger
 }
@@ -84,7 +83,7 @@ func NewGame(c network.XMLConnection) *Game {
 	writer.Commit = this.commit
 	this.Client = writer
 	this.logger = log.New(os.Stdout, "", log.LstdFlags)
-	this.reader = util.NewNodeReader()
+	this.reader = parser.NewNodeReader()
 	return this
 }
 
@@ -445,7 +444,7 @@ func (this *Game) HumanTurn() (result bool) {
 				cb.Default()
 				return
 			}
-			m := meld.NewKan(first.Tile(), first.CopyId())
+			m := meld.NewKan(first)
 			p.first = false
 			this.Robot.first = false
 			this.Rinshan = true
