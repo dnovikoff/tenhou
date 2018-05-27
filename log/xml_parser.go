@@ -10,6 +10,7 @@ import (
 	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tenhou/client"
 	"github.com/dnovikoff/tenhou/parser"
+	"github.com/dnovikoff/tenhou/util"
 )
 
 func ProcessXMLNodes(nodes parser.Nodes, c Controller) (err error) {
@@ -84,7 +85,7 @@ func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 		c.Disconnect(params)
 	case "DORA":
 		i := node.GetInstance("hai")
-		if i.IsNull() {
+		if i == tile.InstanceNull {
 			return stackerr.Newf("Unexpected hai value")
 		}
 		c.Indicator(client.WithInstance{i})
@@ -111,7 +112,7 @@ func tryDefault(in *parser.Node, c Controller) bool {
 		return false
 	}
 	params := WithOpponentAndInstance{}
-	params.Instance = tile.Instance(x)
+	params.Instance = util.InstanceFromTenhou(x)
 	if first >= 'T' && first <= 'W' {
 		params.Opponent = base.Opponent(first - 'T')
 		c.Draw(params)

@@ -1,4 +1,4 @@
-package util
+package parser
 
 import (
 	"context"
@@ -7,8 +7,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/dnovikoff/tenhou/parser"
 )
 
 type nodeReaderTester struct {
@@ -28,7 +26,7 @@ func (r *nodeReaderTester) mustError(t *testing.T) string {
 	return err.Error()
 }
 
-func (r *nodeReaderTester) mustNext(t *testing.T) *parser.Node {
+func (r *nodeReaderTester) mustNext(t *testing.T) *Node {
 	n, err := r.Next()
 	require.NoError(t, err)
 	require.NotNil(t, n)

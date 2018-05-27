@@ -49,7 +49,13 @@ func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Co
 	totalExpected := agari.Changes[agari.Who].Diff
 
 	if yaku == nil {
-		addError("Expected win for hand %v + [%v] + %v with Score: %v. Round %v", agari.Hand, agari.Melds, agari.WinTile.StringOrNull(), totalExpected, ctx.RoundWind)
+		addError("Expected win for hand %v + [%v] + %v with Score: %v. Round %v",
+			agari.Hand,
+			agari.Melds,
+			agari.WinTile.Tile().String(),
+			totalExpected,
+			ctx.RoundWind,
+		)
 		return
 	}
 	var scoreFinal score.Score

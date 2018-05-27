@@ -61,16 +61,20 @@ func (this Meld) Instance(f, l int) tile.Instance {
 	return tile.Instance(this.Extract(f, l))
 }
 
+func getBase(base int) tile.Instance {
+	t := tile.Tile(base/4) + tile.Begin
+	copyId := tile.CopyId(base % 4)
+	return t.Instance(copyId)
+}
+
 func newCoreMeldKan(in Meld) meld.Meld {
 	base := in.Extract(0, 8)
-	t := tile.Tile(base / 4)
-	copyId := tile.CopyId(base % 4)
-	kan := meld.NewKan(t, copyId)
+	t := getBase(base)
+	kan := meld.NewKan(t)
 	if in.Who() == 0 {
 		return kan.Meld()
 	}
-	called := tile.CopyId(base % 4)
-	return meld.NewKanOpened(t, called, in.Who()).Meld()
+	return meld.NewKanOpened(t, in.Who()).Meld()
 }
 
 func newCoreMeldPon(in Meld) meld.Meld {
@@ -78,16 +82,17 @@ func newCoreMeldPon(in Meld) meld.Meld {
 	notInPonIdx := tile.CopyId(in.Extract(9, 11))
 
 	baseAndCalled := in.Extract(0, 7)
-	t := tile.Tile(baseAndCalled / 3)
+	t := tile.Tile(baseAndCalled/3) + tile.Begin
 	calledIndex := tile.CopyId(baseAndCalled % 3)
 	if calledIndex >= notInPonIdx {
 		calledIndex++
 	}
 
+	i := t.Instance(calledIndex)
 	if isUpgraded {
-		return meld.NewKanUpgraded(t, calledIndex, notInPonIdx, in.Who()).Meld()
+		return meld.NewKanUpgraded(i, notInPonIdx, in.Who()).Meld()
 	}
-	return meld.NewPonOpened(t, calledIndex, notInPonIdx, in.Who()).Meld()
+	return meld.NewPonOpened(i, notInPonIdx, in.Who()).Meld()
 }
 
 func newCoreMeldChi(in Meld) meld.Meld {
@@ -121,7 +126,7 @@ func newCoreMeldChi(in Meld) meld.Meld {
 
 func newTenhouSeqMeld(in meld.Seq) Meld {
 	calledIndex := in.OpenedIndex() - 1
-	base := in.Base()
+	base := in.Base() - tile.Begin
 	tiles := in.Instances()
 
 	m := Meld(int((base/9)*7+base%9)*3 + calledIndex)
@@ -139,7 +144,7 @@ func newTenhouSameMeld(in meld.Same) Meld {
 	if cp > in.NotInPonCopy() {
 		cp--
 	}
-	m := Meld(in.Base())*3 + Meld(cp)
+	m := Meld(in.Base()-tile.Begin)*3 + Meld(cp)
 	m = (m << 2)
 	m = (m << 2) | Meld(in.NotInPonCopy())
 	m = (m << 1)
@@ -156,7 +161,7 @@ func newTenhouSameMeld(in meld.Same) Meld {
 }
 
 func newTenhouKanMeld(in meld.Same) Meld {
-	m := Meld(in.Base())*4 + Meld(in.OpenedCopy())
+	m := Meld(in.Base()-tile.Begin)*4 + Meld(in.OpenedCopy())
 	m = (m << 6)
 	m = (m << 2) | Meld(in.Opponent())
 	return m

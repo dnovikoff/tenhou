@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/dnovikoff/tenhou/client"
+	"github.com/dnovikoff/tenhou/parser"
 	"github.com/dnovikoff/tenhou/tbase"
 	"github.com/dnovikoff/tenhou/util"
 )
@@ -53,7 +54,7 @@ func (this XMLWriter) Start(params client.WithDealer) {
 
 func (this XMLWriter) Init(params Init) {
 	this.Begin("INIT").
-		WriteArg("seed", params.Seed.String()).
+		WriteArg("seed", parser.SeedString(&params.Seed)).
 		WriteArg("ten", util.ScoreString(params.Scores)).
 		WriteDealer(params.Dealer)
 	for k, v := range params.Hands {

@@ -3,8 +3,6 @@ package parser
 import (
 	"fmt"
 
-	"github.com/facebookgo/stackerr"
-
 	"github.com/dnovikoff/tempai-core/score"
 	"github.com/dnovikoff/tempai-core/yaku"
 	"github.com/dnovikoff/tenhou/tbase"
@@ -36,12 +34,7 @@ func ParseAgari(node *Node) (result *tbase.Agari, err error) {
 	agari.DoraIndicators = node.GetHai("doraHai")
 	agari.UraIndicators = node.GetHai("doraHaiUra")
 
-	machi := node.GetHai("machi")
-	if len(machi) != 1 {
-		err = stackerr.Newf("Expected machi have length of 1, but %v found", len(machi))
-		return
-	}
-	agari.WinTile = machi[0]
+	agari.WinTile = node.GetInstance("machi")
 	agari.FinalScores = node.GetFinalScores()
 
 	agari.Yakumans = tbase.YakumansFromInts(node.IntList("yakuman"))

@@ -7,6 +7,7 @@ import (
 
 	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/tile"
+	"github.com/dnovikoff/tenhou/parser"
 	"github.com/dnovikoff/tenhou/tbase"
 	"github.com/dnovikoff/tenhou/util"
 )
@@ -23,29 +24,31 @@ func NewXMLWriter() XMLWriter {
 
 func (this XMLWriter) Drop(params Drop) {
 	letter := 'D'
+	i := util.InstanceToTenhou(params.Instance)
 	if params.IsTsumogiri {
 		letter = 'd'
 	}
 	letter += rune(params.Opponent)
 	if params.Suggest > 0 {
-		this.WriteBody(`%s%d t="%d"`, string(letter), params.Instance, params.Suggest)
+		this.WriteBody(`%s%d t="%d"`, string(letter), i, params.Suggest)
 		return
 	}
-	this.WriteBody("%s%d", string(letter), params.Instance)
+	this.WriteBody("%s%d", string(letter), i)
 }
 
 func (this XMLWriter) WriteTake(o base.Opponent, t tile.Instance, suggest Suggest, hideOthers bool) {
 	letter := 'T'
 	letter += rune(o)
+	i := util.InstanceToTenhou(t)
 	if hideOthers && o != base.Self {
 		this.WriteBody(string(letter))
 		return
 	}
 	if suggest > 0 {
-		this.WriteBody(`%s%d t="%d"`, string(letter), t, suggest)
+		this.WriteBody(`%s%d t="%d"`, string(letter), i, suggest)
 		return
 	}
-	this.WriteBody("%s%d", string(letter), t)
+	this.WriteBody("%s%d", string(letter), i)
 }
 
 func (this XMLWriter) Take(params Take) {
@@ -78,7 +81,7 @@ func (this XMLWriter) Declare(params Declare) {
 }
 
 func (w XMLWriter) writeInit(in Init) {
-	w.WriteArg("seed", in.Seed.String()).
+	w.WriteArg("seed", parser.SeedString(&in.Seed)).
 		WriteArg("ten", util.ScoreString(in.Scores))
 	if in.Chip != nil {
 		w.WriteArg("chip", util.IntsString(in.Chip))
@@ -221,7 +224,7 @@ func (w XMLWriter) WriteAgari(a *tbase.Agari, floatFormat bool) {
 	if len(a.Melds) > 0 {
 		w.WriteArg("m", util.MeldString(a.Melds))
 	}
-	w.WriteIntArg("machi", int(a.WinTile))
+	w.WriteInstance("machi", a.WinTile)
 	w.WriteFmtArg("ten", "%d,%d,%d", a.Score.Fu, a.Score.Total, a.Score.Riichi)
 	if len(a.Yakus) > 0 {
 		w.WriteArg("yaku", util.YakuString(a.Yakus))

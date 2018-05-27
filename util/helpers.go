@@ -1,7 +1,6 @@
 package util
 
 import (
-	"encoding/xml"
 	"fmt"
 	"strconv"
 	"strings"
@@ -10,7 +9,6 @@ import (
 
 	"github.com/dnovikoff/tempai-core/score"
 	"github.com/dnovikoff/tempai-core/tile"
-	"github.com/dnovikoff/tenhou/parser"
 	"github.com/dnovikoff/tenhou/tbase"
 )
 
@@ -53,7 +51,7 @@ func Escape(s string) string {
 func InstanceString(in tile.Instances) string {
 	tmp := make([]string, len(in))
 	for k, v := range in {
-		tmp[k] = strconv.Itoa(int(v))
+		tmp[k] = strconv.Itoa(InstanceToTenhou(v))
 	}
 	return strings.Join(tmp, ",")
 }
@@ -80,22 +78,6 @@ func IntsString(in []int) string {
 		tmp[k] = strconv.Itoa(v)
 	}
 	return strings.Join(tmp, ",")
-}
-
-func ParseXML(input string) (ret parser.Nodes, err error) {
-	// Dirty hack
-	input = "<mjloggm>" + input + "</mjloggm>"
-	d := xml.NewDecoder(strings.NewReader(input))
-	d.Strict = false
-	var root parser.Root
-	err = stackerr.Wrap(d.Decode(&root))
-	for k, v := range root.Nodes {
-		if len(v.Attributes) == 0 {
-			root.Nodes[k].Attributes = nil
-		}
-	}
-	ret = root.Nodes
-	return
 }
 
 func ParseJoinString(in string) (n, t int, rejoin bool, err error) {
@@ -146,4 +128,12 @@ func FinalsString(ch tbase.ScoreChanges, floats bool) string {
 
 	}
 	return strings.Join(tmp, ",")
+}
+
+func InstanceToTenhou(i tile.Instance) int {
+	return int(i - tile.InstanceBegin)
+}
+
+func InstanceFromTenhou(i int) tile.Instance {
+	return tile.Instance(i) + tile.InstanceBegin
 }

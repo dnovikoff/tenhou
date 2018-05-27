@@ -12,7 +12,7 @@ import (
 )
 
 func ProcessXMLMessage(message string, c Controller) (err error) {
-	nodes, err := util.ParseXML(message)
+	nodes, err := parser.ParseXML(message)
 	if err != nil {
 		return
 	}
@@ -62,7 +62,7 @@ func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 		}
 		c.Call(Answer(node.Int("type")), tiles)
 	case "REACH":
-		c.Reach(tile.Instance(node.Int("hai")))
+		c.Reach(node.GetInstance("hai"))
 	case "Z":
 		c.Ping()
 	case "GOK":

@@ -10,6 +10,7 @@ import (
 	"github.com/dnovikoff/tempai-core/score"
 	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tenhou/tbase"
+	"github.com/dnovikoff/tenhou/util"
 )
 
 func (this *Node) GetOpponent(key string) base.Opponent {
@@ -186,7 +187,7 @@ func (this *Node) GetInstance(name string) tile.Instance {
 	if !this.Check(name) {
 		return tile.InstanceNull
 	}
-	return tile.Instance(this.Int(name))
+	return util.InstanceFromTenhou(this.Int(name))
 }
 
 func (this *Node) GetHai(name string) tile.Instances {
@@ -196,7 +197,7 @@ func (this *Node) GetHai(name string) tile.Instances {
 	}
 	ret := make(tile.Instances, len(ints))
 	for k, v := range ints {
-		ret[k] = tile.Instance(v)
+		ret[k] = util.InstanceFromTenhou(v)
 	}
 	return ret
 }
