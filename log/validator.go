@@ -17,7 +17,7 @@ import (
 )
 
 func NewValidator(err *error) *AgariExtractor {
-	return NewAgariExtractor(func(info *Info, agari *tbase.Agari, ctx *yaku.Context, w base.Wind, scoring *score.Rules) {
+	return NewAgariExtractor(func(info *Info, agari *tbase.Agari, ctx *yaku.Context, w base.Wind, scoring score.Rules) {
 		ValidateAgari(err, info, agari, ctx, w, scoring)
 	})
 }
@@ -36,7 +36,7 @@ type AgariReport struct {
 	Yakuman        tbase.Yakumans `json:"yakuman,omitempty"`
 }
 
-func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Context, w base.Wind, scoring *score.Rules) {
+func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Context, w base.Wind, scoring score.Rules) {
 	comp := compact.NewInstances().Add(agari.Hand)
 	comp.Remove(agari.WinTile)
 	t := tempai.Calculate(comp, agari.Melds.Convert()).Index()
@@ -61,11 +61,11 @@ func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Co
 	var scoreFinal score.Score
 	var baseScore score.Score
 	if len(agari.Yakumans) == 0 {
-		scoreFinal = scoring.GetScore(yaku.Sum(), yaku.Fus.Sum(), agari.Status.Honba)
-		baseScore = scoring.GetScore(yaku.Sum(), yaku.Fus.Sum(), 0)
+		scoreFinal = score.GetScore(scoring, yaku.Sum(), yaku.Fus.Sum(), agari.Status.Honba)
+		baseScore = score.GetScore(scoring, yaku.Sum(), yaku.Fus.Sum(), 0)
 	} else {
-		scoreFinal = scoring.GetYakumanScore(len(agari.Yakumans), agari.Status.Honba)
-		baseScore = scoring.GetYakumanScore(len(agari.Yakumans), 0)
+		scoreFinal = score.GetYakumanScore(scoring, len(agari.Yakumans), agari.Status.Honba)
+		baseScore = score.GetYakumanScore(scoring, len(agari.Yakumans), 0)
 	}
 	changes := scoreFinal.GetChanges(ctx.SelfWind, w, agari.Status.Sticks)
 	total := changes.TotalWin()

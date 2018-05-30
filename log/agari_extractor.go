@@ -20,13 +20,20 @@ type AgariExtractor struct {
 	Defected  bool
 	KanFlag   bool
 
-	Callback func(*Info, *tbase.Agari, *yaku.Context, base.Wind, *score.Rules)
+	scoringRules score.Rules
+	yakuRules    yaku.Rules
+
+	Callback func(*Info, *tbase.Agari, *yaku.Context, base.Wind, score.Rules)
 }
 
 var _ Controller = &AgariExtractor{}
 
-func NewAgariExtractor(x func(*Info, *tbase.Agari, *yaku.Context, base.Wind, *score.Rules)) *AgariExtractor {
-	return &AgariExtractor{Callback: x}
+func NewAgariExtractor(x func(*Info, *tbase.Agari, *yaku.Context, base.Wind, score.Rules)) *AgariExtractor {
+	return &AgariExtractor{
+		Callback:     x,
+		scoringRules: score.RulesTenhou(),
+		yakuRules:    yaku.RulesTenhouRed(),
+	}
 }
 
 func (this *AgariExtractor) Open(info Info) bool {
@@ -83,13 +90,13 @@ func (this *AgariExtractor) Agari(agari tbase.Agari) {
 	ctx.SelfWind = base.WindEast.Advance(int(agari.Who - this.Dealer))
 	otherWind := base.WindEast.Advance(int(agari.From - this.Dealer))
 	ctx.IsTsumo = ctx.SelfWind == otherWind
-	ctx.Rules = &yaku.RulesTenhouRed
+	ctx.Rules = this.yakuRules
 	ctx.IsChankan = (this.KanFlag && ctx.IsRon()) || yakus.CheckCore(yaku.YakuChankan)
 	ctx.IsRinshan = (this.KanFlag && ctx.IsTsumo) || yakus.CheckCore(yaku.YakuRinshan)
 	if this.DoubleRon {
 		agari.Status.Sticks = 0
 		agari.Status.Honba = 0
 	}
-	this.Callback(this.Info, &agari, ctx, otherWind, &score.RulesTenhou)
+	this.Callback(this.Info, &agari, ctx, otherWind, this.scoringRules)
 	this.DoubleRon = true
 }

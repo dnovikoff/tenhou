@@ -33,19 +33,19 @@ type Player struct {
 	first   bool
 }
 
-var rules = yaku.Rules{
-	OpenTanyao:           true,
-	Renhou:               yaku.LimitYakuman,
-	HaiteiIsFromLiveOnly: true,
+var rules = &yaku.RulesStruct{
+	IsOpenTanyao:         true,
+	RenhouLimit:          yaku.LimitYakuman,
+	IsHaiteiFromLiveOnly: true,
 	AkaDoras:             tile.Instances{},
 }
 
-var scoring = score.Rules{
-	ManganRound:   false,
-	KazoeYakuman:  true,
-	DoubleYakuman: false,
-	YakumanSum:    true,
-	HonbaValue:    100,
+var scoring = &score.RulesStruct{
+	IsManganRound:   false,
+	IsKazoeYakuman:  true,
+	IsYakumanDouble: false,
+	IsYakumanSum:    true,
+	HonbaValue:      100,
 }
 
 type Game struct {
@@ -266,7 +266,7 @@ func wind(x bool) base.Wind {
 
 func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 	p := this.Player(who)
-	s := scoring.GetYakumanScore(1, 0)
+	s := score.GetYakumanScore(scoring, 1, 0)
 	penalty := -s.PayRon
 	if this.Dealer {
 		penalty = -s.PayRonDealer
@@ -330,7 +330,7 @@ func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 	}
 	ctx := &yaku.Context{
 		Tile:        t,
-		Rules:       &rules,
+		Rules:       rules,
 		IsLastTile:  !this.canTake(),
 		IsFirstTake: p.first,
 		IsTsumo:     isTsumo,
@@ -338,7 +338,7 @@ func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 		IsRinshan:   this.Rinshan,
 	}
 	win := yaku.Win(p.tempai, ctx)
-	s = scoring.GetScoreByResult(win, 0)
+	s = score.GetScoreByResult(scoring, win, 0)
 	pay := s.PayRon
 	if who == this.Dealer {
 		pay = s.PayRonDealer
