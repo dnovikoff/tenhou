@@ -21,7 +21,7 @@ func (this *Player) update() {
 
 func (this *Player) win(ctx *yaku.Context) *yaku.YakuResult {
 	ctx.IsFirstTake = this.first
-	ctx.Rules = &rules
+	ctx.Rules = rules
 	return yaku.Win(this.tempai, ctx)
 }
 

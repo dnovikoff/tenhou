@@ -34,7 +34,7 @@ func TestAkasValidate(t *testing.T) {
 			tile.Man5.Instance(0),
 			tile.Pin5.Instance(0),
 			tile.Sou5.Instance(0),
-		}, yaku.RulesTenhouRed.AkaDoras)
+		}, yaku.RulesTenhouRed().AkaDoras)
 }
 
 func processXMLFiles(t *testing.T, f func(t *testing.T, data string, nodes parser.Nodes)) {
