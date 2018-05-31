@@ -10,6 +10,7 @@ import (
 
 	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/compact"
+	"github.com/dnovikoff/tempai-core/hand/calc"
 	"github.com/dnovikoff/tempai-core/hand/effective"
 	"github.com/dnovikoff/tempai-core/hand/tempai"
 	"github.com/dnovikoff/tempai-core/meld"
@@ -379,7 +380,11 @@ func (this *Game) RobotTurn() (result bool) {
 	p.Melds.AddTo(visible)
 	this.Human.Melds.AddTo(visible)
 
-	res := effective.Calculate(p.Hand, len(p.Melds), visible)
+	res := effective.Calculate(
+		p.Hand,
+		calc.Melds(p.Melds),
+		calc.Used(visible),
+	)
 	x := res.Sorted(visible)
 	bestTile := x.Best().Tile
 	toDrop := p.Hand.GetMask(bestTile).First()
