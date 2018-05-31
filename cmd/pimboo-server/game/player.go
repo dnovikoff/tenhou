@@ -2,6 +2,7 @@ package game
 
 import (
 	"github.com/dnovikoff/tempai-core/compact"
+	"github.com/dnovikoff/tempai-core/hand/calc"
 	"github.com/dnovikoff/tempai-core/hand/tempai"
 	"github.com/dnovikoff/tempai-core/score"
 	"github.com/dnovikoff/tempai-core/tile"
@@ -13,7 +14,7 @@ func NewPlayer(x score.Money) *Player {
 }
 
 func (this *Player) update() {
-	this.tempai = tempai.Calculate(this.Hand, this.Melds).Index()
+	this.tempai = tempai.Calculate(this.Hand, calc.Melds(this.Melds)).Index()
 
 	checker := this.Discard.UniqueTiles()
 	this.furiten = (checker & this.tempai.Waits()) != 0
