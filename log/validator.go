@@ -9,6 +9,7 @@ import (
 
 	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/compact"
+	"github.com/dnovikoff/tempai-core/hand/calc"
 	"github.com/dnovikoff/tempai-core/hand/tempai"
 	"github.com/dnovikoff/tempai-core/score"
 	"github.com/dnovikoff/tempai-core/tile"
@@ -39,7 +40,10 @@ type AgariReport struct {
 func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Context, w base.Wind, scoring score.Rules) {
 	comp := compact.NewInstances().Add(agari.Hand)
 	comp.Remove(agari.WinTile)
-	t := tempai.Calculate(comp, agari.Melds.Convert()).Index()
+	t := tempai.Calculate(
+		comp,
+		calc.Melds(agari.Melds.Convert()),
+	).Index()
 	yaku := yaku.Win(t, ctx)
 	addError := func(format string, a ...interface{}) {
 		id := fmt.Sprintf("%v", agari)
