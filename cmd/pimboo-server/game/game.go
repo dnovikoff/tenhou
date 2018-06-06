@@ -571,7 +571,9 @@ func (this *Game) Run() {
 func (this *Game) RunOne(rnd int, startTile tile.Tile) bool {
 	this.logger.Printf("Round %v START", rnd)
 	tiles := compact.NewAllInstancesFromTo(startTile, startTile+9).Instances()
-	tile.Shuffle(tiles, this.rnd)
+	this.rnd.Shuffle(len(tiles), func(i, j int) {
+		tiles[i], tiles[j] = tiles[j], tiles[i]
+	})
 	this.Wall = tiles
 	this.Human.Init(this.GetHand())
 	this.Robot.Init(this.GetHand())
