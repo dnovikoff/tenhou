@@ -1,6 +1,8 @@
 # About
 
 [![Build Status](https://travis-ci.org/dnovikoff/tenhou.svg?branch=master)](https://travis-ci.org/dnovikoff/tenhou)
+[![Coverage Status](https://img.shields.io/codecov/c/github/dnovikoff/tenhou.svg)](https://codecov.io/gh/dnovikoff/tenhou)
+[![Go Report Card](https://goreportcard.com/badge/github.com/dnovikoff/tenhou)](https://goreportcard.com/report/github.com/dnovikoff/tenhou)
 
 golang package for working with tenhou net logs and protocol
 

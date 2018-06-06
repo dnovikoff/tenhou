@@ -22,7 +22,8 @@ func testPair() (c1, c2 *xmlConnection) {
 
 func TestConnectionRead(t *testing.T) {
 	server, client := testPair()
-	ctx, _ := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
 	go func() {
 		require.NoError(t, server.Write(ctx, "Hello World"))
 	}()
@@ -33,7 +34,8 @@ func TestConnectionRead(t *testing.T) {
 
 func TestConnectionReadParts(t *testing.T) {
 	server, client := testPair()
-	ctx, _ := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
 	go func() {
 		server.impl.Write([]byte("Hello"))
 		server.impl.Write([]byte(" World"))
@@ -46,7 +48,8 @@ func TestConnectionReadParts(t *testing.T) {
 
 func TestConnectionReadClosed(t *testing.T) {
 	server, client := testPair()
-	ctx, _ := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
 	go func() {
 		server.impl.Write([]byte("Hello"))
 		server.impl.Write([]byte(" World"))
@@ -58,7 +61,8 @@ func TestConnectionReadClosed(t *testing.T) {
 
 func TestConnectionSend(t *testing.T) {
 	s, c := testPair()
-	ctx, _ := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
 	go func() {
 		c := client.NewXMLWriter()
 		c.Reach(client.Reach{Step: 1})
