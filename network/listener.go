@@ -36,7 +36,8 @@ func (this *Listener) checkError(err error) bool {
 
 func (this *Listener) handle(parentCtx context.Context, sConn net.Conn) {
 	con := NewXMLConnection(sConn)
-	ctx, _ := context.WithTimeout(parentCtx, time.Second*10)
+	ctx, cancel := context.WithTimeout(parentCtx, time.Second*10)
+	defer cancel()
 	str, err := con.Read(ctx)
 	if !this.checkError(err) {
 		return

@@ -88,16 +88,17 @@ func NewGame(c network.XMLConnection) *Game {
 	return this
 }
 
-func ctxTimeout(ctx context.Context) context.Context {
-	c, _ := context.WithTimeout(ctx, time.Second*30)
-	return c
+func ctxTimeout(ctx context.Context) (context.Context, func()) {
+	return context.WithTimeout(ctx, time.Second*30)
 }
 
 func (this *Game) commit(data string) {
 	if data == "" {
 		return
 	}
-	this.check(this.Connection.Write(ctxTimeout(this.Context), data))
+	ctx, cancel := ctxTimeout(this.Context)
+	defer cancel()
+	this.check(this.Connection.Write(ctx, data))
 }
 
 func (this *Game) GetHand() compact.Instances {
@@ -532,8 +533,9 @@ func (this *Game) auth() bool {
 func (this *Game) Run() {
 	ctx, stop := context.WithCancel(this.Context)
 	this.reader.ReadCallback = func(ctx context.Context) (string, error) {
-		ctx = ctxTimeout(ctx)
-		return this.Connection.Read(ctx)
+		rCtx, cancel := ctxTimeout(ctx)
+		defer cancel()
+		return this.Connection.Read(rCtx)
 	}
 	waitForExit := this.reader.Start(ctx)
 	defer func() {

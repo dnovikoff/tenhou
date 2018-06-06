@@ -22,43 +22,48 @@ var tenhouAddr = flag.String("remote-host", "133.242.10.78:10080", "tenhou flash
 var sexComputer = flag.Bool("sex-c", false, "change gender to C, send by client")
 
 func proxy(ctx context.Context, from, to network.XMLConnection) {
-	for {
-		nctx, _ := context.WithTimeout(ctx, time.Second*60)
-		message, err := from.Read(nctx)
-		if strings.HasPrefix(message, `<cross-domain-policy>`) {
-			ports := "80,443,843,10080"
-			w := util.NewXMLWriter()
-			w.Write("<cross-domain-policy>")
-			for _, domain := range []string{
-				"*.mjv.jp",
-				"*.tenhou.net",
-				"localhost",
-				// Add your domain here if needed
-			} {
-				w.Begin("allow-access-from").
-					WriteArg("domain", domain).
-					WriteArg("to-ports", ports).
-					End()
-			}
-			w.Write("</cross-domain-policy>")
-			message = w.String()
-		} else if *sexComputer && strings.HasPrefix(message, `<HELO name="`) {
-			sxStr := ` sx="`
-			n := strings.Index(message, sxStr)
-			if n > 0 {
-				idx := n + len(sxStr)
-				message = message[:idx] + "C" + message[idx+1:]
-			}
-		}
+	for proxyOne(ctx, from, to) {
+	}
+}
 
-		if !checkSuccess(err) {
-			return
+func proxyOne(ctx context.Context, from, to network.XMLConnection) bool {
+	nctx, cancel := context.WithTimeout(ctx, time.Second*60)
+	defer cancel()
+	message, err := from.Read(nctx)
+	if strings.HasPrefix(message, `<cross-domain-policy>`) {
+		ports := "80,443,843,10080"
+		w := util.NewXMLWriter()
+		w.Write("<cross-domain-policy>")
+		for _, domain := range []string{
+			"*.mjv.jp",
+			"*.tenhou.net",
+			"localhost",
+			// Add your domain here if needed
+		} {
+			w.Begin("allow-access-from").
+				WriteArg("domain", domain).
+				WriteArg("to-ports", ports).
+				End()
 		}
-		err = to.Write(nctx, message)
-		if !checkSuccess(err) {
-			return
+		w.Write("</cross-domain-policy>")
+		message = w.String()
+	} else if *sexComputer && strings.HasPrefix(message, `<HELO name="`) {
+		sxStr := ` sx="`
+		n := strings.Index(message, sxStr)
+		if n > 0 {
+			idx := n + len(sxStr)
+			message = message[:idx] + "C" + message[idx+1:]
 		}
 	}
+
+	if !checkSuccess(err) {
+		return false
+	}
+	err = to.Write(nctx, message)
+	if !checkSuccess(err) {
+		return false
+	}
+	return true
 }
 
 func handle(sConn net.Conn, filename string) {

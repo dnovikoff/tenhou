@@ -79,10 +79,6 @@ func TestLogReadAndWrite(t *testing.T) {
 		expected := util.FixLine(data)
 		actual := util.FixLine(w.String())
 		if !assert.Equal(t, expected, actual) {
-			min := len(expected)
-			if len(actual) < min {
-				min = len(actual)
-			}
 			start := 0
 			for k := range expected {
 				if expected[k] != actual[k] {
