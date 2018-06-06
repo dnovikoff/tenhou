@@ -23,13 +23,19 @@ func testPair() (c1, c2 *xmlConnection) {
 func TestConnectionRead(t *testing.T) {
 	server, client := testPair()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
+	ch := make(chan struct{})
+	defer func() {
+		<-ch
+		cancel()
+	}()
 	go func() {
+		defer close(ch)
 		require.NoError(t, server.Write(ctx, "Hello World"))
 	}()
 	data, err := client.Read(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, "Hello World", data)
+
 }
 
 func TestConnectionReadParts(t *testing.T) {

@@ -22,7 +22,7 @@
     "tile",
     "yaku"
   ]
-  revision = "787b8c610e375e493bffaeadf602f352c5b1ae3b"
+  revision = "7ba8c7e787dc59c4c36eeb513507bdad808eb1f4"
 
 [[projects]]
   branch = "master"

@@ -62,8 +62,8 @@ func (this Meld) Instance(f, l int) tile.Instance {
 }
 
 func getBase(base int) tile.Instance {
-	t := tile.Tile(base/4) + tile.Begin
-	copyId := tile.CopyId(base % 4)
+	t := tile.Tile(base/4) + tile.TileBegin
+	copyId := tile.CopyID(base % 4)
 	return t.Instance(copyId)
 }
 
@@ -79,11 +79,11 @@ func newCoreMeldKan(in Meld) meld.Meld {
 
 func newCoreMeldPon(in Meld) meld.Meld {
 	isUpgraded := in.Extract(11, 12) == 1
-	notInPonIdx := tile.CopyId(in.Extract(9, 11))
+	notInPonIdx := tile.CopyID(in.Extract(9, 11))
 
 	baseAndCalled := in.Extract(0, 7)
-	t := tile.Tile(baseAndCalled/3) + tile.Begin
-	calledIndex := tile.CopyId(baseAndCalled % 3)
+	t := tile.Tile(baseAndCalled/3) + tile.TileBegin
+	calledIndex := tile.CopyID(baseAndCalled % 3)
 	if calledIndex >= notInPonIdx {
 		calledIndex++
 	}
@@ -110,30 +110,30 @@ func newCoreMeldChi(in Meld) meld.Meld {
 	case 2:
 		kindCore = tile.TypeSou
 	}
-	copyAt := func(idx int) tile.CopyId {
+	copyAt := func(idx int) tile.CopyID {
 		start := 11 - idx*2
 		copyId := in.Extract(start, start+2)
-		return tile.CopyId(copyId)
+		return tile.CopyID(copyId)
 	}
-	var tmp [3]tile.CopyId
+	var tmp [3]tile.CopyID
 	for k := 0; k < 3; k++ {
 		tmp[k] = copyAt(k)
 	}
 	tmp[calledIndex] = meld.OpenCopy(tmp[calledIndex])
-	base := kindCore.TileNumber(first)
+	base := kindCore.Tile(first)
 	return meld.NewSeq(base, tmp[0], tmp[1], tmp[2]).Meld()
 }
 
 func newTenhouSeqMeld(in meld.Seq) Meld {
 	calledIndex := in.OpenedIndex() - 1
-	base := in.Base() - tile.Begin
+	base := in.Base() - tile.TileBegin
 	tiles := in.Instances()
 
 	m := Meld(int((base/9)*7+base%9)*3 + calledIndex)
 	m = (m << 1)
-	m = (m << 2) | Meld(tiles[2].CopyId())
-	m = (m << 2) | Meld(tiles[1].CopyId())
-	m = (m << 2) | Meld(tiles[0].CopyId())
+	m = (m << 2) | Meld(tiles[2].CopyID())
+	m = (m << 2) | Meld(tiles[1].CopyID())
+	m = (m << 2) | Meld(tiles[0].CopyID())
 	m = (m << 1) | 1
 	m = (m << 2) | Meld(in.Opponent())
 	return m
@@ -144,7 +144,7 @@ func newTenhouSameMeld(in meld.Same) Meld {
 	if cp > in.NotInPonCopy() {
 		cp--
 	}
-	m := Meld(in.Base()-tile.Begin)*3 + Meld(cp)
+	m := Meld(in.Base()-tile.TileBegin)*3 + Meld(cp)
 	m = (m << 2)
 	m = (m << 2) | Meld(in.NotInPonCopy())
 	m = (m << 1)
@@ -161,7 +161,7 @@ func newTenhouSameMeld(in meld.Same) Meld {
 }
 
 func newTenhouKanMeld(in meld.Same) Meld {
-	m := Meld(in.Base()-tile.Begin)*4 + Meld(in.OpenedCopy())
+	m := Meld(in.Base()-tile.TileBegin)*4 + Meld(in.OpenedCopy())
 	m = (m << 6)
 	m = (m << 2) | Meld(in.Opponent())
 	return m
