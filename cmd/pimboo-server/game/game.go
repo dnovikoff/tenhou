@@ -446,7 +446,7 @@ func (this *Game) HumanTurn() (result bool) {
 				return
 			}
 			first := i[0]
-			if !p.Hand.CheckFull(first.Tile()) {
+			if !p.Hand.GetMask(first.Tile()).IsFull() {
 				cb.Default()
 				return
 			}
@@ -570,7 +570,7 @@ func (this *Game) Run() {
 
 func (this *Game) RunOne(rnd int, startTile tile.Tile) bool {
 	this.logger.Printf("Round %v START", rnd)
-	tiles := compact.NewAllInstancesFromTo(startTile, startTile+9).Instances()
+	tiles := compact.AllInstancesFromTo(startTile, startTile+9).Instances()
 	this.rnd.Shuffle(len(tiles), func(i, j int) {
 		tiles[i], tiles[j] = tiles[j], tiles[i]
 	})
