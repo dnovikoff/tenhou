@@ -91,7 +91,7 @@ func (this *AgariExtractor) Agari(agari tbase.Agari) {
 	otherWind := base.WindEast.Advance(int(agari.From - this.Dealer))
 	ctx.IsTsumo = ctx.SelfWind == otherWind
 	ctx.Rules = this.yakuRules
-	ctx.IsChankan = (this.KanFlag && ctx.IsRon()) || yakus.CheckCore(yaku.YakuChankan)
+	ctx.IsChankan = (this.KanFlag && !ctx.IsTsumo) || yakus.CheckCore(yaku.YakuChankan)
 	ctx.IsRinshan = (this.KanFlag && ctx.IsTsumo) || yakus.CheckCore(yaku.YakuRinshan)
 	if this.DoubleRon {
 		agari.Status.Sticks = 0

@@ -20,7 +20,7 @@ func (this *Player) update() {
 	this.furiten = (checker & this.tempai.Waits()) != 0
 }
 
-func (this *Player) win(ctx *yaku.Context) *yaku.YakuResult {
+func (this *Player) win(ctx *yaku.Context) *yaku.Result {
 	ctx.IsFirstTake = this.first
 	ctx.Rules = rules
 	return yaku.Win(this.tempai, ctx)
