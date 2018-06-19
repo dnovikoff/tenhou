@@ -9,52 +9,45 @@ import (
 	"github.com/dnovikoff/tempai-core/tile"
 )
 
-// func TestMeldChi(t *testing.T) {
-// 	instance := tile.Instance(57)
-// 	require.Equal(t, 1, Meld(37199).Extract(13, 14))
-// 	assert.Equal(t, "6p", instance.Tile().String())
-// 	assert.Equal(t, "1001000101001111", fmt.Sprintf("%b", 37199))
-// 	t.Log(NewCoreMeld(37199).Instances().String())
-// 	assert.EqualValues(t, meld.NewSeq(tile.Pin6, meld.OpenCopy(1), 2, 2), NewCoreMeld(37199))
-// }
-
 func TestMeldsBase(t *testing.T) {
-	base := func(x int) tile.Tile {
-		return DecodeCalled(Meld(x)).Called.Tile()
+	for _, v := range []struct {
+		expected tile.Tile
+		m        Meld
+	}{
+		{tile.North, 46633},
+		{tile.White, 47690},
+		{tile.Green, 49705},
+	} {
+		t.Run(v.expected.String()+strconv.Itoa(int(v.m)), func(t *testing.T) {
+			assert.Equal(t, v.expected, v.m.Decode().Core.Tile())
+		})
 	}
-
-	assert.Equal(t, tile.North, base(46633))
-	assert.Equal(t, tile.White, base(47690))
-	assert.Equal(t, tile.Green, base(49705))
 }
 
 func TestMelds(t *testing.T) {
-	m := func(x int) string {
-		return DecodeCalled(Meld(x)).Core.Tiles().String()
+	for _, v := range []struct {
+		expected string
+		m        Meld
+	}{
+		{"444z Right", 46633},
+		{"555z Front", 47690},
+		{"666z Right", 49705},
+		// Upgraded
+		{"5555z Front", 47666},
+		{"2222m Left", 1539},
+		{"1111z Front", 27906},
+		{"1111p Right", 9217},
+		{"444s Front", 33354},
+	} {
+		t.Run(v.expected, func(t *testing.T) {
+			d := v.m.Decode()
+			actual := d.Core.Tiles().String() + " " + d.Opponent.String()
+			assert.Equal(t, v.expected, actual)
+		})
 	}
-	assert.EqualValues(t, "444z", m(46633))
-	// assert.EqualValues(t, meld.NewPonOpened(tile.White.Instance(0), 2, base.Front), m(47690))
-	// assert.EqualValues(t, meld.NewPonOpened(tile.Green.Instance(2), 1, base.Right), m(49705))
-	// assert.EqualValues(t, meld.NewKanUpgraded(tile.White.Instance(0), 1, base.Front), m(47666))
-	// assert.EqualValues(t, meld.NewKanOpened(tile.Man2.Instance(2), base.Left), m(1539))
-	// assert.EqualValues(t, meld.NewKanOpened(tile.East.Instance(1), base.Front), m(27906))
-	// assert.EqualValues(t, meld.NewKanOpened(tile.Pin1.Instance(0), base.Right), m(9217))
-
-	// assert.EqualValues(t, meld.NewPonOpened(tile.Sou4.Instance(3), 2, base.Front), m(33354))
 }
 
 func TestMeldsReconvert(t *testing.T) {
-	t2c := func(x Meld) *Called {
-		return DecodeCalled(Meld(x))
-	}
-	c2t := func(x *Called) Meld {
-		return EncodeCalled(x)
-	}
-	reconvert := func(x Meld) Meld {
-		t.Log(t2c(x).Tiles)
-		t.Log(t2c(c2t(t2c(x))).Tiles)
-		return c2t(t2c(x))
-	}
 	for _, v := range []Meld{
 		// chi [6]78p
 		37199,
@@ -65,31 +58,7 @@ func TestMeldsReconvert(t *testing.T) {
 		32768,
 	} {
 		t.Run(strconv.Itoa(int(v)), func(t *testing.T) {
-			assert.Equal(t, v, reconvert(v))
+			assert.Equal(t, v, v.Decode().Encode())
 		})
 	}
 }
-
-// func TestMeldsReconvert2(t *testing.T) {
-// 	t2c := func(x Meld) *Called {
-// 		return NewCoreMeld(Meld(x))
-// 	}
-// 	c2t := func(x *Called) Meld {
-// 		return NewTenhouMeld(x)
-// 	}
-// 	tst := func(i meld.Interface) bool {
-// 		x := i.Meld()
-// 		x2 := t2c(c2t(x))
-// 		assert.Equal(t, x, x2)
-// 		return x == x2
-// 	}
-
-// 	assert.True(t, tst(meld.NewPonOpened(tile.North.Instance(2), 1, base.Right)))
-// 	assert.True(t, tst(meld.NewPonOpened(tile.White.Instance(0), 2, base.Front)))
-// 	assert.True(t, tst(meld.NewPonOpened(tile.Green.Instance(2), 1, base.Right)))
-// 	assert.True(t, tst(meld.NewKanUpgraded(tile.White.Instance(0), 1, base.Front)))
-// 	assert.True(t, tst(meld.NewKanOpened(tile.Man2.Instance(2), base.Left)))
-// 	assert.True(t, tst(meld.NewKanOpened(tile.East.Instance(1), base.Front)))
-// 	assert.True(t, tst(meld.NewKanOpened(tile.Pin1.Instance(0), base.Right)))
-// 	assert.True(t, tst(meld.NewPonOpened(tile.Sou4.Instance(3), 2, base.Front)))
-// }

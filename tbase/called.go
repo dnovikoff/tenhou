@@ -32,6 +32,10 @@ func (cl CalledList) Add(x compact.Instances) {
 	}
 }
 
+func (c *Called) Encode() Meld {
+	return EncodeCalled(c)
+}
+
 func (c *Called) IsKan() bool {
 	switch c.Type {
 	case Kan, UpgrdedKan, ClosedKan:
@@ -68,3 +72,17 @@ const (
 	Front
 	Left
 )
+
+func (o Opponent) String() string {
+	switch o {
+	case Self:
+		return "Self"
+	case Right:
+		return "Right"
+	case Front:
+		return "Front"
+	case Left:
+		return "Left"
+	}
+	return "Unknown"
+}

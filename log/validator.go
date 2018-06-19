@@ -79,7 +79,9 @@ func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Co
 	total := changes.TotalWin()
 
 	if total != totalExpected {
-		addError("Money mismatch. Expected: %v, Calculated: %v (%v.%v). Debug %v + %v", totalExpected, total, yaku.Sum(), yaku.Fus.Sum(), yaku.Yaku, yaku.Bonuses)
+		addError("Money mismatch. Expected: %v, Calculated: %v (%v.%v). Debug %v + %v",
+			totalExpected,
+			total, yaku.Sum(), yaku.Fus.Sum(), yaku.Yaku, yaku.Bonuses)
 	}
 
 	report := &AgariReport{
