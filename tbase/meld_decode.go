@@ -87,7 +87,7 @@ func decodeChi(in Meld) *Called {
 			(base + 2).Instance(tmp[2]),
 		},
 		Called: (base + tile.Tile(calledIndex)).Instance(tmp[calledIndex]),
-		Core:   calc.Chi(base),
+		Core:   calc.Open(calc.Chi(base)),
 	}
 	return x
 }
