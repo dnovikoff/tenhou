@@ -92,7 +92,7 @@ func ParseJoinString(in string) (n, t int, rejoin bool, err error) {
 			return
 		}
 	default:
-		err = stackerr.Newf("Expected t to have 2 or 3 values, but got", len(lst))
+		err = stackerr.Newf("Expected t to have 2 or 3 values, but got '%v'", len(lst))
 		return
 	}
 	n, err = strconv.Atoi(lst[0])

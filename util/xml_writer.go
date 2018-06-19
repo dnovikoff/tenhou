@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tenhou/tbase"
 )
@@ -73,15 +72,15 @@ func (this XMLWriter) WriteInstance(key string, value tile.Instance) XMLWriter {
 	return this.WriteIntArg(key, InstanceToTenhou(value))
 }
 
-func (this XMLWriter) WriteOpponent(key string, d base.Opponent) XMLWriter {
+func (this XMLWriter) WriteOpponent(key string, d tbase.Opponent) XMLWriter {
 	return this.WriteIntArg(key, int(d))
 }
 
-func (this XMLWriter) WriteDealer(d base.Opponent) XMLWriter {
+func (this XMLWriter) WriteDealer(d tbase.Opponent) XMLWriter {
 	return this.WriteOpponent("oya", d)
 }
 
-func (this XMLWriter) WriteWho(d base.Opponent) XMLWriter {
+func (this XMLWriter) WriteWho(d tbase.Opponent) XMLWriter {
 	return this.WriteOpponent("who", d)
 }
 
