@@ -6,10 +6,10 @@ import (
 
 	"github.com/facebookgo/stackerr"
 
-	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tenhou/client"
 	"github.com/dnovikoff/tenhou/parser"
+	"github.com/dnovikoff/tenhou/tbase"
 	"github.com/dnovikoff/tenhou/util"
 )
 
@@ -114,11 +114,11 @@ func tryDefault(in *parser.Node, c Controller) bool {
 	params := WithOpponentAndInstance{}
 	params.Instance = util.InstanceFromTenhou(x)
 	if first >= 'T' && first <= 'W' {
-		params.Opponent = base.Opponent(first - 'T')
+		params.Opponent = tbase.Opponent(first - 'T')
 		c.Draw(params)
 		return true
 	} else if first >= 'D' && first <= 'G' {
-		params.Opponent = base.Opponent(first - 'D')
+		params.Opponent = tbase.Opponent(first - 'D')
 		c.Discard(params)
 		return true
 	}

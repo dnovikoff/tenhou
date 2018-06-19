@@ -14,7 +14,7 @@ import (
 type AgariExtractor struct {
 	NullController
 	Round     int
-	Dealer    base.Opponent
+	Dealer    tbase.Opponent
 	DoubleRon bool
 	Info      *Info
 	Defected  bool
@@ -66,7 +66,7 @@ func (this *AgariExtractor) Discard(WithOpponentAndInstance) {
 }
 
 func (this *AgariExtractor) Declare(params Declare) {
-	this.KanFlag = params.Meld.Convert().IsKan()
+	this.KanFlag = params.Meld.Decode().IsKan()
 }
 
 func (this *AgariExtractor) Agari(agari tbase.Agari) {

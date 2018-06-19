@@ -40,11 +40,15 @@ type AgariReport struct {
 func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Context, w base.Wind, scoring score.Rules) {
 	comp := compact.NewInstances().Add(agari.Hand)
 	comp.Remove(agari.WinTile)
+	melds := agari.Melds.Decode()
 	t := tempai.Calculate(
 		comp,
-		calc.Melds(agari.Melds.Convert()),
-	).Index()
-	yaku := yaku.Win(t, ctx)
+		calc.Declared(melds.Core()),
+	)
+	// TODO: add all instances for correct aka calculations
+	declared := compact.NewInstances()
+	melds.Add(declared)
+	yaku := yaku.Win(t, ctx, declared)
 	addError := func(format string, a ...interface{}) {
 		id := fmt.Sprintf("%v", agari)
 		(*outError) = multierror.Append((*outError), errors.New("Error at ["+id+"]: "+fmt.Sprintf(format, a...)))
