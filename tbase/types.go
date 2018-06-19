@@ -1,7 +1,6 @@
 package tbase
 
 import (
-	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/score"
 	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tempai-core/yaku"
@@ -39,9 +38,9 @@ type Score struct {
 }
 
 type Agari struct {
-	Who            base.Opponent
-	From           base.Opponent
-	Pao            *base.Opponent
+	Who            Opponent
+	From           Opponent
+	Pao            *Opponent
 	Status         TableStatus
 	Score          Score
 	FinalScores    ScoreChanges
@@ -68,6 +67,6 @@ type Ryuukyoku struct {
 type Init struct {
 	Seed
 	Scores Scores
-	Dealer base.Opponent
+	Dealer Opponent
 	Chip   []int
 }

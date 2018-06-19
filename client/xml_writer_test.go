@@ -6,9 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/compact"
-	"github.com/dnovikoff/tempai-core/meld"
 	"github.com/dnovikoff/tempai-core/score"
 	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tenhou/tbase"
@@ -16,7 +14,7 @@ import (
 
 func TestSMessageDrop(t *testing.T) {
 	c := NewXMLWriter()
-	test := func(o base.Opponent, i tile.Instance, isTg bool, s Suggest) {
+	test := func(o tbase.Opponent, i tile.Instance, isTg bool, s Suggest) {
 		params := Drop{}
 		params.Opponent = o
 		params.Instance = i
@@ -24,59 +22,64 @@ func TestSMessageDrop(t *testing.T) {
 		params.Suggest = s
 		c.Drop(params)
 	}
-	test(base.Self, tile.Green.Instance(0), false, 0)
-	test(base.Self, tile.Green.Instance(0), true, 0)
+	test(tbase.Self, tile.Green.Instance(0), false, 0)
+	test(tbase.Self, tile.Green.Instance(0), true, 0)
 
-	test(base.Right, tile.Man1.Instance(0), false, 0)
-	test(base.Right, tile.Man1.Instance(0), true, 0)
+	test(tbase.Right, tile.Man1.Instance(0), false, 0)
+	test(tbase.Right, tile.Man1.Instance(0), true, 0)
 
-	test(base.Front, tile.Man2.Instance(0), false, 0)
-	test(base.Front, tile.Man2.Instance(0), true, 0)
+	test(tbase.Front, tile.Man2.Instance(0), false, 0)
+	test(tbase.Front, tile.Man2.Instance(0), true, 0)
 
-	test(base.Left, tile.Man1.Instance(1), false, 0)
-	test(base.Left, tile.Man1.Instance(1), true, 1)
+	test(tbase.Left, tile.Man1.Instance(1), false, 0)
+	test(tbase.Left, tile.Man1.Instance(1), true, 1)
 
 	assert.Equal(t, `<D128/> <d128/> <E0/> <e0/> <F4/> <f4/> <G1/> <g1 t="1"/>`, c.String())
 }
 
 func TestSMessageTake(t *testing.T) {
 	c := NewXMLWriter()
-	test := func(o base.Opponent, i tile.Instance, s Suggest) {
+	test := func(o tbase.Opponent, i tile.Instance, s Suggest) {
 		params := Take{}
 		params.Opponent = o
 		params.Instance = i
 		params.Suggest = s
 		c.Take(params)
 	}
-	test(base.Self, tile.Pin1.Instance(0), 0)
-	test(base.Self, tile.Pin1.Instance(0), 1)
-	test(base.Right, tile.Pin1.Instance(0), 0)
-	test(base.Front, tile.Pin1.Instance(0), 0)
-	test(base.Left, tile.Pin1.Instance(0), 1)
+	test(tbase.Self, tile.Pin1.Instance(0), 0)
+	test(tbase.Self, tile.Pin1.Instance(0), 1)
+	test(tbase.Right, tile.Pin1.Instance(0), 0)
+	test(tbase.Front, tile.Pin1.Instance(0), 0)
+	test(tbase.Left, tile.Pin1.Instance(0), 1)
 	assert.Equal(t, `<T36/> <T36 t="1"/> <U/> <V/> <W/>`, c.String())
 }
 
 func TestSMessageReach(t *testing.T) {
 	c := NewXMLWriter()
-	test := func(o base.Opponent, step int, sc []score.Money) {
+	test := func(o tbase.Opponent, step int, sc []score.Money) {
 		params := Reach{}
 		params.Opponent = o
 		params.Step = step
 		params.Score = sc
 		c.Reach(params)
 	}
-	test(base.Front, 1, nil)
-	test(base.Self, 2, []score.Money{25000, 25000, 25000, 24000})
+	test(tbase.Front, 1, nil)
+	test(tbase.Self, 2, []score.Money{25000, 25000, 25000, 24000})
 
 	assert.Equal(t, `<REACH who="2" step="1"/> <REACH who="0" ten="250,250,250,240" step="2"/>`, c.String())
 }
 
 func TestSDeclare(t *testing.T) {
 	c := NewXMLWriter()
-	x := meld.NewPonOpened(tile.Sou4.Instance(3), 2, base.Front).Meld()
+	x := &tbase.Called{
+		Type:     tbase.Pon,
+		Opponent: tbase.Front,
+		Called:   tile.Sou4.Instance(3),
+		Upgraded: tile.Sou4.Instance(2),
+	}
 	params := Declare{}
-	params.Opponent = base.Self
-	params.Meld = tbase.NewTenhouMeld(x)
+	params.Opponent = tbase.Self
+	params.Meld = tbase.EncodeCalled(x)
 	c.Declare(params)
 	assert.Equal(t, `<N who="0" m="33354"/>`, c.String())
 }
@@ -95,7 +98,7 @@ func TestSInit(t *testing.T) {
 			Indicator:   tg.Instance(tile.Man4),
 		},
 		[]score.Money{25000, 25000, 25000, 24000},
-		base.Front,
+		tbase.Front,
 		nil,
 	}
 	c.Init(Init{b, tiles})
@@ -105,7 +108,7 @@ func TestSInit(t *testing.T) {
 
 func TestSLogInfo(t *testing.T) {
 	c := NewXMLWriter()
-	c.LogInfo(LogInfo{WithDealer{base.Front}, "2018011712gm-0009-0000-84f0883b"})
+	c.LogInfo(LogInfo{WithDealer{tbase.Front}, "2018011712gm-0009-0000-84f0883b"})
 	assert.Equal(t, `<TAIKYOKU oya="2" log="2018011712gm-0009-0000-84f0883b"/>`, c.String())
 }
 
