@@ -17,12 +17,11 @@
     "hand/effective",
     "hand/shanten",
     "hand/tempai",
-    "meld",
     "score",
     "tile",
     "yaku"
   ]
-  revision = "a5c9eb35f4eeb5a09e64596277839b06a44d65f6"
+  revision = "c6eac0f767f208427a83648a17818f2063e1067a"
 
 [[projects]]
   branch = "master"
@@ -66,12 +65,12 @@
     "assert",
     "require"
   ]
-  revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
-  version = "v1.2.1"
+  revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
+  version = "v1.2.2"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "dd9970ab7588a3bcad2a2c94a6db441b71f0dcfab09314bf9f1e22cfa8251c5a"
+  inputs-digest = "b74240ad4964027d68aa253839e8491c8518a66fb1728d3288b1e804cf19c457"
   solver-name = "gps-cdcl"
   solver-version = 1
