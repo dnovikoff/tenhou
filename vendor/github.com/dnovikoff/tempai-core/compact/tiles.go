@@ -5,13 +5,6 @@ import "github.com/dnovikoff/tempai-core/tile"
 // Unique tiles
 type Tiles uint64
 
-// 53 is js limit for int64
-const _ = uint(53 - tile.TileEnd)
-
-const AllTiles = (^Tiles(0)) >> (64 - uint(tile.TileCount))
-
-var KokushiTiles = Tiles(0).SetAll(tile.KokushiTiles)
-
 func NewTiles(x ...tile.Tile) Tiles {
 	r := Tiles(0)
 	for _, v := range x {
@@ -81,8 +74,7 @@ func (ts Tiles) Normalize() Tiles {
 
 func (ts Tiles) EachRange(begin, end tile.Tile, f func(tile.Tile) bool) bool {
 	ts >>= shift(begin)
-
-	for i := begin; i < end; i++ {
+	for i := begin; ts != 0 && i < end; i++ {
 		if ts&1 == 1 {
 			if !f(i) {
 				return false

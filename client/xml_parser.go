@@ -6,7 +6,6 @@ import (
 
 	"github.com/facebookgo/stackerr"
 
-	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tenhou/parser"
 	"github.com/dnovikoff/tenhou/tbase"
@@ -233,17 +232,17 @@ func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 
 func ProcessUserList(node *parser.Node, c UNController) error {
 	if len(node.Attributes) == 1 {
-		o := base.Self
+		o := tbase.Self
 		for k := range node.Attributes {
 			switch k {
 			case "n0":
-				o = base.Self
+				o = tbase.Self
 			case "n1":
-				o = base.Right
+				o = tbase.Right
 			case "n2":
-				o = base.Front
+				o = tbase.Front
 			case "n3":
-				o = base.Left
+				o = tbase.Left
 			default:
 				return stackerr.Newf("Unexpected key '%v' for UN (RECONNECT)", k)
 			}
@@ -297,7 +296,7 @@ func getInit(node *parser.Node) (ret Init, err error) {
 	return
 }
 
-func parseLetterNode(in string, first byte) (ok bool, o base.Opponent, t tile.Instance) {
+func parseLetterNode(in string, first byte) (ok bool, o tbase.Opponent, t tile.Instance) {
 	t = tile.InstanceNull
 	if len(in) < 1 {
 		return
@@ -306,8 +305,8 @@ func parseLetterNode(in string, first byte) (ok bool, o base.Opponent, t tile.In
 	if firstLetter < first {
 		return
 	}
-	o = base.Opponent(firstLetter - first)
-	if o > base.Left {
+	o = tbase.Opponent(firstLetter - first)
+	if o > tbase.Left {
 		return
 	}
 	if len(in) == 1 {

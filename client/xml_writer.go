@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tenhou/parser"
 	"github.com/dnovikoff/tenhou/tbase"
@@ -36,11 +35,11 @@ func (this XMLWriter) Drop(params Drop) {
 	this.WriteBody("%s%d", string(letter), i)
 }
 
-func (this XMLWriter) WriteTake(o base.Opponent, t tile.Instance, suggest Suggest, hideOthers bool) {
+func (this XMLWriter) WriteTake(o tbase.Opponent, t tile.Instance, suggest Suggest, hideOthers bool) {
 	letter := 'T'
 	letter += rune(o)
 	i := util.InstanceToTenhou(t)
-	if hideOthers && o != base.Self {
+	if hideOthers && o != tbase.Self {
 		this.WriteBody(string(letter))
 		return
 	}

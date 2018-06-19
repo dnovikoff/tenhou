@@ -18,23 +18,25 @@ type Result struct {
 }
 
 func Calculate(closed compact.Instances, options ...calc.Option) Results {
-	results := make(Results)
+	results := make(Results, len(closed))
 	cp := closed.Clone()
-	closed.Each(func(mask compact.Mask) bool {
-		i := mask.First()
-		if !cp.Remove(i) {
-			return false
+	last := tile.TileNull
+	options = append(options, shanten.StartMelds(closed))
+	for _, i := range cp.Instances() {
+		if i.Tile() == last {
+			continue
 		}
-		results[i.Tile()] = shanten.Calculate(cp, options...)
-		cp.Set(i)
-		return true
-	})
+		last = i.Tile()
+		cp.Remove(i)
+		results[last] = shanten.Calculate(cp, options...)
+		cp.CopyFrom(closed)
+	}
 	return results
 }
 
 //wd98765
 func tilePriority(t tile.Tile) int {
-	if t.IsHonor() {
+	if compact.Honor.Check(t) {
 		return 0
 	}
 

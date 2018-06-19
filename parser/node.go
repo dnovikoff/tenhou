@@ -6,18 +6,17 @@ import (
 
 	"github.com/facebookgo/stackerr"
 
-	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/score"
 	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tenhou/tbase"
 	"github.com/dnovikoff/tenhou/util"
 )
 
-func (this *Node) GetOpponent(key string) base.Opponent {
-	return base.Opponent(this.Int(key))
+func (this *Node) GetOpponent(key string) tbase.Opponent {
+	return tbase.Opponent(this.Int(key))
 }
 
-func (this *Node) GetWho() base.Opponent {
+func (this *Node) GetWho() tbase.Opponent {
 	return this.GetOpponent("who")
 }
 
@@ -26,7 +25,7 @@ func (this *Node) Check(key string) bool {
 	return ok
 }
 
-func (this *Node) GetDealer() base.Opponent {
+func (this *Node) GetDealer() tbase.Opponent {
 	return this.GetOpponent("oya")
 }
 

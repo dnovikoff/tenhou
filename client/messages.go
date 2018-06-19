@@ -1,7 +1,6 @@
 package client
 
 import (
-	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/score"
 	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tenhou/tbase"
@@ -13,11 +12,11 @@ type WithLobby struct {
 }
 
 type WithOpponent struct {
-	Opponent base.Opponent
+	Opponent tbase.Opponent
 }
 
 type WithDealer struct {
-	Dealer base.Opponent
+	Dealer tbase.Opponent
 }
 
 type WithInstance struct {

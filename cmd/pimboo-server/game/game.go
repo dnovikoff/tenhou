@@ -13,7 +13,6 @@ import (
 	"github.com/dnovikoff/tempai-core/hand/calc"
 	"github.com/dnovikoff/tempai-core/hand/effective"
 	"github.com/dnovikoff/tempai-core/hand/tempai"
-	"github.com/dnovikoff/tempai-core/meld"
 	"github.com/dnovikoff/tempai-core/score"
 	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tempai-core/yaku"
@@ -23,16 +22,6 @@ import (
 	"github.com/dnovikoff/tenhou/server"
 	"github.com/dnovikoff/tenhou/tbase"
 )
-
-type Player struct {
-	Hand    compact.Instances
-	Melds   meld.Melds
-	Discard compact.Instances
-	Score   score.Money
-	tempai  tempai.IndexedResult
-	furiten bool
-	first   bool
-}
 
 var rules = &yaku.RulesStruct{
 	IsOpenTanyao:         true,
@@ -125,11 +114,11 @@ func (this *Game) Player(x bool) *Player {
 	return this.Robot
 }
 
-func (this *Game) opp(x bool) base.Opponent {
+func (this *Game) opp(x bool) tbase.Opponent {
 	if x {
-		return base.Self
+		return tbase.Self
 	}
-	return base.Front
+	return tbase.Front
 }
 
 func (this *Game) scores() tbase.Scores {
@@ -201,7 +190,7 @@ func (this *Game) doAgari(
 	who bool,
 	isTsumo bool,
 	hand compact.Instances,
-	melds meld.Melds,
+	melds tbase.CalledList,
 	winTile tile.Instance,
 	indicators tile.Instances,
 	money score.Money,
@@ -229,7 +218,7 @@ func (this *Game) doAgari(
 		Hand:           hand.Instances(),
 		DoraIndicators: indicators,
 		WinTile:        winTile,
-		Melds:          tbase.NewTenhouMelds(melds),
+		Melds:          tbase.EncodeCalledList(melds),
 	}
 	var err error
 	a.Yakus, err = tbase.YakusFromCore(yaku)
@@ -293,7 +282,8 @@ func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 		return false
 	}
 	// Wrong tile ron
-	if !p.tempai.Waits().Check(t.Tile()) {
+	waits := tempai.GetWaits(p.tempai)
+	if !waits.Check(t.Tile()) {
 		if who {
 			this.doAgari(
 				who,
@@ -301,7 +291,7 @@ func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 				p.Hand,
 				p.Melds,
 				t,
-				inds(tile.White, p.tempai.Waits()),
+				inds(tile.White, waits),
 				penalty,
 				13,
 				nil,
@@ -312,7 +302,7 @@ func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 		return false
 	}
 	if !isTsumo && p.furiten {
-		tls := (p.Discard.UniqueTiles() & p.tempai.Waits())
+		tls := (p.Discard.UniqueTiles() & waits)
 		if who {
 			this.doAgari(
 				who,
@@ -339,7 +329,7 @@ func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 		SelfWind:    wind(this.Dealer == this.Turn),
 		IsRinshan:   this.Rinshan,
 	}
-	win := yaku.Win(p.tempai, ctx)
+	win := yaku.Win(p.tempai, ctx, nil)
 	s = score.GetScoreByResult(scoring, win, 0)
 	pay := s.PayRon
 	if who == this.Dealer {
@@ -352,7 +342,7 @@ func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 		p.Hand,
 		p.Melds,
 		t,
-		inds(tile.East, p.tempai.Waits()),
+		inds(tile.East, waits),
 		pay,
 		yaku.FuPoints(win.Fus.Sum().Round()),
 		win.Yaku,
@@ -364,7 +354,7 @@ func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 func (this *Game) RobotTurn() (result bool) {
 	{
 		params := client.Take{}
-		params.Opponent = base.Front
+		params.Opponent = tbase.Front
 		this.Client.Take(params)
 	}
 	t := this.take()
@@ -378,12 +368,12 @@ func (this *Game) RobotTurn() (result bool) {
 		Merge(p.Hand).
 		Merge(p.Discard).
 		Merge(this.Human.Discard)
-	p.Melds.AddTo(visible)
-	this.Human.Melds.AddTo(visible)
+	p.Melds.Add(visible)
+	this.Human.Melds.Add(visible)
 
 	res := effective.Calculate(
 		p.Hand,
-		calc.Melds(p.Melds),
+		calc.Declared(p.Melds.Core()),
 		calc.Used(visible),
 	)
 	x := res.Sorted(visible)
@@ -394,7 +384,7 @@ func (this *Game) RobotTurn() (result bool) {
 	params.Instance = toDrop
 	params.Suggest = client.SuggestRon
 	params.IsTsumogiri = (toDrop == t)
-	params.Opponent = base.Front
+	params.Opponent = tbase.Front
 	this.Client.Drop(params)
 	cb := &server.Callbacks{}
 	cb.CbCall = func(x server.Answer, t tile.Instances) {
@@ -416,7 +406,7 @@ func (this *Game) RobotTurn() (result bool) {
 func (this *Game) HumanTurn() (result bool) {
 	t := this.take()
 	params := client.Take{}
-	params.Opponent = base.Self
+	params.Opponent = tbase.Self
 	params.Instance = t
 	params.Suggest = client.SuggestTsumo
 	this.Client.Take(params)
@@ -432,7 +422,7 @@ func (this *Game) HumanTurn() (result bool) {
 		}
 		p.drop(i)
 		params := client.Drop{}
-		params.Opponent = base.Self
+		params.Opponent = tbase.Self
 		params.Instance = t
 		params.IsTsumogiri = (i == t)
 		this.Client.Drop(params)
@@ -450,15 +440,20 @@ func (this *Game) HumanTurn() (result bool) {
 				cb.Default()
 				return
 			}
-			m := meld.NewKan(first)
+			m := &tbase.Called{
+				Type:   tbase.ClosedKan,
+				Called: first,
+				Core:   calc.Kan(t.Tile()),
+				Tiles:  compact.NewMask(0, t.Tile()).SetCount(4).Instances(),
+			}
 			p.first = false
 			this.Robot.first = false
 			this.Rinshan = true
-			p.Melds = append(p.Melds, m.Meld())
+			p.Melds = append(p.Melds, m)
 			p.Hand.SetCount(first.Tile(), 0)
 			params := client.Declare{}
-			params.Opponent = base.Self
-			params.Meld = tbase.NewTenhouMeld(m.Meld())
+			params.Opponent = tbase.Self
+			params.Meld = tbase.EncodeCalled(m)
 			this.Client.Declare(params)
 			extraTurn = true
 		case server.AnswerSkip:
