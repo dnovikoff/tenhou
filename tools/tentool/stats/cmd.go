@@ -39,7 +39,6 @@ func CMD() *cobra.Command {
 			index := NewIndex()
 			err := index.Load()
 			if os.IsNotExist(err) {
-				utils.Check(index.MakeDir())
 				utils.Check(index.Save())
 				fmt.Println("Index initialized for ", Location)
 				return

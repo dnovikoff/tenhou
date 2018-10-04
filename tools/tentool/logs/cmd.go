@@ -51,13 +51,12 @@ func CMD() *cobra.Command {
 			index := NewIndex()
 			err := index.Load()
 			if os.IsNotExist(err) {
-				utils.Check(index.MakeDir())
 				utils.Check(index.Save())
-				fmt.Println("Index initialized for ", index.path)
+				fmt.Println("Index initialized for ", index.Path)
 				return
 			}
 			if err == nil {
-				fmt.Println("Index already initialized. Delete " + index.path + " to reinit.")
+				fmt.Println("Index already initialized. Delete " + index.Path + " to reinit.")
 				os.Exit(1)
 			}
 		},

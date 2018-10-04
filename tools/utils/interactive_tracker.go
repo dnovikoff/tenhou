@@ -2,6 +2,8 @@ package utils
 
 import (
 	"os"
+
+	"github.com/c2h5oh/datasize"
 )
 
 type InteractiveTracker struct {
@@ -36,9 +38,13 @@ func (t *InteractiveTracker) Write(bytes int) {
 	}
 	t.progress += int64(bytes)
 	if t.total == 0 {
-		t.w.Printf("%v of unknown total size", t.progress)
+		t.w.Printf("%v of unknown total size", datasize.ByteSize(t.progress))
 	} else {
-		t.w.Printf("%v/%v (%v%%)", t.progress, t.total, t.progress*100/t.total)
+		t.w.Printf("%s/%s (%v%%)",
+			datasize.ByteSize(t.progress).HumanReadable(),
+			datasize.ByteSize(t.total).HumanReadable(),
+			t.progress*100/t.total,
+		)
 	}
 }
 

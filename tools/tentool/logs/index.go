@@ -1,10 +1,6 @@
 package logs
 
 import (
-	"bytes"
-	"compress/gzip"
-	"encoding/json"
-	"io/ioutil"
 	"os"
 
 	multierror "github.com/hashicorp/go-multierror"
@@ -13,52 +9,22 @@ import (
 )
 
 type FileIndex struct {
-	path string
+	utils.JSONGZFile
 	data map[string][]string
 }
 
 func NewFileIndex(p string) *FileIndex {
-	return &FileIndex{path: p, data: map[string][]string{}}
-}
-
-func (i *FileIndex) MakeDir() error {
-	return utils.MakeDirForFile(i.fileName())
+	x := &FileIndex{data: map[string][]string{}}
+	x.Path = p
+	return x
 }
 
 func (i *FileIndex) Load() error {
-	f, err := os.Open(i.fileName())
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	gz, err := gzip.NewReader(f)
-	if err != nil {
-		return err
-	}
-	err = json.NewDecoder(gz).Decode(&i.data)
-	if err != nil {
-		return err
-	}
-	return nil
+	return i.JSONGZFile.Load(&i.data)
 }
 
-func (i *FileIndex) fileName() string {
-	return i.path + ".gz"
-}
-
-func (i *FileIndex) Save() error {
-	buf := &bytes.Buffer{}
-	gz := gzip.NewWriter(buf)
-	enc := json.NewEncoder(gz)
-	err := enc.Encode(i.data)
-	if err != nil {
-		return err
-	}
-	err = gz.Close()
-	if err != nil {
-		return err
-	}
-	return ioutil.WriteFile(i.fileName(), buf.Bytes(), 0644)
+func (i *FileIndex) Save() (err error) {
+	return i.JSONGZFile.Save(i.data)
 }
 
 func (i *FileIndex) Len() int {

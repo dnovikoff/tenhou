@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"strings"
@@ -8,15 +9,22 @@ import (
 
 type InteractiveWriter struct {
 	w        io.Writer
+	buf      *bytes.Buffer
 	lastSize int
 }
 
 func NewInteractiveWriter(w io.Writer) *InteractiveWriter {
-	return &InteractiveWriter{w: w}
+	return &InteractiveWriter{w: w, buf: &bytes.Buffer{}}
 }
 
 func (w *InteractiveWriter) Printf(format string, args ...interface{}) (int, error) {
-	return fmt.Fprintf(w.w, w.fixString(format), args...)
+	lastString := w.buf.String()
+	w.buf.Reset()
+	fmt.Fprintf(w.buf, format, args...)
+	if lastString == w.buf.String() {
+		return w.buf.Len(), nil
+	}
+	return fmt.Fprint(w.w, w.fixString(w.buf.String()))
 }
 
 func (w *InteractiveWriter) Println(args ...interface{}) (int, error) {

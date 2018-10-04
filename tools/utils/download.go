@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 )
 
 func MustDownload(u string, opts ...Option) string {
@@ -14,17 +13,20 @@ func MustDownload(u string, opts ...Option) string {
 	return buf.String()
 }
 
-func (d *downloader) WriteFile(u, p string) error {
-	err := MakeDirForFile(p)
+func (d *downloader) WriteFile(u, p string) (err error) {
+	f, err := CreateFile(p)
 	if err != nil {
-		return err
+		return
 	}
-	f, err := os.Create(p)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	return d.Write(u, f)
+	defer func() {
+		f.Close()
+		if err != nil {
+			return
+		}
+		err = f.Commit()
+	}()
+	err = d.Write(u, f)
+	return
 }
 
 func (d *downloader) Write(u string, w io.Writer) error {
