@@ -28,7 +28,7 @@ func (d *downloader) WriteFile(u, p string) error {
 }
 
 func (d *downloader) Write(u string, w io.Writer) error {
-	resp, err := http.Get(u)
+	resp, err := d.client.Get(u)
 	if err != nil {
 		return err
 	}

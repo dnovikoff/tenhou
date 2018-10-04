@@ -29,7 +29,7 @@ func (w *InteractiveWriter) fixString(str string) string {
 	if w.lastSize != 0 {
 		str = "\r" + str
 	}
-	diff := size - w.lastSize
+	diff := w.lastSize - size
 	if diff > 0 {
 		str += strings.Repeat(" ", diff)
 	}
