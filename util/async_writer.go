@@ -6,15 +6,15 @@ import (
 	"sync"
 )
 
+const DefaultChannelSize = 1024
+
 type AsyncWriter struct {
 	writeChan     chan string
 	WriteCallback func(context.Context, string) error
-	ChannelSize   int
 }
 
-func NewAsyncWriter() *AsyncWriter {
-	return &AsyncWriter{ChannelSize: 1024}
-
+func NewAsyncWriter(channelSize int) *AsyncWriter {
+	return &AsyncWriter{writeChan: make(chan string, channelSize)}
 }
 
 func (this *AsyncWriter) run(ctx context.Context) {
@@ -33,7 +33,6 @@ func (this *AsyncWriter) Close() {
 }
 
 func (this *AsyncWriter) Start(ctx context.Context) func() {
-	this.writeChan = make(chan string, this.ChannelSize)
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
