@@ -139,6 +139,15 @@ func CMD() *cobra.Command {
 		},
 	}
 
+	statusCMD := &cobra.Command{
+		Use:   "status",
+		Short: "Show downloaded status",
+		Args:  cobra.NoArgs,
+		Run: func(cmd *cobra.Command, args []string) {
+			Status()
+		},
+	}
+
 	rootCMD.AddCommand(initCMD)
 	rootCMD.AddCommand(validateCMD)
 	rootCMD.AddCommand(updateCMD)
@@ -146,5 +155,6 @@ func CMD() *cobra.Command {
 	rootCMD.AddCommand(importCMD)
 	rootCMD.AddCommand(exportCMD)
 	rootCMD.AddCommand(collectCMD)
+	rootCMD.AddCommand(statusCMD)
 	return rootCMD
 }
