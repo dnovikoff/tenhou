@@ -1,0 +1,171 @@
+<html><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>オンライン対戦麻雀 天鳳 / ログ</title>
+	<link rel="stylesheet" type="text/css" href="/style.css">
+</head><body><center>
+<!-- ---------------------------------------------------------------------------------------------------------------------------- -->
+	<script type="text/javascript" src="/ad1.js"></script>
+	<script type="text/javascript" src="/ad2.js"></script>
+	<script type="text/javascript" src="/navi.js"></script>
+
+
+
+	<br>
+	<table width=728 cellpadding=0 cellspacing=0 class=s >
+	<tr><td valign=top ><img src="/img/f0tl.gif"/></td><td rowspan=2 valign=top ><img src="/img/f0tc.gif"/><br>
+	<!-- ---------------------------------------------------------------------------------------------------------------------------- -->
+<h3><font color="#AA0000">■</font> ログ / 一覧 </h3>
+<blockquote>
+ログの自動ダウンロードについてはページの下のほうに注意事項がありますのでよく読んでください。<br>
+<br>
+<font color=#F00>※天鳳と競合する製品への開発・応用を目的として牌譜を使用していただくことはできません。<br></font>
+※更新周期は20分です。<br>
+※ログは対戦開始時間順にソートされます。<br>
+※ソートにより最後の行よりも前にログが追加される場合があります。(対戦時間の長い対戦)<br>
+※sca=個室 / scb=段位戦 / scc=鳳凰卓(牌譜あり) / scd=雀荘戦 / sce=技能戦+琥珀卓(牌譜あり)<br>
+※scaの2カラム目、sc[bcde]の１カラム目は対戦開始時間<br>
+※sc[bcde]の2カラム目はゲーム時間<br>
+※scc形式はhtml-escaped[&gt;&lt;&amp;]<br>
+※scc形式は鳳凰卓開設の20090201から<br>
+※scd形式は雀荘戦開設の20101014から<br>
+※sce形式は技能戦開設の20130311から(技能戦は閉鎖)<br>
+※sce形式は20160606から琥珀卓の牌譜付きログを追加<br>
+※scf形式は20151104から<br>
+※<a href="/ranking_tool.html">集計ツール</a><br>
+<br>
+<br>
+	<center>
+	<form name=f>
+	<input type=radio name=t onclick="sw();" value="sca" checked>個室
+	<input type=radio name=t onclick="sw();" value="scb" >段位戦
+	<input type=radio name=t onclick="sw();" value="scc" >鳳凰卓
+	<input type=radio name=t onclick="sw();" value="scd" >雀荘戦
+	<input type=radio name=t onclick="sw();" value="sce" >琥珀卓
+	<input type=radio name=t onclick="sw();" value="scf" >公式大会
+	<input type=radio name=t onclick="sw();" value=""    >すべて
+	</form>
+<div id=c></div>
+	</center>
+
+<script type="text/javascript"><!--
+function ei(n,s){document.getElementById(n).innerHTML=s;}
+var fi=[];
+function sw(){
+	var t=0, i, f=document.f;
+	for(i=0;i<f.t.length;++i) if (f.t[i].checked) t=f.t[i].value;
+
+	var type={sca:"個室",scb:"段位戦",scc:"鳳凰卓",scd:"雀荘戦",sce:"琥珀卓",scf:"公式大会"};
+	var i=0,s="";
+	s+="<table border=1 cellpadding=4 cellspacing=0 >";
+	s+="<tr><th style=\"width:5em;\">type</th><th colspan=2 >file</th><th>bytes</th></tr>";
+	for(i=0;i<fi.length;++i){
+		var tt=fi[i].file.match(/sc[abcdef]/)[0];
+		if (t && t!=tt) continue;
+		s+="<tr>";
+		s+="<td>"+type[tt]+"</td>";
+		s+="<td><a href=\"dat/"+fi[i].file+"\">"+fi[i].file+"</a></td>";
+		s+="<td><a href=\"viewer.cgi?"+fi[i].file+"&"+fi[i].size+"\">表示</a></td>";
+		s+="<td>"+fi[i].size+"</td>";
+		s+="</tr>";
+	}
+	s+="</table>";
+	ei("c",s);
+}
+function list(a){
+	fi=a;
+	sw();
+}
+document.write(
+	'<scr'+'ipt type="text/javascript" src="list.cgi'+(window.location.search=="?old"?"?old":"")+'"></scr'+'ipt>'
+);
+//--></script>
+</blockquote>
+	<!-- ---------------------------------------------------------------------------------------------------------------------------- -->
+	</td><td valign=top ><img src="/img/f0tr.gif"/></td></tr><tr><td valign=bottom ><img src="/img/f0bl.gif"/></td>
+	<td valign=bottom ><img src="/img/f0br.gif"/></td></tr><tr><td valign=bottom colspan=3 ><img src="/img/f0b.gif"/></td></tr></table>
+
+
+
+
+	<br>
+	<table width=728 cellpadding=0 cellspacing=0 class=s >
+	<tr><td valign=top ><img src="/img/f0tl.gif"/></td><td rowspan=2 valign=top ><img src="/img/f0tc.gif"/><br>
+	<!-- ---------------------------------------------------------------------------------------------------------------------------- -->
+<h3><font color="#AA0000">■</font> 過去ログ</h3>
+<blockquote>
+	<a href="./?old">2018.01.01～７日前</a><br>
+	<br>
+	※以下のリンクは大きなファイルのダウンロードが開始します。<br>
+	<a href="scraw2017.zip">scraw2017.zip</a> (405M)<br>
+	<a href="scraw2016.zip">scraw2016.zip</a> (409M)<br>
+	<a href="scraw2015.zip">scraw2015.zip</a> (438M)<br>
+	<a href="scraw2014.zip">scraw2014.zip</a> (510M)<br>
+	<a href="scraw2013.zip">scraw2013.zip</a> (576M)<br>
+	<a href="scraw2012.zip">scraw2012.zip</a> (607M)<br>
+	<a href="scraw2011.zip">scraw2011.zip</a> (589M)<br>
+	<a href="scraw2010.zip">scraw2010.zip</a> (586M)<br>
+	<a href="scraw2009.zip">scraw2009.zip</a> (496M)<br>
+	<a href="scraw2008.zip">scraw2008.zip</a> (223M)<br>
+	<a href="scraw2007.zip">scraw2007.zip</a> (83M)<br>
+	<a href="scraw2006.zip">scraw2006.zip</a> (10M)<br>
+</blockquote>
+<br>
+	<!-- ---------------------------------------------------------------------------------------------------------------------------- -->
+	</td><td valign=top ><img src="/img/f0tr.gif"/></td></tr><tr><td valign=bottom ><img src="/img/f0bl.gif"/></td>
+	<td valign=bottom ><img src="/img/f0br.gif"/></td></tr><tr><td valign=bottom colspan=3 ><img src="/img/f0b.gif"/></td></tr></table>
+
+
+	<br>
+	<table width=728 cellpadding=0 cellspacing=0 class=s >
+	<tr><td valign=top ><img src="/img/f0tl.gif"/></td><td rowspan=2 valign=top ><img src="/img/f0tc.gif"/><br>
+	<!-- ---------------------------------------------------------------------------------------------------------------------------- -->
+<h3><font color="#AA0000">■</font> ログの自動ダウンロードについて </h3>
+<blockquote>
+ログの自動ダウンロードは以下のルールに従い、最小のダウンロード回数でお願いします。<br>
+<br>
+FileIndex (URL="http://tenhou.net/sc/raw/dat/"+list[i].file)<br>
+<a href="http://tenhou.net/sc/raw/list.cgi">http://tenhou.net/sc/raw/list.cgi</a> (Last 7days)<br>
+<a href="http://tenhou.net/sc/raw/list.cgi?old">http://tenhou.net/sc/raw/list.cgi?old</a> (old archives)<br>
+<br>
+<b>1．最短周期は20分</b><br>
+	<blockquote>
+	20分より短いログの更新はありません。
+	FileIndexに存在するファイルのみダウンロードできます。
+	</blockquote>
+<b>2．ファイルはサイズを検査し不要なダウンロードを発生させない</b><br>
+	<blockquote>
+	ログには終了した対戦が開始時刻順にソートして出力されるため、
+	最後の行よりも前にレコードが追加されることがあります。
+	そのため、すべてのログを収集するには、複数のログファイルをダウンロードし続ける必要があります。
+	重複ダウンロードを回避するには<a href="http://tenhou.net/sc/raw/list.cgi">FileIndex</a>でサイズの検査を行ってください。
+	サイズが増えていなければファイルの変更はありませんのでダウンロードを省略できます。 <br>
+	</blockquote>
+<b>3．*.log.gzの圧縮済みファイルのダウンロードする</b><br>
+	<blockquote>
+	「表示」からの無圧縮転送での自動ダウンロードは禁止です。<br>
+	</blockquote>
+<b>4．都度"http://tenhou.net/sc/raw/dat/"以下からリダイレクトする</b><br>
+	<blockquote>
+	ログや<a href="http://tenhou.net/sc/raw/list.cgi">FileIndex</a>は移転/分散する可能性があります。
+	http://tenhou.net/で開始するURLは常に正しい移転先/分散先にリダイレクトします。
+	</blockquote>
+<b>5．セッション数は最大１つまで</b><br>
+	<blockquote>
+	複数セッションの同時ダウンロードは禁止です。<br>
+	</blockquote>
+<br>
+以上のルールに違反する接続元はダウンロードを禁止する場合があります。
+</blockquote>
+<br>
+	<!-- ---------------------------------------------------------------------------------------------------------------------------- -->
+	</td><td valign=top ><img src="/img/f0tr.gif"/></td></tr><tr><td valign=bottom ><img src="/img/f0bl.gif"/></td>
+	<td valign=bottom ><img src="/img/f0br.gif"/></td></tr><tr><td valign=bottom colspan=3 ><img src="/img/f0b.gif"/></td></tr></table>
+
+
+<!-- ---------------------------------------------------------------------------------------------------------------------------- -->
+	<br>
+	<div class=w>&copy; C-EGG</div>
+	<br>
+
+
+</center></body></html>
