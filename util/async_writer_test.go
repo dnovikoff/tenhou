@@ -5,19 +5,19 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type awTester struct {
-	AsyncWriter
+	*AsyncWriter
 	Messages []string
 }
 
-func newAwTester() *awTester {
-	tst := &awTester{}
-	tst.ChannelSize = 10
+func newAwTester(channelSize int) *awTester {
+	tst := &awTester{
+		AsyncWriter: NewAsyncWriter(channelSize),
+	}
 	tst.WriteCallback = func(_ context.Context, message string) (err error) {
 		if message == "error" {
 			return errors.New("You wanted error - here you are")
@@ -33,7 +33,7 @@ func (this *awTester) start() func() {
 }
 
 func TestAsyncWriter(t *testing.T) {
-	tst := newAwTester()
+	tst := newAwTester(DefaultChannelSize)
 	w := tst.start()
 	tst.Close()
 	w()
@@ -41,7 +41,7 @@ func TestAsyncWriter(t *testing.T) {
 }
 
 func TestAsyncWriterOne(t *testing.T) {
-	tst := newAwTester()
+	tst := newAwTester(DefaultChannelSize)
 	w := tst.start()
 	require.NoError(t, tst.WriteString("Hello!"))
 	tst.Close()
@@ -52,7 +52,7 @@ func TestAsyncWriterOne(t *testing.T) {
 }
 
 func TestAsyncWriterTwo(t *testing.T) {
-	tst := newAwTester()
+	tst := newAwTester(DefaultChannelSize)
 	w := tst.start()
 	require.NoError(t, tst.WriteString("Hello!"))
 	require.NoError(t, tst.WriteString("World!"))
@@ -65,7 +65,7 @@ func TestAsyncWriterTwo(t *testing.T) {
 }
 
 func TestAsyncWriterError(t *testing.T) {
-	tst := newAwTester()
+	tst := newAwTester(DefaultChannelSize)
 	w := tst.start()
 	require.NoError(t, tst.WriteString("One"))
 	require.NoError(t, tst.WriteString("error"))
@@ -78,12 +78,9 @@ func TestAsyncWriterError(t *testing.T) {
 }
 
 func TestAsyncWriterQueueIfFulll(t *testing.T) {
-	tst := newAwTester()
-	tst.ChannelSize = 1
-	w := tst.start()
+	tst := newAwTester(1)
 	require.NoError(t, tst.WriteString("error"))
 	require.Error(t, tst.WriteString("One"))
 	tst.Close()
-	w()
 	assert.Nil(t, tst.Messages)
 }
