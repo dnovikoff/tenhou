@@ -1,0 +1,10 @@
+[
+    {
+        "search": "^2018.+$",
+        "file": "export/2018_part.zip"
+    },
+    {
+        "search": "^([0-9]{4}).+$",
+        "file": "export/$1.zip"
+    }
+]

@@ -88,3 +88,44 @@ The server suggests Ron on any opponent drop and Tsumo on any take.
 If you call a Noten-agari, a Furiten-Ron or agari on a wrong tile, you will pay a penalty.
 
 The game continues until one of the opponents will drop under zero points.
+
+## Tenhou stats and log downloader
+Download tool by typing
+```
+go get github.com/dnovikoff/tenhou/tools/tentool
+```
+
+Initialize the stats repo in current working dir
+```
+./tentool stats init
+```
+
+Download stat files by typing
+```
+./tentool stats download
+```
+The files will be downloaded to ./tenhou/stats folder.
+Repeat this action to get updates.
+
+Initialize the logs repo in current working dir
+```
+./tentool logs init
+```
+
+Collect all log ids from stat files by typing
+```
+./tentool logs update
+```
+Repeat this action, after next download of stats repo
+
+You can download some log archives to reduce download time from here https://yadi.sk/d/D_0tO_135zIKPw
+Place this files into ./tenhou/logs dir and run
+Download log files from collected log ids by typing
+```
+./tentool logs import ./tenhou/logs/file.zip ./tenhou/logs/otherfile.zip
+```
+
+Download log files from collected log ids by typing
+```
+./tentool logs download
+```
