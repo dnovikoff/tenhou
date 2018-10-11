@@ -9,20 +9,20 @@ type NullController struct{}
 
 var _ Controller = NullController{}
 
-func (this NullController) Open(Info) bool                  { return true }
-func (this NullController) Close()                          {}
-func (this NullController) SetFloatFormat()                 {}
-func (this NullController) Shuffle(Shuffle)                 {}
-func (this NullController) Go(client.WithLobby)             {}
-func (this NullController) Start(client.WithDealer)         {}
-func (this NullController) Init(Init)                       {}
-func (this NullController) Draw(WithOpponentAndInstance)    {}
-func (this NullController) Discard(WithOpponentAndInstance) {}
-func (this NullController) Declare(Declare)                 {}
-func (this NullController) Ryuukyoku(tbase.Ryuukyoku)       {}
-func (this NullController) Reach(client.Reach)              {}
-func (this NullController) Agari(tbase.Agari)               {}
-func (this NullController) Indicator(client.WithInstance)   {}
-func (this NullController) Disconnect(client.WithOpponent)  {}
-func (this NullController) UserList(client.UserList)        {}
-func (this NullController) Reconnect(client.Reconnect)      {}
+func (NullController) Open(Info) bool                  { return true }
+func (NullController) Close()                          {}
+func (NullController) SetFloatFormat()                 {}
+func (NullController) Shuffle(Shuffle)                 {}
+func (NullController) Go(client.WithLobby)             {}
+func (NullController) Start(client.WithDealer)         {}
+func (NullController) Init(Init)                       {}
+func (NullController) Draw(WithOpponentAndInstance)    {}
+func (NullController) Discard(WithOpponentAndInstance) {}
+func (NullController) Declare(Declare)                 {}
+func (NullController) Ryuukyoku(tbase.Ryuukyoku)       {}
+func (NullController) Reach(client.Reach)              {}
+func (NullController) Agari(tbase.Agari)               {}
+func (NullController) Indicator(client.WithInstance)   {}
+func (NullController) Disconnect(client.WithOpponent)  {}
+func (NullController) UserList(client.UserList)        {}
+func (NullController) Reconnect(client.Reconnect)      {}

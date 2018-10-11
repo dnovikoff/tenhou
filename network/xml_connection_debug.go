@@ -25,27 +25,27 @@ func NewXMLConnectionDebugger(impl XMLConnection, log func(format string, args .
 	return &xmlDebugger{impl, log}
 }
 
-func (this *xmlDebugger) Read(ctx context.Context) (str string, err error) {
-	str, err = this.impl.Read(ctx)
+func (d *xmlDebugger) Read(ctx context.Context) (str string, err error) {
+	str, err = d.impl.Read(ctx)
 	if err != nil {
-		this.log("Get error: %v", err)
+		d.log("Get error: %v", err)
 	} else {
-		this.log("Get: %v", str)
+		d.log("Get: %v", str)
 	}
 	return
 }
 
-func (this *xmlDebugger) Close() error {
-	this.log("Close")
-	return this.impl.Close()
+func (d *xmlDebugger) Close() error {
+	d.log("Close")
+	return d.impl.Close()
 }
 
 // Not thread safe
-func (this *xmlDebugger) Write(ctx context.Context, str string) error {
-	this.log("Send: %v", str)
-	err := this.impl.Write(ctx, str)
+func (d *xmlDebugger) Write(ctx context.Context, str string) error {
+	d.log("Send: %v", str)
+	err := d.impl.Write(ctx, str)
 	if err != nil {
-		this.log("Write error: %v", err)
+		d.log("Write error: %v", err)
 	}
 	return err
 }

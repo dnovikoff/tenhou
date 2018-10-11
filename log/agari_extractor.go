@@ -36,41 +36,41 @@ func NewAgariExtractor(x func(*Info, *tbase.Agari, *yaku.Context, base.Wind, sco
 	}
 }
 
-func (this *AgariExtractor) Open(info Info) bool {
-	this.Info = &info
-	this.Defected = false
+func (e *AgariExtractor) Open(info Info) bool {
+	e.Info = &info
+	e.Defected = false
 	rules := tbase.FlagDan1 | tbase.FlagDan2 | tbase.FlagHanchan | tbase.FlagOnline
 	return info.Lobby == 0 && (info.Rules.Extract(tbase.FlagEnd-1) == rules)
 }
 
-func (this *AgariExtractor) Close() {
-	if this.Defected {
-		fmt.Fprintf(os.Stderr, "Defect log %v\n", this.Info.FullName)
+func (e *AgariExtractor) Close() {
+	if e.Defected {
+		fmt.Fprintf(os.Stderr, "Defect log %v\n", e.Info.FullName)
 	}
 }
 
-func (this *AgariExtractor) UserList(params client.UserList) {
+func (e *AgariExtractor) UserList(params client.UserList) {
 	if len(params.Users) == 3 {
-		this.Defected = true
+		e.Defected = true
 	}
 }
 
-func (this *AgariExtractor) Init(params Init) {
-	this.Dealer = params.Dealer
-	this.Round = params.RoundNumber
-	this.DoubleRon = false
+func (e *AgariExtractor) Init(params Init) {
+	e.Dealer = params.Dealer
+	e.Round = params.RoundNumber
+	e.DoubleRon = false
 }
 
-func (this *AgariExtractor) Discard(WithOpponentAndInstance) {
-	this.KanFlag = false
+func (e *AgariExtractor) Discard(WithOpponentAndInstance) {
+	e.KanFlag = false
 }
 
-func (this *AgariExtractor) Declare(params Declare) {
-	this.KanFlag = params.Meld.Decode().IsKan()
+func (e *AgariExtractor) Declare(params Declare) {
+	e.KanFlag = params.Meld.Decode().IsKan()
 }
 
-func (this *AgariExtractor) Agari(agari tbase.Agari) {
-	if this.Defected {
+func (e *AgariExtractor) Agari(agari tbase.Agari) {
+	if e.Defected {
 		return
 	}
 	ctx := &yaku.Context{}
@@ -85,18 +85,18 @@ func (this *AgariExtractor) Agari(agari tbase.Agari) {
 	ctx.IsRiichi = ctx.IsDaburi || yakus.CheckCore(yaku.YakuRiichi)
 	ctx.IsIpatsu = yakus.CheckCore(yaku.YakuIppatsu)
 	ctx.IsLastTile = yakus.CheckCore(yaku.YakuHaitei) || yakus.CheckCore(yaku.YakuHoutei)
-	ctx.RoundWind = base.WindEast + base.Wind(this.Round/4)
+	ctx.RoundWind = base.WindEast + base.Wind(e.Round/4)
 	ctx.Tile = agari.WinTile
-	ctx.SelfWind = base.WindEast.Advance(int(agari.Who - this.Dealer))
-	otherWind := base.WindEast.Advance(int(agari.From - this.Dealer))
+	ctx.SelfWind = base.WindEast.Advance(int(agari.Who - e.Dealer))
+	otherWind := base.WindEast.Advance(int(agari.From - e.Dealer))
 	ctx.IsTsumo = ctx.SelfWind == otherWind
-	ctx.Rules = this.yakuRules
-	ctx.IsChankan = (this.KanFlag && !ctx.IsTsumo) || yakus.CheckCore(yaku.YakuChankan)
-	ctx.IsRinshan = (this.KanFlag && ctx.IsTsumo) || yakus.CheckCore(yaku.YakuRinshan)
-	if this.DoubleRon {
+	ctx.Rules = e.yakuRules
+	ctx.IsChankan = (e.KanFlag && !ctx.IsTsumo) || yakus.CheckCore(yaku.YakuChankan)
+	ctx.IsRinshan = (e.KanFlag && ctx.IsTsumo) || yakus.CheckCore(yaku.YakuRinshan)
+	if e.DoubleRon {
 		agari.Status.Sticks = 0
 		agari.Status.Honba = 0
 	}
-	this.Callback(this.Info, &agari, ctx, otherWind, this.scoringRules)
-	this.DoubleRon = true
+	e.Callback(e.Info, &agari, ctx, otherWind, e.scoringRules)
+	e.DoubleRon = true
 }
