@@ -46,7 +46,7 @@ func ParseRyuukyoku(node *Node) (r *tbase.Ryuukyoku, err error) {
 	return
 }
 
-func (this *Node) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (node *Node) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	t, err := d.Token()
 	if err != nil {
 		return err
@@ -57,11 +57,11 @@ func (this *Node) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		return stackerr.Newf("Unexpected element %v", t)
 	}
 
-	this.Name = start.Name.Local
+	node.Name = start.Name.Local
 	attrs := make(map[string]string, len(start.Attr))
 	for _, x := range start.Attr {
 		attrs[x.Name.Local] = x.Value
 	}
-	this.Attributes = attrs
+	node.Attributes = attrs
 	return nil
 }

@@ -67,8 +67,12 @@ func filenameFix(filename string) (fixedId string, fixedName string) {
 	return
 }
 
-func (this *Info) DebugString() string {
-	return fmt.Sprintf("[%v][%v][%v][%v]", this.Time, this.Rules.DebugString(), this.Lobby, this.Id)
+func (i *Info) DebugString() string {
+	return fmt.Sprintf("[%v][%v][%v][%v]",
+		i.Time,
+		i.Rules.DebugString(),
+		i.Lobby,
+		i.Id)
 }
 
 func extractId(in string) string {

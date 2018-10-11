@@ -32,7 +32,7 @@ func NewXMLConnection(impl net.Conn) *xmlConnection {
 }
 
 // Not thread safe
-func (this *xmlConnection) Read(ctx context.Context) (str string, err error) {
+func (c *xmlConnection) Read(ctx context.Context) (str string, err error) {
 	type result struct {
 		str string
 		err error
@@ -40,35 +40,35 @@ func (this *xmlConnection) Read(ctx context.Context) (str string, err error) {
 	ch := make(chan *result, 1)
 	go func() {
 		var r result
-		r.str, r.err = this.reader.ReadString(terminator)
+		r.str, r.err = c.reader.ReadString(terminator)
 		r.str = strings.TrimRight(r.str, string([]byte{terminator}))
 		ch <- &r
 	}()
 	select {
 	case <-ctx.Done():
 		err = errors.New("Read timeout exceded")
-		this.impl.Close()
+		c.impl.Close()
 	case r := <-ch:
 		str, err = r.str, r.err
 	}
 	return
 }
 
-func (this *xmlConnection) Close() error {
-	return this.impl.Close()
+func (c *xmlConnection) Close() error {
+	return c.impl.Close()
 }
 
 // Not thread safe
-func (this *xmlConnection) Write(ctx context.Context, str string) (err error) {
+func (c *xmlConnection) Write(ctx context.Context, str string) (err error) {
 	ch := make(chan error, 1)
 	go func() {
-		_, writeError := this.impl.Write(append([]byte(str), terminator))
+		_, writeError := c.impl.Write(append([]byte(str), terminator))
 		ch <- writeError
 	}()
 	select {
 	case <-ctx.Done():
 		err = errors.New("Write timeout exceded")
-		this.impl.Close()
+		c.impl.Close()
 	case err = <-ch:
 	}
 	return

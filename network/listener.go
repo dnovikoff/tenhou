@@ -26,50 +26,50 @@ func NewListener() *Listener {
 	}
 }
 
-func (this *Listener) checkError(err error) bool {
-	if err == nil || this.OnError == nil {
+func (lis *Listener) checkError(err error) bool {
+	if err == nil || lis.OnError == nil {
 		return true
 	}
-	this.OnError(err)
+	lis.OnError(err)
 	return false
 }
 
-func (this *Listener) handle(parentCtx context.Context, sConn net.Conn) {
+func (lis *Listener) handle(parentCtx context.Context, sConn net.Conn) {
 	con := NewXMLConnection(sConn)
 	ctx, cancel := context.WithTimeout(parentCtx, time.Second*10)
 	defer cancel()
 	str, err := con.Read(ctx)
-	if !this.checkError(err) {
+	if !lis.checkError(err) {
 		return
 	}
 	if str == "<policy-file-request/>" {
-		err = con.Write(ctx, this.Policy)
-		if !this.checkError(err) {
+		err = con.Write(ctx, lis.Policy)
+		if !lis.checkError(err) {
 			sConn.Close()
 		}
 		return
 	} else if str == "<GETSWF />" {
-		err = con.Write(ctx, this.SWF)
-		if !this.checkError(err) {
+		err = con.Write(ctx, lis.SWF)
+		if !lis.checkError(err) {
 			sConn.Close()
 		}
 		return
 	}
-	this.Handler(con)
+	lis.Handler(con)
 }
 
-func (this *Listener) Start(ctx context.Context, network, address string) (waitForExit func()) {
+func (lis *Listener) Start(ctx context.Context, network, address string) (waitForExit func()) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
-		err := this.ListenAndServe(ctx, network, address)
-		this.checkError(err)
+		err := lis.ListenAndServe(ctx, network, address)
+		lis.checkError(err)
 		wg.Done()
 	}()
 	return wg.Wait
 }
 
-func (this *Listener) ListenAndServe(ctx context.Context, network, address string) (err error) {
+func (lis *Listener) ListenAndServe(ctx context.Context, network, address string) (err error) {
 	ln, err := net.Listen(network, address)
 	if err != nil {
 		return
@@ -79,6 +79,6 @@ func (this *Listener) ListenAndServe(ctx context.Context, network, address strin
 		if err != nil {
 			return err
 		}
-		go this.handle(ctx, conn)
+		go lis.handle(ctx, conn)
 	}
 }

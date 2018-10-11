@@ -24,16 +24,16 @@ func NewNodeReader() *NodeReader {
 
 }
 
-func (this *NodeReader) run(ctx context.Context) {
+func (r *NodeReader) run(ctx context.Context) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer func() {
 		cancel()
-		close(this.resultCh)
+		close(r.resultCh)
 	}()
 	for {
-		message, err := this.ReadCallback(ctx)
+		message, err := r.ReadCallback(ctx)
 		if err != nil {
-			this.resultCh <- readResult{err: err}
+			r.resultCh <- readResult{err: err}
 			return
 		}
 		select {
@@ -43,36 +43,36 @@ func (this *NodeReader) run(ctx context.Context) {
 		}
 		nodes, err := ParseXML(message)
 		if err != nil {
-			this.resultCh <- readResult{err: err}
+			r.resultCh <- readResult{err: err}
 			return
 		}
 		for _, v := range nodes {
-			this.resultCh <- readResult{v, nil}
+			r.resultCh <- readResult{v, nil}
 		}
 	}
 }
 
-func (this *NodeReader) Start(ctx context.Context) func() {
-	this.resultCh = make(chan readResult, 1024)
+func (r *NodeReader) Start(ctx context.Context) func() {
+	r.resultCh = make(chan readResult, 1024)
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
-		this.run(ctx)
+		r.run(ctx)
 		wg.Done()
 	}()
 	return wg.Wait
 }
 
-func (this *NodeReader) Next() (node *Node, err error) {
-	r, ok := <-this.resultCh
+func (r *NodeReader) Next() (node *Node, err error) {
+	res, ok := <-r.resultCh
 	if !ok {
 		err = errors.New("NodeReader stopped")
 		return
 	}
-	if r.err != nil {
-		err = r.err
+	if res.err != nil {
+		err = res.err
 		return
 	}
-	node = &r.node
+	node = &res.node
 	return
 }
