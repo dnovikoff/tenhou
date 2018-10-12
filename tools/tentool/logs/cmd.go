@@ -90,15 +90,20 @@ func CMD() *cobra.Command {
 	}
 	updateCMD.Flags().BoolVar(&interactiveFlag, "interactive", true, "Use interactive progress.")
 
+	var parallel int
 	downloadCMD := &cobra.Command{
 		Use:   "download",
 		Short: "Download log files",
 		Args:  cobra.NoArgs,
 		Run: func(cmd *cobra.Command, _ []string) {
-			(&downloader{interactive: interactiveFlag}).Run()
+			(&downloader{
+				interactive: interactiveFlag,
+				parallel:    parallel,
+			}).Run()
 		},
 	}
 	downloadCMD.Flags().BoolVar(&interactiveFlag, "interactive", true, "Use interactive downloader progress.")
+	downloadCMD.Flags().IntVar(&parallel, "parallel", 1, "Number of parallel downloads.")
 
 	importCMD := &cobra.Command{
 		Use:   "import",

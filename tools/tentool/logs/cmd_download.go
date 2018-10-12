@@ -1,11 +1,13 @@
 package logs
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
 	"path"
 	"sort"
+	"sync"
 	"time"
 
 	"github.com/dnovikoff/tenhou/tools/utils"
@@ -14,12 +16,11 @@ import (
 type downloader struct {
 	interactive bool
 	index       *FileIndex
-	client      *http.Client
+	parallel    int
 }
 
 func (d *downloader) Run() {
 	var err error
-	d.client = &http.Client{}
 	d.index, err = LoadIndex()
 	utils.Check(err)
 	links := make([]string, 0, len(d.index.data))
@@ -36,16 +37,31 @@ func (d *downloader) Run() {
 	w.Printf("Logs to download %v of total %v", total, len(d.index.data))
 	w.Println()
 	startTime := time.Now()
+	ctx := context.TODO()
+	requests := make(chan *downloadRequest, d.parallel)
+	results := make(chan *downloadRequest, d.parallel)
+	var wg sync.WaitGroup
+	for i := 0; i < d.parallel; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			d.downloadStream(ctx, requests, results)
+		}()
+	}
+	go func() {
+		wg.Wait()
+		close(results)
+	}()
+	schedulerError := make(chan error, 1)
+	go d.downloadScheduler(ctx, links, requests, schedulerError)
 	defer d.index.Save()
-	for _, id := range links {
-		parsed := ParseID(id)
-		downloadLink := GetDownloadLink(parsed)
-		dst, err := GetFilePath(parsed, id)
-		utils.Check(err)
-		path := path.Join(Location, dst+".mjlog.gz")
-		d.download(downloadLink, path)
-		d.index.Set(id, []string{path})
+	for result := range results {
 		progress++
+		if result.Error != nil {
+			fmt.Printf("\nError downloading %v to %v: %v\n", result.SrcURL, result.DestPath, result.Error)
+			continue
+		}
+		d.index.Set(result.ID, []string{result.DestPath})
 		if progress%50 == 0 {
 			utils.Check(d.index.Save())
 		}
@@ -64,17 +80,55 @@ func (d *downloader) Run() {
 		}
 	}
 	fmt.Println()
+	utils.Check(<-schedulerError)
 }
 
-func (d *downloader) download(u, path string) {
+type downloadRequest struct {
+	SrcURL   string
+	DestPath string
+	ID       string
+	Error    error
+}
+
+func (d *downloader) downloadScheduler(ctx context.Context, links []string, requests chan<- *downloadRequest, resultError chan error) {
+	defer close(requests)
+	for _, id := range links {
+		parsed := ParseID(id)
+		downloadLink := GetDownloadLink(parsed)
+		dst, err := GetFilePath(parsed, id)
+		if err != nil {
+			resultError <- err
+			return
+		}
+		path := path.Join(Location, dst+".mjlog.gz")
+		select {
+		case requests <- &downloadRequest{
+			SrcURL:   downloadLink,
+			DestPath: path,
+			ID:       id,
+		}:
+		case <-ctx.Done():
+			return
+		}
+	}
+	resultError <- nil
+}
+
+func (d *downloader) downloadStream(ctx context.Context, input <-chan *downloadRequest, output chan<- *downloadRequest) {
 	dl := utils.NewDownloader(
 		utils.GZIP(),
-		utils.Client(d.client),
+		utils.Client(&http.Client{}),
 	)
-	err := dl.WriteFile(u, path)
-	if err == nil {
-		return
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case req := <-input:
+			if req == nil {
+				return
+			}
+			req.Error = dl.WriteFile(ctx, req.SrcURL, req.DestPath)
+			output <- req
+		}
 	}
-	fmt.Printf("Error on downloading %v to %v: %v\n", u, path, err)
-	// Dont stop here. Let the other links to be downloaded
 }

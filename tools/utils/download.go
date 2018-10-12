@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"mime"
@@ -9,13 +10,13 @@ import (
 	"path"
 )
 
-func MustDownload(u string, opts ...Option) string {
+func MustDownload(ctx context.Context, u string, opts ...Option) string {
 	var buf bytes.Buffer
-	Check(NewDownloader(opts...).Write(u, &buf))
+	Check(NewDownloader(opts...).Write(ctx, u, &buf))
 	return buf.String()
 }
 
-func (d *downloader) WriteFile(u, p string) (err error) {
+func (d *downloader) WriteFile(ctx context.Context, u, p string) (err error) {
 	f, err := CreateFile(p)
 	if err != nil {
 		return
@@ -23,12 +24,12 @@ func (d *downloader) WriteFile(u, p string) (err error) {
 	defer func() {
 		err = f.CommitOnSuccess(&err)
 	}()
-	err = d.Write(u, f)
+	err = d.Write(ctx, u, f)
 	return
 }
 
-func (d *downloader) Filename(url string) (string, error) {
-	resp, err := d.doRequest(http.MethodHead, url, nil)
+func (d *downloader) Filename(ctx context.Context, url string) (string, error) {
+	resp, err := d.doRequest(ctx, http.MethodHead, url, nil)
 	if err != nil {
 		return "", err
 	}
@@ -47,8 +48,9 @@ func (d *downloader) Filename(url string) (string, error) {
 	return path.Base(url), nil
 }
 
-func (d *downloader) newRequest(method, url string, body io.Reader) (*http.Request, error) {
+func (d *downloader) newRequest(ctx context.Context, method, url string, body io.Reader) (*http.Request, error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
+	req = req.WithContext(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -58,16 +60,16 @@ func (d *downloader) newRequest(method, url string, body io.Reader) (*http.Reque
 	return req, err
 }
 
-func (d *downloader) doRequest(method, url string, body io.Reader) (*http.Response, error) {
-	req, err := d.newRequest(http.MethodGet, url, nil)
+func (d *downloader) doRequest(ctx context.Context, method, url string, body io.Reader) (*http.Response, error) {
+	req, err := d.newRequest(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
 	return d.client.Do(req)
 }
 
-func (d *downloader) Write(u string, w io.Writer) error {
-	resp, err := d.doRequest(http.MethodGet, u, nil)
+func (d *downloader) Write(ctx context.Context, u string, w io.Writer) error {
+	resp, err := d.doRequest(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return err
 	}
