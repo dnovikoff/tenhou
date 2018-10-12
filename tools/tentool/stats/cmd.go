@@ -1,6 +1,7 @@
 package stats
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -124,7 +125,7 @@ func (d *downloadCommand) download(v string) {
 	utils.Check(
 		utils.NewDownloader(utils.AddTracker(
 			utils.NewInteractiveTracker(u, path, d.interactive),
-		)).WriteFile(u, path),
+		)).WriteFile(context.TODO(), u, path),
 	)
 	d.cleanIndex.JustAdd(u, path)
 	utils.Check(d.index.Add(u, path))
@@ -195,6 +196,6 @@ func (d *downloadCommand) findUnusedFiles() []string {
 }
 
 func (d *downloadCommand) downloadString(location string) string {
-	return utils.MustDownload(location, utils.AddTracker(
+	return utils.MustDownload(context.TODO(), location, utils.AddTracker(
 		utils.NewInteractiveTracker(location, "", d.interactive)))
 }
