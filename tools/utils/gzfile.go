@@ -15,16 +15,16 @@ func (f *JSONGZFile) Load(out interface{}) error {
 	if err != nil {
 		return err
 	}
-	defer file.Close()
 	gz, err := gzip.NewReader(file)
 	if err != nil {
+		file.Close()
 		return err
 	}
-	err = json.NewDecoder(gz).Decode(out)
-	if err != nil {
-		return err
-	}
-	return nil
+	defer func() {
+		gz.Close()
+		file.Close()
+	}()
+	return json.NewDecoder(gz).Decode(out)
 }
 
 func (f *JSONGZFile) fileName() string {
@@ -36,16 +36,10 @@ func (f *JSONGZFile) Save(data interface{}) (err error) {
 	if err != nil {
 		return
 	}
+	defer file.CommitOnSuccess(&err)
 	gz := gzip.NewWriter(file)
 	enc := json.NewEncoder(gz)
 	err = enc.Encode(data)
-	defer func() {
-		file.Close()
-		if err != nil {
-			return
-		}
-		err = file.Commit()
-	}()
 	if err != nil {
 		return
 	}
