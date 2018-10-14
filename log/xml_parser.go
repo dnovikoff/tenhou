@@ -2,7 +2,6 @@ package log
 
 import (
 	"strconv"
-	"strings"
 
 	"github.com/facebookgo/stackerr"
 
@@ -34,10 +33,6 @@ func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 	case "GO":
 		c.Go(client.GetWithLobby(node))
 	case "UN":
-		floatFormat := strings.Contains(node.Attributes["rate"], ".")
-		if floatFormat {
-			c.SetFloatFormat()
-		}
 		err = client.ProcessUserList(node, c)
 	case "REACH":
 		params := client.Reach{Step: node.Int("step"), Score: node.GetScores()}
@@ -61,23 +56,15 @@ func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 		params.Meld = node.GetMeld()
 		c.Declare(params)
 	case "AGARI":
-		floatFormat := strings.Contains(node.Attributes["owari"], ".")
 		agari, err := parser.ParseAgari(node)
 		if err != nil {
 			return err
 		}
-		if floatFormat {
-			c.SetFloatFormat()
-		}
 		c.Agari(*agari)
 	case "RYUUKYOKU":
-		floatFormat := strings.Contains(node.Attributes["owari"], ".")
 		r, err := parser.ParseRyuukyoku(node)
 		if err != nil {
 			return err
-		}
-		if floatFormat {
-			c.SetFloatFormat()
 		}
 		c.Ryuukyoku(*r)
 	case "BYE":

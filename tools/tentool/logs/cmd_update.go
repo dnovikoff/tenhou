@@ -3,17 +3,19 @@ package logs
 import (
 	"archive/zip"
 	"compress/gzip"
-	"io/ioutil"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
+	pstats "github.com/dnovikoff/tenhou/genproto/stats"
 	"github.com/dnovikoff/tenhou/tools/tentool/stats"
-	"github.com/dnovikoff/tenhou/tools/utils"
+	"github.com/dnovikoff/tenhou/tools/tentool/utils"
 )
 
 type updater struct {
 	interactive bool
+	clean       bool
 	logsIndex   *FileIndex
 	parsedIndex *stats.FileIndex
 }
@@ -25,8 +27,10 @@ func (u *updater) Run() {
 	statsIndex, err := stats.LoadIndex()
 	utils.Check(err)
 	u.parsedIndex = NewParsedIndex()
-	// Ignore error
-	u.parsedIndex.Load()
+	if !u.clean {
+		// Ignore error
+		u.parsedIndex.Load()
+	}
 	size := statsIndex.Len()
 	progress := 0
 	oldLinksSize := u.logsIndex.Len()
@@ -72,11 +76,14 @@ func (u *updater) parseGZ(p string) error {
 	if err != nil {
 		return err
 	}
-	bytes, err := ioutil.ReadAll(reader)
+	err = stats.ParseStatsForFile(reader, p, func(s *pstats.Record) error {
+		u.logsIndex.AddStat(s)
+		return nil
+	})
 	if err != nil {
+		fmt.Printf("\nError parsing file %v: %v\n", p, err)
 		return err
 	}
-	u.logsIndex.Add(ParseIDs(string(bytes)))
 	u.parsedIndex.JustAdd(p, "")
 	return nil
 }
@@ -88,6 +95,9 @@ func (u *updater) parseZip(p string) error {
 	}
 	defer reader.Close()
 	for _, v := range reader.File {
+		if v.FileInfo().IsDir() {
+			continue
+		}
 		if !statFileContainsLogs(v.Name) {
 			continue
 		}
@@ -97,12 +107,23 @@ func (u *updater) parseZip(p string) error {
 		}
 		err = func() error {
 			defer fileReader.Close()
-			bytes, err := ioutil.ReadAll(fileReader)
-			if err != nil {
-				return err
+			reader := fileReader
+			if strings.HasSuffix(v.Name, ".gz") {
+				gzreader, err := gzip.NewReader(reader)
+				if err != nil {
+					return err
+				}
+				reader = gzreader
+				defer gzreader.Close()
 			}
-			u.logsIndex.Add(ParseIDs(string(bytes)))
-			return nil
+			err := stats.ParseStatsForFile(reader, v.Name, func(s *pstats.Record) error {
+				u.logsIndex.AddStat(s)
+				return nil
+			})
+			if err != nil {
+				fmt.Printf("\nError parsing file %v / %v: %v\n", p, v.Name, err)
+			}
+			return err
 		}()
 		if err != nil {
 			return err

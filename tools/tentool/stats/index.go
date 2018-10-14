@@ -4,9 +4,9 @@ import (
 	"os"
 	"sort"
 
-	multierror "github.com/hashicorp/go-multierror"
+	"go.uber.org/multierr"
 
-	"github.com/dnovikoff/tenhou/tools/utils"
+	"github.com/dnovikoff/tenhou/tools/tentool/utils"
 )
 
 type FileIndex struct {
@@ -63,7 +63,7 @@ func (i *FileIndex) Validate() error {
 		if !ok {
 			_, err := os.Stat(v)
 			if err != nil {
-				total = multierror.Append(total, err)
+				total = multierr.Append(total, err)
 				checked[v] = false
 				found = false
 			} else {

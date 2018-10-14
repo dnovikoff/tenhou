@@ -121,10 +121,10 @@ func TestSGo(t *testing.T) {
 func TestSUN(t *testing.T) {
 	c := NewXMLWriter()
 	c.UserList(UserList{tbase.UserList{
-		tbase.User{Name: "NoName", Rate: 1500.00, Sex: tbase.SexMale, Dan: 0},
-		tbase.User{Name: "@yukimi", Rate: 1499.99, Sex: tbase.SexFemale, Dan: 2},
-		tbase.User{Name: "さあ、行くぞ", Rate: 1467.57, Sex: tbase.SexMale, Dan: 10},
-		tbase.User{Name: "pjgwpdjw", Rate: 1500.00, Sex: tbase.SexMale, Dan: 0},
+		Names: []string{"NoName", "@yukimi", "さあ、行くぞ", "pjgwpdjw"},
+		Sex:   []tbase.Sex{tbase.SexMale, tbase.SexFemale, tbase.SexMale, tbase.SexMale},
+		Dan:   []int{0, 2, 10, 0},
+		Rate:  []tbase.Float{{Value: 1500}, {Value: 1499.99}, {Value: 1467.57}, {Value: 1500}},
 	}})
 
 	assert.Equal(t, `<UN n0="%4E%6F%4E%61%6D%65" n1="%40%79%75%6B%69%6D%69" n2="%E3%81%95%E3%81%82%E3%80%81%E8%A1%8C%E3%81%8F%E3%81%9E" n3="%70%6A%67%77%70%64%6A%77" dan="0,2,10,0" rate="1500.00,1499.99,1467.57,1500.00" sx="M,F,M,M"/>`,

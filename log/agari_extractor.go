@@ -1,9 +1,6 @@
 package log
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/score"
 	"github.com/dnovikoff/tempai-core/yaku"
@@ -17,8 +14,8 @@ type AgariExtractor struct {
 	Dealer    tbase.Opponent
 	DoubleRon bool
 	Info      *Info
-	Defected  bool
 	KanFlag   bool
+	IsSanma   bool
 
 	scoringRules score.Rules
 	yakuRules    yaku.Rules
@@ -37,21 +34,18 @@ func NewAgariExtractor(x func(*Info, *tbase.Agari, *yaku.Context, base.Wind, sco
 }
 
 func (e *AgariExtractor) Open(info Info) bool {
+	e.IsSanma = true
 	e.Info = &info
-	e.Defected = false
 	rules := tbase.FlagDan1 | tbase.FlagDan2 | tbase.FlagHanchan | tbase.FlagOnline
 	return info.Lobby == 0 && (info.Rules.Extract(tbase.FlagEnd-1) == rules)
 }
 
 func (e *AgariExtractor) Close() {
-	if e.Defected {
-		fmt.Fprintf(os.Stderr, "Defect log %v\n", e.Info.FullName)
-	}
 }
 
 func (e *AgariExtractor) UserList(params client.UserList) {
-	if len(params.Users) == 3 {
-		e.Defected = true
+	if len(params.Users.Names) == 3 {
+		e.IsSanma = true
 	}
 }
 
@@ -70,9 +64,6 @@ func (e *AgariExtractor) Declare(params Declare) {
 }
 
 func (e *AgariExtractor) Agari(agari tbase.Agari) {
-	if e.Defected {
-		return
-	}
 	ctx := &yaku.Context{}
 
 	ctx.DoraTiles = yaku.IndicatorsToDoraTiles(agari.DoraIndicators)

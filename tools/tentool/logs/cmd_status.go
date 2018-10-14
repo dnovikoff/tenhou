@@ -3,7 +3,7 @@ package logs
 import (
 	"fmt"
 
-	"github.com/dnovikoff/tenhou/tools/utils"
+	"github.com/dnovikoff/tenhou/tools/tentool/utils"
 )
 
 func Status() {
@@ -15,8 +15,8 @@ func Status() {
 		return
 	}
 	downloaded := 0
-	for _, v := range index.data {
-		if len(v) > 0 {
+	for _, v := range index.indexed {
+		if v.Check() {
 			downloaded++
 		}
 	}

@@ -49,6 +49,7 @@ func ParseAgari(node *Node) (result *tbase.Agari, err error) {
 		agari.Melds = melds
 	}
 	agari.Ratio = node.String("ratio")
+	agari.Chips = node.IntList("chip")
 	result = agari
 	return
 }

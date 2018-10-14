@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	multierror "github.com/hashicorp/go-multierror"
+	"go.uber.org/multierr"
 
 	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/compact"
@@ -51,10 +51,10 @@ func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Co
 	yaku := yaku.Win(t, ctx, declared)
 	addError := func(format string, a ...interface{}) {
 		id := fmt.Sprintf("%v", agari)
-		(*outError) = multierror.Append((*outError), errors.New("Error at ["+id+"]: "+fmt.Sprintf(format, a...)))
+		(*outError) = multierr.Append((*outError), errors.New("Error at ["+id+"]: "+fmt.Sprintf(format, a...)))
 	}
 
-	totalExpected := agari.Changes[agari.Who].Diff
+	totalExpected := agari.Changes[agari.Who].DiffMoney()
 
 	if yaku == nil {
 		addError("Expected win for hand %v + [%v] + %v with Score: %v. Round %v",

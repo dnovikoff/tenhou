@@ -12,8 +12,9 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"time"
 
-	"github.com/dnovikoff/tenhou/tools/utils"
+	"github.com/dnovikoff/tenhou/tools/tentool/utils"
 )
 
 type ConfigRecord struct {
@@ -44,20 +45,14 @@ func (e *exporter) Run(args []string) {
 		exportCount += count
 		fmt.Printf("%v: %v\n", v, count)
 	}
-	indexCount := 0
-	for _, file := range e.index.data {
-		if len(file) == 0 {
-			continue
-		}
-		indexCount++
-	}
-	fmt.Printf("Files to export %v of %v\n", exportCount, indexCount)
+	fmt.Printf("Files to export %v of %v\n", exportCount, index.CountDownloaded())
 	if e.dry {
 		return
 	}
 	for _, v := range mapped.Keys() {
-		_, err := os.Stat(v)
-		if err == nil && !e.force {
+		exits, err := utils.FileExists(v)
+		utils.Check(err)
+		if exits {
 			fmt.Printf("Skipping file %v - already exists\n", v)
 			continue
 		}
@@ -102,22 +97,24 @@ func writeFile(name string, zw *zip.Writer) error {
 func zipIndex(zr *zip.ReadCloser) map[string]*zip.File {
 	index := make(map[string]*zip.File, len(zr.File))
 	for _, v := range zr.File {
+		if v.FileInfo().IsDir() {
+			continue
+		}
 		index[v.Name] = v
 	}
 	return index
 }
 
-func writeFromZip(name string, zr map[string]*zip.File, zw *zip.Writer) error {
-	file, err := zr[name].Open()
+func writeFromZip(f *zip.File, zw *zip.Writer) error {
+	file, err := f.Open()
 	if err != nil {
 		return err
 	}
 	defer file.Close()
-	return writeReader(name, file, zw)
+	return writeReader(path.Base(f.Name), file, zw)
 }
 
 func createZip(name string, desc *exportFile, intractive bool) error {
-	iw := utils.NewInteractiveWriter(os.Stdout)
 	f, err := utils.CreateFile(name)
 	if err != nil {
 		return err
@@ -125,66 +122,86 @@ func createZip(name string, desc *exportFile, intractive bool) error {
 	zipWriter := zip.NewWriter(f)
 	defer func() {
 		zipWriter.Close()
-		err = f.CommitOnSuccess(&err)
+		f.CommitOnSuccess(&err)
 	}()
-	total := desc.Count()
-	progress := 0
+	pw := utils.NewProgressWriter(os.Stdout, "", desc.Count()).SetETA().SetDelay(time.Millisecond * 300)
+	pw.Start()
 	onProgress := func() {
+		pw.Inc()
 		if !intractive {
 			return
 		}
-		progress++
-		iw.Printf("%v / %v (%v%%)", progress, total, progress*100/total)
+		pw.Display()
 	}
-	sort.Strings(desc.files)
-	for _, v := range desc.files {
-		onProgress()
-		err = writeFile(v, zipWriter)
-		if err != nil {
-			return err
-		}
-	}
-	for _, v := range desc.zipFiles.Keys() {
-		var zipReader *zip.ReadCloser
-		zipReader, err = zip.OpenReader(v)
-		if err != nil {
-			return err
-		}
-		func() {
-			defer zipReader.Close()
-			files := desc.zipFiles[v]
-			sort.Strings(files)
-			index := zipIndex(zipReader)
-			for _, v := range files {
-				onProgress()
-				err = writeFromZip(v, index, zipWriter)
+	for _, v := range desc.Group() {
+		if v.IsRoot() {
+			for _, f := range v.Files {
+				err = writeFile(fileName(f.File), zipWriter)
 				if err != nil {
-					return
+					return err
 				}
+				onProgress()
 			}
-		}()
-		if err != nil {
-			return err
+		} else {
+			checker := make(map[string]bool, len(v.Files))
+			for _, f := range v.Files {
+				checker[f.File] = true
+			}
+			var zipReader *zip.ReadCloser
+			zipReader, err = zip.OpenReader(fileName(v.File))
+			if err != nil {
+				return err
+			}
+			err = func() error {
+				defer zipReader.Close()
+				for _, f := range zipReader.File {
+					if !checker[f.Name] {
+						continue
+					}
+					err = writeFromZip(f, zipWriter)
+					if err != nil {
+						return err
+					}
+					onProgress()
+				}
+				return nil
+			}()
+			if err != nil {
+				return err
+			}
 		}
 	}
-	iw.Println()
+	pw.Done()
 	return err
 }
 
 type exportFile struct {
-	files    []string
-	zipFiles zipFiles
+	infos []*FileInfo
+}
+
+func (f *exportFile) Group() []*FileInfos {
+	g := make(map[*FileInfos]*FileInfos)
+	for _, v := range f.infos {
+		x := g[v.parent]
+		if x == nil {
+			x = &FileInfos{File: v.parent.File, isRoot: v.parent.isRoot}
+			g[v.parent] = x
+		}
+		x.Files = append(x.Files, v)
+	}
+	out := make([]*FileInfos, 0, len(g))
+	for _, v := range g {
+		out = append(out, v)
+	}
+	sort.Slice(out, func(i, j int) bool {
+		return out[i].File < out[j].File
+	})
+	return out
 }
 
 func (f *exportFile) Count() int {
-	result := len(f.files)
-	for _, v := range f.zipFiles {
-		result += len(v)
-	}
-	return result
+	return len(f.infos)
 }
-
-type zipFiles map[string][]string
 
 type exportFiles map[string]*exportFile
 
@@ -200,50 +217,33 @@ func (f exportFiles) Keys() []string {
 func (f exportFiles) get(k string) *exportFile {
 	x := f[k]
 	if x == nil {
-		x = &exportFile{zipFiles: make(zipFiles)}
+		x = &exportFile{}
 		f[k] = x
 	}
 	return x
 }
 
-func (f exportFiles) AddFile(k string, args []string) {
-	x := f.get(k)
-	switch len(args) {
-	case 0:
-	case 1:
-		x.files = append(x.files, args[0])
-	case 2:
-		x.zipFiles[args[0]] = append(x.zipFiles[args[0]], args[1])
-	default:
-		panic("Unexpected args len")
-	}
-}
-
-func (f zipFiles) Keys() []string {
-	x := make([]string, 0, len(f))
-	for k := range f {
-		x = append(x, k)
-	}
-	sort.Strings(x)
-	return x
+func (f *exportFile) add(info *FileInfo) {
+	f.infos = append(f.infos, info)
 }
 
 func (e *exporter) mapExportFiles() exportFiles {
-	result := exportFiles{}
-	for id, file := range e.index.data {
-		if len(file) == 0 {
-			continue
+	out := exportFiles{}
+	e.index.data.Visit(func(i *FileInfo) {
+		if !i.Check() {
+			return
 		}
+		id := i.ID
 		for _, c := range e.config {
 			if !c.search.MatchString(id) {
 				continue
 			}
 			filename := c.search.ReplaceAllString(id, c.File)
-			result.AddFile(filename, file)
-			break
+			out.get(filename).add(i)
+			return
 		}
-	}
-	return result
+	})
+	return out
 }
 
 func (e *exporter) loadConfig(path string) error {

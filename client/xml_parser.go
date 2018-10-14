@@ -255,33 +255,21 @@ func ProcessUserList(node *parser.Node, c UNController) error {
 		}
 		return nil
 	}
-	dan := node.IntList("dan")
-	rc := node.IntList("rc")
-	rate := node.FloatList("rate")
-	sx := node.StringList("sx")
-	if len(dan) != 4 || len(rate) != 4 || len(sx) != 4 {
-		return stackerr.Newf("Bad lens for arrays in UN")
+	ul := tbase.UserList{
+		Dan:  node.IntList("dan"),
+		RC:   node.IntList("rc"),
+		Rate: node.FloatList("rate"),
+		Gold: node.IntList("gold"),
 	}
-	ul := make(tbase.UserList, 4)
-	for k := range ul {
-		sex := tbase.ParseSexLetter(sx[k])
+	sx := node.StringList("sx")
+	for k, v := range sx {
+		sex := tbase.ParseSexLetter(v)
+		ul.Sex = append(ul.Sex, sex)
 		name, err := url.QueryUnescape(node.String("n" + strconv.Itoa(k)))
 		if err != nil {
 			return stackerr.Wrap(err)
 		}
-
-		var r *int
-		if k < len(rc) {
-			r = &rc[k]
-		}
-		ul[k] = tbase.User{
-			Num:  k,
-			Name: name,
-			Dan:  dan[k],
-			Rate: rate[k],
-			Sex:  sex,
-			Rc:   r,
-		}
+		ul.Names = append(ul.Names, name)
 	}
 	c.UserList(UserList{ul})
 	return nil

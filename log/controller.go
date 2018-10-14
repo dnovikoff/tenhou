@@ -9,7 +9,6 @@ type Controller interface {
 	// Should return false if not interested
 	Open(Info) bool
 	Close()
-	SetFloatFormat()
 
 	Shuffle(Shuffle)
 	Go(client.WithLobby)

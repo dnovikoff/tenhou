@@ -16,18 +16,6 @@ import (
 	"github.com/dnovikoff/tenhou/util"
 )
 
-func loadTestData(t require.TestingT, filename string) []byte {
-	data, err := ioutil.ReadFile("test_data/" + filename)
-	require.NoError(t, err)
-	return data
-}
-
-func loadTestXml(t require.TestingT, data []byte) parser.Nodes {
-	x := &parser.Root{}
-	require.NoError(t, xml.Unmarshal(data, &x))
-	return x.Nodes
-}
-
 func TestAkasValidate(t *testing.T) {
 	assert.Equal(t,
 		[]tile.Instance{
@@ -37,40 +25,24 @@ func TestAkasValidate(t *testing.T) {
 		}, yaku.RulesTenhouRed().AkaDoras)
 }
 
-func processXMLFiles(t *testing.T, f func(t *testing.T, data string, nodes parser.Nodes)) {
-	dir := "./test_data/"
-	infos, err := ioutil.ReadDir(dir)
-	require.NoError(t, err)
-	tested := false
-	for _, info := range infos {
-		name := info.Name()
-		if !strings.HasSuffix(name, ".xml") {
-			continue
-		}
-		t.Run(name, func(t *testing.T) {
-			t.Log("Processing " + name)
-			data := loadTestData(t, name)
-			nodes := loadTestXml(t, data)
-			f(t, string(data), nodes)
-			tested = true
-		})
-	}
-	require.True(t, tested)
-}
-
 func TestLogValidate(t *testing.T) {
 	processXMLFiles(t, func(t *testing.T, _ string, nodes parser.Nodes) {
 		var validateError error
 		c := NewValidator(&validateError)
 		c.Info = &Info{}
-		require.NoError(t, ProcessXMLNodes(nodes, c))
+		err := ProcessXMLNodes(nodes, c)
+		// Fix validator for sanma
+		if c.IsSanma {
+			return
+		}
+		require.NoError(t, err)
 		require.NoError(t, validateError)
 	})
 }
 
 func TestLogReadAndWrite(t *testing.T) {
 	processXMLFiles(t, func(t *testing.T, data string, nodes parser.Nodes) {
-		w := &XMLWriter{client.NewXMLWriter(), false}
+		w := &XMLWriter{client.NewXMLWriter()}
 		w.AddSpaces = false
 		w.Open(Info{})
 		require.NoError(t, ProcessXMLNodes(nodes, w))
@@ -115,4 +87,37 @@ func TestLogCheckOpenCondition(t *testing.T) {
 	require.NoError(t, err)
 	x := NewValidator(nil)
 	require.True(t, x.Open(*info))
+}
+
+func processXMLFiles(t *testing.T, f func(t *testing.T, data string, nodes parser.Nodes)) {
+	dir := "./test_data/"
+	infos, err := ioutil.ReadDir(dir)
+	require.NoError(t, err)
+	tested := false
+	for _, info := range infos {
+		name := info.Name()
+		if !strings.HasSuffix(name, ".xml") {
+			continue
+		}
+		t.Run(name, func(t *testing.T) {
+			t.Log("Processing " + name)
+			data := loadTestData(t, name)
+			nodes := loadTestXml(t, data)
+			f(t, string(data), nodes)
+			tested = true
+		})
+	}
+	require.True(t, tested)
+}
+
+func loadTestData(t require.TestingT, filename string) []byte {
+	data, err := ioutil.ReadFile("test_data/" + filename)
+	require.NoError(t, err)
+	return data
+}
+
+func loadTestXml(t require.TestingT, data []byte) parser.Nodes {
+	x := &parser.Root{}
+	require.NoError(t, xml.Unmarshal(data, &x))
+	return x.Nodes
 }

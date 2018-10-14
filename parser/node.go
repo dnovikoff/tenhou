@@ -3,6 +3,7 @@ package parser
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/facebookgo/stackerr"
 
@@ -35,8 +36,8 @@ func (node *Node) GetScoreChanges() tbase.ScoreChanges {
 	changes := make(tbase.ScoreChanges, c)
 	for i := 0; i < c; i++ {
 		cur := &changes[i]
-		cur.Score = score.Money(sc[i*2]) * 100
-		cur.Diff = score.Money(sc[i*2+1]) * 100
+		cur.Score = sc[i*2]
+		cur.Diff = sc[i*2+1]
 	}
 	return changes
 }
@@ -127,15 +128,19 @@ func (node *Node) Keys() []string {
 	return x
 }
 
-func (node *Node) FloatList(name string) []float64 {
+func (node *Node) FloatList(name string) []tbase.Float {
 	s := node.StringList(name)
 	if s == nil {
 		return nil
 	}
-	x := make([]float64, len(s))
+	x := make([]tbase.Float, len(s))
 	for k, v := range s {
 		i, _ := strconv.ParseFloat(v, 64)
-		x[k] = i
+		dotIndex := strings.Index(v, ".")
+		x[k].Value = i
+		if dotIndex == -1 {
+			x[k].IsInt = true
+		}
 	}
 	return x
 }
@@ -144,14 +149,13 @@ func (node *Node) GetHaiNum(id int) tile.Instances {
 	return node.GetHai("hai" + strconv.Itoa(id))
 }
 
-//TODO: change
-func (node *Node) GetFinalScores() tbase.ScoreChanges {
+func (node *Node) GetFinalScores() tbase.FinalScoreChanges {
 	fl := node.FloatList("owari")
-	ret := make(tbase.ScoreChanges, len(fl)/2)
+	ret := make(tbase.FinalScoreChanges, len(fl)/2)
 	for k := range ret {
-		ret[k] = tbase.ScoreChange{
-			Score: score.Money(fl[k*2] * 100),
-			Diff:  score.Money(fl[k*2+1] * 1000),
+		ret[k] = tbase.FinalScoreChange{
+			Score: int(fl[k*2].Value),
+			Diff:  fl[k*2+1],
 		}
 	}
 	return ret

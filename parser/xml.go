@@ -43,6 +43,7 @@ func ParseRyuukyoku(node *Node) (r *tbase.Ryuukyoku, err error) {
 	r.Finals = node.GetFinalScores()
 	r.TableStatus = status
 	r.DrawType = dt
+	r.Ratio = node.IntList("ratio")
 	return
 }
 
