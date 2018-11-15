@@ -19,44 +19,44 @@ const (
 	MeldTypeKan
 )
 
-func (this Meld) Extract(first, last int) int {
+func (m Meld) Extract(first, last int) int {
 	shift := uint(16 - last)
 	mask := 0
 	for k := first; k < last; k++ {
 		mask = mask*2 + 1
 	}
-	val := int(this>>shift) & mask
+	val := int(m>>shift) & mask
 	return val
 }
 
-func (this Meld) Decode() *Called {
-	return DecodeCalled(this)
+func (m Meld) Decode() *Called {
+	return DecodeCalled(m)
 }
 
-func (this Melds) Decode() CalledList {
-	x := make(CalledList, len(this))
-	for k, v := range this {
+func (m Melds) Decode() CalledList {
+	x := make(CalledList, len(m))
+	for k, v := range m {
 		x[k] = v.Decode()
 	}
 	return x
 }
 
-func (this Meld) Type() MeldType {
-	if this.Extract(13, 14) == 1 {
+func (m Meld) Type() MeldType {
+	if m.Extract(13, 14) == 1 {
 		return MeldTypeChi
 	}
-	if this.Extract(8, 13) == 0 {
+	if m.Extract(8, 13) == 0 {
 		return MeldTypeKan
 	}
 	return MeldTypePon
 }
 
-func (this Meld) Who() Opponent {
-	return Opponent(this.Extract(14, 16))
+func (m Meld) Who() Opponent {
+	return Opponent(m.Extract(14, 16))
 }
 
-func (this Meld) Instance(f, l int) tile.Instance {
-	return tile.Instance(this.Extract(f, l))
+func (m Meld) Instance(f, l int) tile.Instance {
+	return tile.Instance(m.Extract(f, l))
 }
 
 func getBase(base int) tile.Instance {

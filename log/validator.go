@@ -1,7 +1,6 @@
 package log
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -37,7 +36,7 @@ type AgariReport struct {
 	Yakuman        tbase.Yakumans `json:"yakuman,omitempty"`
 }
 
-func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Context, w base.Wind, scoring score.Rules) {
+func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Context, w base.Wind, scoring score.Rules) *AgariReport {
 	comp := compact.NewInstances().Add(agari.Hand)
 	comp.Remove(agari.WinTile)
 	melds := agari.Melds.Decode()
@@ -45,6 +44,12 @@ func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Co
 		comp,
 		calc.Declared(melds.Core()),
 	)
+	if t == nil {
+		(*outError) = multierr.Append((*outError),
+			fmt.Errorf("Expected agari [%v]: %v + %v",
+				agari, comp.Instances(), melds))
+		return nil
+	}
 	// TODO: add all instances for correct aka calculations
 	declared := compact.NewInstances()
 	melds.Add(declared)
@@ -64,7 +69,7 @@ func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Co
 			totalExpected,
 			ctx.RoundWind,
 		)
-		return
+		return nil
 	}
 	var scoreFinal score.Score
 	var baseScore score.Score
@@ -84,7 +89,7 @@ func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Co
 			total, yaku.Sum(), yaku.Fus.Sum(), yaku.Yaku, yaku.Bonuses)
 	}
 
-	report := &AgariReport{
+	return &AgariReport{
 		Round:          int(ctx.RoundWind),
 		Wind:           int(ctx.SelfWind),
 		Hand:           comp.Instances(),
@@ -97,7 +102,4 @@ func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Co
 		Yakuman:        agari.Yakumans,
 		Log:            &info.FullName,
 	}
-
-	bytes, _ := json.Marshal(report)
-	fmt.Printf("%s\n", bytes)
 }

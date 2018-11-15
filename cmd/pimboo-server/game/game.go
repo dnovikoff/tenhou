@@ -546,10 +546,9 @@ func (this *Game) Run() {
 	params.LobbyType = 11
 	this.Client.Go(params)
 	this.Client.UserList(client.UserList{tbase.UserList{
-		tbase.User{Num: 0, Name: "Player", Sex: tbase.SexMale, Rate: 1500},
-		tbase.User{Num: 1, Name: "_", Sex: tbase.SexFemale, Rate: 1500},
-		tbase.User{Num: 2, Name: "Robot", Sex: tbase.SexComputer, Rate: 1500},
-		tbase.User{Num: 3, Name: "_", Sex: tbase.SexFemale, Rate: 1500},
+		Names: []string{"Player", "_", "Robot", "_"},
+		Sex:   []tbase.Sex{tbase.SexMale, tbase.SexFemale, tbase.SexComputer, tbase.SexFemale},
+		Rate:  []tbase.Float{{1500, true}, {1500, true}, {1500, true}, {1500, true}},
 	}})
 	this.Client.LogInfo(client.LogInfo{})
 	this.wait() // Ok

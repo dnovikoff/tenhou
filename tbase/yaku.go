@@ -18,33 +18,33 @@ type Yakus []YakuRecord
 type Yakuman int
 type Yakumans []Yakuman
 
-func (this Yakus) Ints() []int {
-	ret := make([]int, len(this)*2)
-	for k, v := range this {
+func (ys Yakus) Ints() []int {
+	ret := make([]int, len(ys)*2)
+	for k, v := range ys {
 		ret[k*2] = int(v.Yaku)
 		ret[k*2+1] = int(v.Value)
 	}
 	return ret
 }
 
-func (this Yakus) CheckCore(x yaku.Yaku) bool {
+func (ys Yakus) CheckCore(x yaku.Yaku) bool {
 	y, ok := ReverseYakuMap[x]
 	if !ok {
 		return false
 	}
-	return this.Check(y)
+	return ys.Check(y)
 }
 
-func (this Yakumans) CheckCore(x yaku.Yakuman) bool {
+func (ys Yakumans) CheckCore(x yaku.Yakuman) bool {
 	y, ok := ReverseYakumanMap[x]
 	if !ok {
 		return false
 	}
-	return this.Check(y)
+	return ys.Check(y)
 }
 
-func (this Yakus) Check(x Yaku) bool {
-	for _, v := range this {
+func (ys Yakus) Check(x Yaku) bool {
+	for _, v := range ys {
 		if x == v.Yaku {
 			return true
 		}

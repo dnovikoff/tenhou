@@ -230,6 +230,20 @@ func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 	return
 }
 
+func limitIntList(x []int, limit int) []int {
+	if len(x) < limit {
+		return x
+	}
+	return x[:limit]
+}
+
+func limitFloatList(x []tbase.Float, limit int) []tbase.Float {
+	if len(x) < limit {
+		return x
+	}
+	return x[:limit]
+}
+
 func ProcessUserList(node *parser.Node, c UNController) error {
 	if len(node.Attributes) == 1 {
 		o := tbase.Self
@@ -255,22 +269,26 @@ func ProcessUserList(node *parser.Node, c UNController) error {
 		}
 		return nil
 	}
-	ul := tbase.UserList{
-		Dan:  node.IntList("dan"),
-		RC:   node.IntList("rc"),
-		Rate: node.FloatList("rate"),
-		Gold: node.IntList("gold"),
-	}
+	ul := tbase.UserList{}
 	sx := node.StringList("sx")
 	for k, v := range sx {
 		sex := tbase.ParseSexLetter(v)
-		ul.Sex = append(ul.Sex, sex)
 		name, err := url.QueryUnescape(node.String("n" + strconv.Itoa(k)))
 		if err != nil {
 			return stackerr.Wrap(err)
 		}
-		ul.Names = append(ul.Names, name)
+		// Some logs for sanma contains empty n3
+		if name != "" {
+			ul.Sex = append(ul.Sex, sex)
+			ul.Names = append(ul.Names, name)
+		}
 	}
+	limit := len(ul.Names)
+	ul.Dan = limitIntList(node.IntList("dan"), limit)
+	ul.RC = limitIntList(node.IntList("rc"), limit)
+	ul.Rate = limitFloatList(node.FloatList("rate"), limit)
+	ul.Gold = limitIntList(node.IntList("gold"), limit)
+
 	c.UserList(UserList{ul})
 	return nil
 }

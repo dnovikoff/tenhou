@@ -44,9 +44,7 @@ func (e *AgariExtractor) Close() {
 }
 
 func (e *AgariExtractor) UserList(params client.UserList) {
-	if len(params.Users.Names) == 3 {
-		e.IsSanma = true
-	}
+	e.IsSanma = len(params.Users.Names) == 3
 }
 
 func (e *AgariExtractor) Init(params Init) {
