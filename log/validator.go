@@ -54,9 +54,12 @@ func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Co
 	declared := compact.NewInstances()
 	melds.Add(declared)
 	yaku := yaku.Win(t, ctx, declared)
+	appendError := func(err error) {
+		(*outError) = multierr.Append((*outError), err)
+	}
 	addError := func(format string, a ...interface{}) {
-		id := fmt.Sprintf("%v", agari)
-		(*outError) = multierr.Append((*outError), errors.New("Error at ["+id+"]: "+fmt.Sprintf(format, a...)))
+		prefix := fmt.Sprintf("Error at [%#v]: ", agari)
+		appendError(errors.New(prefix + fmt.Sprintf(format, a...)))
 	}
 
 	totalExpected := agari.Changes[agari.Who].DiffMoney()
@@ -84,9 +87,15 @@ func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Co
 	total := changes.TotalWin()
 
 	if total != totalExpected {
-		addError("Money mismatch. Expected: %v, Calculated: %v (%v.%v). Debug %v + %v",
+		original, err := agari.Yakus.ToCore()
+		if err != nil {
+			appendError(err)
+		}
+		addError("Money mismatch. Expected: %v, Calculated: %v (%v.%v). Calulated yakus: %v + %v, Original yakus: %v",
 			totalExpected,
-			total, yaku.Sum(), yaku.Fus.Sum(), yaku.Yaku, yaku.Bonuses)
+			total, yaku.Sum(), yaku.Fus.Sum(),
+			yaku.Yaku, yaku.Bonuses,
+			original)
 	}
 
 	return &AgariReport{
