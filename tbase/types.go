@@ -18,6 +18,19 @@ type UserList struct {
 	Sex   []Sex
 	RC    []int
 	Gold  []int
+	Count int
+}
+
+func (ul *UserList) GetNames() []string {
+	return ul.Names[:ul.Count]
+}
+
+func (ul *UserList) GetDan() []int {
+	return ul.Dan[:ul.Count]
+}
+
+func (ul *UserList) GetRate() []Float {
+	return ul.Rate[:ul.Count]
 }
 
 type ScoreChange struct {

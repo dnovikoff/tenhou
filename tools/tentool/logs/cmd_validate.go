@@ -111,7 +111,7 @@ func fixNames(x []string) []string {
 }
 
 func (e *nameExtractor) UserList(ul client.UserList) {
-	e.names = fixNames(ul.Users.Names)
+	e.names = fixNames(ul.Users.GetNames())
 }
 
 func parseNames(data []byte) ([]string, error) {

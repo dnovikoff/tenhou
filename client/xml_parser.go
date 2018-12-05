@@ -271,6 +271,7 @@ func ProcessUserList(node *parser.Node, c UNController) error {
 	}
 	ul := tbase.UserList{}
 	sx := node.StringList("sx")
+	ul.Count = len(sx)
 	for k, v := range sx {
 		sex := tbase.ParseSexLetter(v)
 		name, err := url.QueryUnescape(node.String("n" + strconv.Itoa(k)))
@@ -278,10 +279,11 @@ func ProcessUserList(node *parser.Node, c UNController) error {
 			return stackerr.Wrap(err)
 		}
 		// Some logs for sanma contains empty n3
-		if name != "" {
-			ul.Sex = append(ul.Sex, sex)
-			ul.Names = append(ul.Names, name)
+		if name == "" {
+			ul.Count--
 		}
+		ul.Sex = append(ul.Sex, sex)
+		ul.Names = append(ul.Names, name)
 	}
 	limit := len(ul.Names)
 	ul.Dan = limitIntList(node.IntList("dan"), limit)
