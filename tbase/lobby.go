@@ -43,8 +43,8 @@ func (r LobbyRules) String() string {
 
 func (r LobbyRules) DebugString() string {
 	buf := &bytes.Buffer{}
-	w := func(r LobbyRules, t string, f string) {
-		if r.Check(r) {
+	w := func(x LobbyRules, t string, f string) {
+		if r.Check(x) {
 			fmt.Fprintf(buf, t)
 		} else {
 			fmt.Fprintf(buf, f)
