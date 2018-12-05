@@ -7,8 +7,9 @@ import (
 	"path/filepath"
 	"sort"
 
-	"github.com/dnovikoff/tenhou/tools/utils"
 	"github.com/spf13/cobra"
+
+	"github.com/dnovikoff/tenhou/tools/tentool/utils"
 )
 
 const (
@@ -89,9 +90,21 @@ func CMD() *cobra.Command {
 	downloadCMD.Flags().BoolVar(&interactiveFlag, "interactive", true, "Use interactive downloader progress.")
 	downloadCMD.Flags().BoolVar(&cleanup, "cleanup", true, "Clean old files after download.")
 
+	yadiskCMD := &cobra.Command{
+		Use:   "yadisk",
+		Short: "Download year stats archives from yadisk. That might be faster.",
+		Run: func(cmd *cobra.Command, args []string) {
+			(&yadisk{
+				interactive: interactiveFlag,
+			}).Run(args)
+		},
+	}
+	yadiskCMD.Flags().BoolVar(&interactiveFlag, "interactive", true, "Use interactive downloader progress.")
+
 	rootCMD.AddCommand(initCMD)
 	rootCMD.AddCommand(validateCMD)
 	rootCMD.AddCommand(downloadCMD)
+	rootCMD.AddCommand(yadiskCMD)
 	return rootCMD
 }
 
@@ -122,11 +135,17 @@ func (d *downloadCommand) download(v string) {
 		fmt.Printf("Url '%v' already downloaded to '%v'\n", u, path)
 		return
 	}
-	utils.Check(
-		utils.NewDownloader(utils.AddTracker(
-			utils.NewInteractiveTracker(u, path, d.interactive),
-		)).WriteFile(context.TODO(), u, path),
-	)
+	exits, err := utils.FileExists(path)
+	utils.Check(err)
+	if exits {
+		fmt.Printf("File '%v' already downloaded. Adding to index. \n", path)
+	} else {
+		utils.Check(
+			utils.NewDownloader(utils.AddTracker(
+				utils.NewInteractiveTracker(u, path, d.interactive),
+			)).WriteFile(context.TODO(), u, path),
+		)
+	}
 	d.cleanIndex.JustAdd(u, path)
 	utils.Check(d.index.Add(u, path))
 }

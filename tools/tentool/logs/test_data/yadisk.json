@@ -1,0 +1,361 @@
+{
+    "ua": {
+        "isMobile": false,
+        "isBrowser": false,
+        "BrowserName": "Unknown",
+        "isTouch": false,
+        "OSFamily": "Unknown",
+        "BrowserEngine": "Unknown",
+        "isSupportedAndroid": false,
+        "isSmartphone": false
+    },
+    "url": {
+        "host": "yadi.sk",
+        "pathname": "/d/D_0tO_135zIKPw",
+        "query": {}
+    },
+    "environment": {
+        "apiPrefix": "",
+        "availableLangs": [
+            "ru",
+            "en",
+            "uk",
+            "tr"
+        ],
+        "currentLang": "ru",
+        "isYadiSk": true,
+        "sk": "yb45395f473f61aa03c54053aafa51d93",
+        "yandexuid": "6917141251539366307",
+        "nda": false,
+        "avatarsOrigin": "https://avatars.mds.yandex.net",
+        "yapicOrigin": "https://yapic.yandex.net",
+        "servicesTld": "ru",
+        "experiments": {
+            "metrika": "P52cXLJpe_aftknCaJ3M78KwKhZHweDhTt4Q9b9oyp0",
+            "flags": {
+                "ad_dv_desktop_control": true,
+                "disk_public_yellow_control": true
+            },
+            "boxes": [
+                "35428,0,48",
+                "84208,0,8",
+                "100865,0,64"
+            ]
+        },
+        "noAdv": true,
+        "nonce": "3TUbIg0m6AKy1VSmV7poWg==",
+        "videoPlayerIframeApiUrl": "https://yastatic.net/yandex-video-player-iframe-api-bundles/1.0-249/js/stream_player.min.js"
+    },
+    "services": {
+        "disk": "https://disk.yandex.ru",
+        "www": "https://yandex.ru",
+        "mail": "https://mail.yandex.ru",
+        "calendar": "https://calendar.yandex.ru",
+        "money": "https://money.yandex.ru",
+        "images": "https://yandex.ru/images/",
+        "news": "https://news.yandex.ru",
+        "maps": "https://yandex.ru/maps",
+        "market": "https://market.yandex.ru",
+        "weather": "https://yandex.ru/pogoda",
+        "tv": "https://tv.yandex.ru",
+        "music": "https://music.yandex.ru",
+        "afisha": "https://afisha.yandex.ru",
+        "browser": "https://browser.yandex.ru",
+        "metrika": "https://metrika.yandex.ru",
+        "direct": "https://direct.yandex.ru",
+        "all": "https://yandex.ru/all",
+        "docviewer": "https://docviewer.yandex.ru",
+        "passport": "https://passport.yandex.ru",
+        "support": "https://yandex.ru/support",
+        "legal": "https://yandex.ru/legal",
+        "yastatic": "https://yastatic.net"
+    },
+    "user": {
+        "loading": true,
+        "auth": false,
+        "id": "0",
+        "login": "",
+        "accounts": []
+    },
+    "users": {
+        "259471544": {
+            "uid": "259471544",
+            "displayName": "novikov.dmitri.a"
+        }
+    },
+    "rootResourceId": "29237a01ab834d9f9fc5350052233270245cf195993d436596da6b01bee140ba",
+    "currentResourceId": "29237a01ab834d9f9fc5350052233270245cf195993d436596da6b01bee140ba",
+    "resources": {
+        "29237a01ab834d9f9fc5350052233270245cf195993d436596da6b01bee140ba": {
+            "children": [
+                "6db56708e5c7463231f38f1543fefea680c593491a0875d5650a68caf5ab3322",
+                "70f7f41546889ba1138db2edb97ce9dd548fdf2551a21bb778ec76989eb2a943",
+                "288ba55574fe670c14a184628d248bdb1589346f7522463a4838772a9bb40704",
+                "3dade9f255db365dc3e75a52b442e27834385192e0e250e645d74ed8d5d56ebf",
+                "347fc3a1f795886c1734dbef03bb0c64ca616e963b52d7dcd0ed46afc5f4f317",
+                "66b4a943007dd5b67a9d5487d4e1b38437ac96cfc91c697bac1f6fda31428bf1",
+                "251367c8e1ebfd15fce31089803f7e2e6f31aec036d7ab5993feb28ced8608ec"
+            ],
+            "completed": true,
+            "parent": null,
+            "name": "tenhou_export",
+            "modified": 1539270255,
+            "type": "dir",
+            "id": "29237a01ab834d9f9fc5350052233270245cf195993d436596da6b01bee140ba",
+            "meta": {
+                "short_url": "https://yadi.sk/d/D_0tO_135zIKPw",
+                "views_counter": 4,
+                "comment_ids": {
+                    "private_resource": "259471544:29237a01ab834d9f9fc5350052233270245cf195993d436596da6b01bee140ba",
+                    "public_resource": "259471544:29237a01ab834d9f9fc5350052233270245cf195993d436596da6b01bee140ba"
+                },
+                "file_id": "29237a01ab834d9f9fc5350052233270245cf195993d436596da6b01bee140ba",
+                "hasPreview": false
+            },
+            "timestamp": 1539366307426,
+            "hash": "MhHPNOzfA8id9LbWQjXQpdz/LzK8OIhnp91zDL0ggK641ekf+oT4A32gyfy4+Nq0q/J6bpmRyOJonT3VoXnDag==",
+            "isFirstPortionLoaded": true,
+            "uid": "259471544",
+            "virus": false,
+            "commentsDisabled": false,
+            "commentsCount": 0,
+            "loading": false
+        },
+        "6db56708e5c7463231f38f1543fefea680c593491a0875d5650a68caf5ab3322": {
+            "children": [],
+            "completed": false,
+            "parent": "29237a01ab834d9f9fc5350052233270245cf195993d436596da6b01bee140ba",
+            "name": "2009.zip",
+            "modified": 1539270295,
+            "type": "file",
+            "id": "6db56708e5c7463231f38f1543fefea680c593491a0875d5650a68caf5ab3322",
+            "path": "MhHPNOzfA8id9LbWQjXQpdz/LzK8OIhnp91zDL0ggK641ekf+oT4A32gyfy4+Nq0q/J6bpmRyOJonT3VoXnDag==:/2009.zip",
+            "meta": {
+                "mimetype": "application/x-zip-compressed",
+                "drweb": 1,
+                "short_url": "https://yadi.sk/d/LGFi6N4CWJ2drg",
+                "page_blocked_items_num": 0,
+                "mediatype": "compressed",
+                "views_counter": 3,
+                "file_id": "6db56708e5c7463231f38f1543fefea680c593491a0875d5650a68caf5ab3322",
+                "download_counter": 2,
+                "comment_ids": {
+                    "private_resource": "259471544:6db56708e5c7463231f38f1543fefea680c593491a0875d5650a68caf5ab3322",
+                    "public_resource": "259471544:6db56708e5c7463231f38f1543fefea680c593491a0875d5650a68caf5ab3322"
+                },
+                "size": 271490715,
+                "hasPreview": false,
+                "ext": "zip"
+            },
+            "timestamp": 1539366307573,
+            "virus": false,
+            "dvSearch": "?url=ya-disk-public%3A%2F%2FMhHPNOzfA8id9LbWQjXQpdz%2FLzK8OIhnp91zDL0ggK641ekf%2BoT4A32gyfy4%2BNq0q%2FJ6bpmRyOJonT3VoXnDag%3D%3D%3A%2F2009.zip\u0026name=2009.zip"
+        },
+        "70f7f41546889ba1138db2edb97ce9dd548fdf2551a21bb778ec76989eb2a943": {
+            "children": [],
+            "completed": false,
+            "parent": "29237a01ab834d9f9fc5350052233270245cf195993d436596da6b01bee140ba",
+            "name": "2010.zip",
+            "modified": 1539271303,
+            "type": "file",
+            "id": "70f7f41546889ba1138db2edb97ce9dd548fdf2551a21bb778ec76989eb2a943",
+            "path": "MhHPNOzfA8id9LbWQjXQpdz/LzK8OIhnp91zDL0ggK641ekf+oT4A32gyfy4+Nq0q/J6bpmRyOJonT3VoXnDag==:/2010.zip",
+            "meta": {
+                "mimetype": "application/x-zip-compressed",
+                "drweb": 1,
+                "page_blocked_items_num": 0,
+                "mediatype": "compressed",
+                "file_id": "70f7f41546889ba1138db2edb97ce9dd548fdf2551a21bb778ec76989eb2a943",
+                "comment_ids": {
+                    "private_resource": "259471544:70f7f41546889ba1138db2edb97ce9dd548fdf2551a21bb778ec76989eb2a943",
+                    "public_resource": "259471544:70f7f41546889ba1138db2edb97ce9dd548fdf2551a21bb778ec76989eb2a943"
+                },
+                "size": 962886929,
+                "hasPreview": false,
+                "ext": "zip"
+            },
+            "timestamp": 1539366307573,
+            "virus": false,
+            "dvSearch": "?url=ya-disk-public%3A%2F%2FMhHPNOzfA8id9LbWQjXQpdz%2FLzK8OIhnp91zDL0ggK641ekf%2BoT4A32gyfy4%2BNq0q%2FJ6bpmRyOJonT3VoXnDag%3D%3D%3A%2F2010.zip\u0026name=2010.zip"
+        },
+        "288ba55574fe670c14a184628d248bdb1589346f7522463a4838772a9bb40704": {
+            "children": [],
+            "completed": false,
+            "parent": "29237a01ab834d9f9fc5350052233270245cf195993d436596da6b01bee140ba",
+            "name": "2011.zip",
+            "modified": 1539271760,
+            "type": "file",
+            "id": "288ba55574fe670c14a184628d248bdb1589346f7522463a4838772a9bb40704",
+            "path": "MhHPNOzfA8id9LbWQjXQpdz/LzK8OIhnp91zDL0ggK641ekf+oT4A32gyfy4+Nq0q/J6bpmRyOJonT3VoXnDag==:/2011.zip",
+            "meta": {
+                "mimetype": "application/x-zip-compressed",
+                "drweb": 4,
+                "page_blocked_items_num": 0,
+                "mediatype": "compressed",
+                "file_id": "288ba55574fe670c14a184628d248bdb1589346f7522463a4838772a9bb40704",
+                "comment_ids": {
+                    "private_resource": "259471544:288ba55574fe670c14a184628d248bdb1589346f7522463a4838772a9bb40704",
+                    "public_resource": "259471544:288ba55574fe670c14a184628d248bdb1589346f7522463a4838772a9bb40704"
+                },
+                "size": 1482133817,
+                "hasPreview": false,
+                "ext": "zip"
+            },
+            "timestamp": 1539366307573,
+            "virus": false,
+            "dvSearch": "?url=ya-disk-public%3A%2F%2FMhHPNOzfA8id9LbWQjXQpdz%2FLzK8OIhnp91zDL0ggK641ekf%2BoT4A32gyfy4%2BNq0q%2FJ6bpmRyOJonT3VoXnDag%3D%3D%3A%2F2011.zip\u0026name=2011.zip"
+        },
+        "3dade9f255db365dc3e75a52b442e27834385192e0e250e645d74ed8d5d56ebf": {
+            "children": [],
+            "completed": false,
+            "parent": "29237a01ab834d9f9fc5350052233270245cf195993d436596da6b01bee140ba",
+            "name": "2012.zip",
+            "modified": 1539271929,
+            "type": "file",
+            "id": "3dade9f255db365dc3e75a52b442e27834385192e0e250e645d74ed8d5d56ebf",
+            "path": "MhHPNOzfA8id9LbWQjXQpdz/LzK8OIhnp91zDL0ggK641ekf+oT4A32gyfy4+Nq0q/J6bpmRyOJonT3VoXnDag==:/2012.zip",
+            "meta": {
+                "mimetype": "application/x-zip-compressed",
+                "drweb": 4,
+                "page_blocked_items_num": 0,
+                "mediatype": "compressed",
+                "file_id": "3dade9f255db365dc3e75a52b442e27834385192e0e250e645d74ed8d5d56ebf",
+                "comment_ids": {
+                    "private_resource": "259471544:3dade9f255db365dc3e75a52b442e27834385192e0e250e645d74ed8d5d56ebf",
+                    "public_resource": "259471544:3dade9f255db365dc3e75a52b442e27834385192e0e250e645d74ed8d5d56ebf"
+                },
+                "size": 1785179658,
+                "hasPreview": false,
+                "ext": "zip"
+            },
+            "timestamp": 1539366307573,
+            "virus": false,
+            "dvSearch": "?url=ya-disk-public%3A%2F%2FMhHPNOzfA8id9LbWQjXQpdz%2FLzK8OIhnp91zDL0ggK641ekf%2BoT4A32gyfy4%2BNq0q%2FJ6bpmRyOJonT3VoXnDag%3D%3D%3A%2F2012.zip\u0026name=2012.zip"
+        },
+        "347fc3a1f795886c1734dbef03bb0c64ca616e963b52d7dcd0ed46afc5f4f317": {
+            "children": [],
+            "completed": false,
+            "parent": "29237a01ab834d9f9fc5350052233270245cf195993d436596da6b01bee140ba",
+            "name": "2013.zip",
+            "modified": 1539272076,
+            "type": "file",
+            "id": "347fc3a1f795886c1734dbef03bb0c64ca616e963b52d7dcd0ed46afc5f4f317",
+            "path": "MhHPNOzfA8id9LbWQjXQpdz/LzK8OIhnp91zDL0ggK641ekf+oT4A32gyfy4+Nq0q/J6bpmRyOJonT3VoXnDag==:/2013.zip",
+            "meta": {
+                "mimetype": "application/x-zip-compressed",
+                "drweb": 4,
+                "page_blocked_items_num": 0,
+                "mediatype": "compressed",
+                "file_id": "347fc3a1f795886c1734dbef03bb0c64ca616e963b52d7dcd0ed46afc5f4f317",
+                "comment_ids": {
+                    "private_resource": "259471544:347fc3a1f795886c1734dbef03bb0c64ca616e963b52d7dcd0ed46afc5f4f317",
+                    "public_resource": "259471544:347fc3a1f795886c1734dbef03bb0c64ca616e963b52d7dcd0ed46afc5f4f317"
+                },
+                "size": 1934631204,
+                "hasPreview": false,
+                "ext": "zip"
+            },
+            "timestamp": 1539366307573,
+            "virus": false,
+            "dvSearch": "?url=ya-disk-public%3A%2F%2FMhHPNOzfA8id9LbWQjXQpdz%2FLzK8OIhnp91zDL0ggK641ekf%2BoT4A32gyfy4%2BNq0q%2FJ6bpmRyOJonT3VoXnDag%3D%3D%3A%2F2013.zip\u0026name=2013.zip"
+        },
+        "66b4a943007dd5b67a9d5487d4e1b38437ac96cfc91c697bac1f6fda31428bf1": {
+            "children": [],
+            "completed": false,
+            "parent": "29237a01ab834d9f9fc5350052233270245cf195993d436596da6b01bee140ba",
+            "name": "2014.zip",
+            "modified": 1539271951,
+            "type": "file",
+            "id": "66b4a943007dd5b67a9d5487d4e1b38437ac96cfc91c697bac1f6fda31428bf1",
+            "path": "MhHPNOzfA8id9LbWQjXQpdz/LzK8OIhnp91zDL0ggK641ekf+oT4A32gyfy4+Nq0q/J6bpmRyOJonT3VoXnDag==:/2014.zip",
+            "meta": {
+                "mimetype": "application/x-zip-compressed",
+                "drweb": 4,
+                "page_blocked_items_num": 0,
+                "mediatype": "compressed",
+                "file_id": "66b4a943007dd5b67a9d5487d4e1b38437ac96cfc91c697bac1f6fda31428bf1",
+                "comment_ids": {
+                    "private_resource": "259471544:66b4a943007dd5b67a9d5487d4e1b38437ac96cfc91c697bac1f6fda31428bf1",
+                    "public_resource": "259471544:66b4a943007dd5b67a9d5487d4e1b38437ac96cfc91c697bac1f6fda31428bf1"
+                },
+                "size": 1841563615,
+                "hasPreview": false,
+                "ext": "zip"
+            },
+            "timestamp": 1539366307573,
+            "virus": false,
+            "dvSearch": "?url=ya-disk-public%3A%2F%2FMhHPNOzfA8id9LbWQjXQpdz%2FLzK8OIhnp91zDL0ggK641ekf%2BoT4A32gyfy4%2BNq0q%2FJ6bpmRyOJonT3VoXnDag%3D%3D%3A%2F2014.zip\u0026name=2014.zip"
+        },
+        "251367c8e1ebfd15fce31089803f7e2e6f31aec036d7ab5993feb28ced8608ec": {
+            "children": [],
+            "completed": false,
+            "parent": "29237a01ab834d9f9fc5350052233270245cf195993d436596da6b01bee140ba",
+            "name": "2015.zip",
+            "modified": 1539272006,
+            "type": "file",
+            "id": "251367c8e1ebfd15fce31089803f7e2e6f31aec036d7ab5993feb28ced8608ec",
+            "path": "MhHPNOzfA8id9LbWQjXQpdz/LzK8OIhnp91zDL0ggK641ekf+oT4A32gyfy4+Nq0q/J6bpmRyOJonT3VoXnDag==:/2015.zip",
+            "meta": {
+                "mimetype": "application/x-zip-compressed",
+                "drweb": 4,
+                "page_blocked_items_num": 0,
+                "mediatype": "compressed",
+                "file_id": "251367c8e1ebfd15fce31089803f7e2e6f31aec036d7ab5993feb28ced8608ec",
+                "comment_ids": {
+                    "private_resource": "259471544:251367c8e1ebfd15fce31089803f7e2e6f31aec036d7ab5993feb28ced8608ec",
+                    "public_resource": "259471544:251367c8e1ebfd15fce31089803f7e2e6f31aec036d7ab5993feb28ced8608ec"
+                },
+                "size": 1828381069,
+                "hasPreview": false,
+                "ext": "zip"
+            },
+            "timestamp": 1539366307573,
+            "virus": false,
+            "dvSearch": "?url=ya-disk-public%3A%2F%2FMhHPNOzfA8id9LbWQjXQpdz%2FLzK8OIhnp91zDL0ggK641ekf%2BoT4A32gyfy4%2BNq0q%2FJ6bpmRyOJonT3VoXnDag%3D%3D%3A%2F2015.zip\u0026name=2015.zip"
+        }
+    },
+    "selectedResources": [],
+    "authOrigins": [
+        {
+            "ru": "//disk.yandex.ru",
+            "com": "//disk.yandex.com"
+        },
+        {
+            "am": "//disk.yandex.com.am",
+            "az": "//disk.yandex.az",
+            "by": "//disk.yandex.by",
+            "ee": "//disk.yandex.ee",
+            "fr": "//disk.yandex.fr",
+            "ge": "//disk.yandex.com.ge",
+            "il": "//disk.yandex.co.il",
+            "kg": "//disk.yandex.kg",
+            "kz": "//disk.yandex.kz",
+            "lt": "//disk.yandex.lt",
+            "lv": "//disk.yandex.lv",
+            "md": "//disk.yandex.md",
+            "tj": "//disk.yandex.tj",
+            "tm": "//disk.yandex.tm",
+            "tr": "//disk.yandex.com.tr",
+            "ua": "//disk.yandex.ua",
+            "uz": "//disk.yandex.uz"
+        }
+    ],
+    "waitingAuthActions": {},
+    "operations": {},
+    "overlays": {
+        "activePane": {}
+    },
+    "comments": {
+        "entity": {},
+        "root": {},
+        "comments": [],
+        "users": {},
+        "lastAddedCommentId": 0,
+        "storedData": {}
+    },
+    "notifications": {
+        "current": null,
+        "items": [],
+        "state": "CLOSED"
+    }
+}

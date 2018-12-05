@@ -25,17 +25,11 @@
 #   unused-packages = true
 
 
+required = ["github.com/golang/protobuf/protoc-gen-go"]
+
 [[constraint]]
   branch = "master"
   name = "github.com/dnovikoff/tempai-core"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/facebookgo/stackerr"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/hashicorp/go-multierror"
 
 [prune]
   go-tests = true

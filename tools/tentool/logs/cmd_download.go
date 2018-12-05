@@ -1,86 +1,95 @@
 package logs
 
 import (
+	"bytes"
+	"compress/gzip"
 	"context"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path"
 	"sort"
-	"sync"
 	"time"
 
-	"github.com/dnovikoff/tenhou/tools/utils"
+	"github.com/dnovikoff/tenhou/tools/tentool/utils"
 )
 
 type downloader struct {
 	interactive bool
 	index       *FileIndex
 	parallel    int
+	yadiskURL   string
 }
 
 func (d *downloader) Run() {
 	var err error
 	d.index, err = LoadIndex()
 	utils.Check(err)
-	links := make([]string, 0, len(d.index.data))
-	for k, v := range d.index.data {
-		if v != nil {
+	ids := make([]string, 0, len(d.index.data.Files))
+	for _, v := range d.index.data.Files {
+		if v.Check() {
 			continue
 		}
-		links = append(links, k)
+		if v.Failed > 5 {
+			continue
+		}
+		ids = append(ids, v.ID)
 	}
-	sort.Strings(links)
-	total := len(links)
-	progress := 0
-	w := utils.NewInteractiveWriter(os.Stdout)
-	w.Printf("Logs to download %v of total %v", total, len(d.index.data))
-	w.Println()
-	startTime := time.Now()
+	sort.Strings(ids)
+	total := len(ids)
+	w := utils.NewProgressWriter(os.Stdout, "Downloaded", total).SetDelay(time.Millisecond * 300).SetETA()
+	if !d.interactive {
+		w = w.Disable()
+	}
+	fmt.Printf("Logs to download %v of total %v\n", total, d.index.Len())
 	ctx := context.TODO()
 	requests := make(chan *downloadRequest, d.parallel)
-	results := make(chan *downloadRequest, d.parallel)
-	var wg sync.WaitGroup
+	results := make(chan *downloadRequest, d.parallel*100)
+
+	group := utils.Routines{}
 	for i := 0; i < d.parallel; i++ {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		group.Start(func() error {
 			d.downloadStream(ctx, requests, results)
-		}()
+			return nil
+		})
 	}
 	go func() {
-		wg.Wait()
+		group.Wait()
 		close(results)
 	}()
 	schedulerError := make(chan error, 1)
-	go d.downloadScheduler(ctx, links, requests, schedulerError)
+	go d.downloadScheduler(ctx, ids, requests, schedulerError)
 	defer d.index.Save()
+	w.Start()
 	for result := range results {
-		progress++
+		w.Inc()
 		if result.Error != nil {
 			fmt.Printf("\nError downloading %v to %v: %v\n", result.SrcURL, result.DestPath, result.Error)
+			d.index.SetError(result.ID)
 			continue
 		}
-		d.index.Set(result.ID, []string{result.DestPath})
-		if progress%50 == 0 {
+		info := d.index.SetRootFile(result.ID, result.DestPath)
+		{
+			zipped, err := ioutil.ReadFile(result.DestPath)
+			utils.Check(err)
+			r, err := gzip.NewReader(bytes.NewReader(zipped))
+			utils.Check(err)
+			data, err := ioutil.ReadAll(r)
+			utils.Check(err)
+			utils.Check(r.Close())
+			names, err := parseNames(data)
+			utils.Check(err)
+			info.LogNames = names
+		}
+		if w.Progress()%200 == 0 {
 			utils.Check(d.index.Save())
 		}
-		if d.interactive {
-			currentTime := time.Now()
-			elapsed := currentTime.Sub(startTime)
-			itemsLeft := total - progress
-			var speed float64
-			nanos := elapsed.Nanoseconds()
-			if nanos != 0 {
-				speed = float64(elapsed.Nanoseconds()) / float64(progress)
-			}
-			left := time.Nanosecond * time.Duration(speed*float64(itemsLeft))
-			left = left.Truncate(time.Second)
-			w.Printf("Downloaded %v/%v (%v%%) Time left: %v", progress, total, progress*100/total, left)
-		}
+		w.Display()
 	}
-	fmt.Println()
+	w.Done()
 	utils.Check(<-schedulerError)
+	utils.Check(d.index.Save())
 }
 
 type downloadRequest struct {
@@ -90,9 +99,9 @@ type downloadRequest struct {
 	Error    error
 }
 
-func (d *downloader) downloadScheduler(ctx context.Context, links []string, requests chan<- *downloadRequest, resultError chan error) {
+func (d *downloader) downloadScheduler(ctx context.Context, ids []string, requests chan<- *downloadRequest, resultError chan error) {
 	defer close(requests)
-	for _, id := range links {
+	for _, id := range ids {
 		parsed := ParseID(id)
 		downloadLink := GetDownloadLink(parsed)
 		dst, err := GetFilePath(parsed, id)

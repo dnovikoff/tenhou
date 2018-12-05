@@ -1,11 +1,10 @@
 package log
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 
-	multierror "github.com/hashicorp/go-multierror"
+	"go.uber.org/multierr"
 
 	"github.com/dnovikoff/tempai-core/base"
 	"github.com/dnovikoff/tempai-core/compact"
@@ -37,7 +36,7 @@ type AgariReport struct {
 	Yakuman        tbase.Yakumans `json:"yakuman,omitempty"`
 }
 
-func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Context, w base.Wind, scoring score.Rules) {
+func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Context, w base.Wind, scoring score.Rules) *AgariReport {
 	comp := compact.NewInstances().Add(agari.Hand)
 	comp.Remove(agari.WinTile)
 	melds := agari.Melds.Decode()
@@ -45,16 +44,25 @@ func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Co
 		comp,
 		calc.Declared(melds.Core()),
 	)
+	if t == nil {
+		(*outError) = multierr.Append((*outError),
+			fmt.Errorf("Expected agari [%v]: %v + %v",
+				agari, comp.Instances(), melds))
+		return nil
+	}
 	// TODO: add all instances for correct aka calculations
 	declared := compact.NewInstances()
 	melds.Add(declared)
 	yaku := yaku.Win(t, ctx, declared)
+	appendError := func(err error) {
+		(*outError) = multierr.Append((*outError), err)
+	}
 	addError := func(format string, a ...interface{}) {
-		id := fmt.Sprintf("%v", agari)
-		(*outError) = multierror.Append((*outError), errors.New("Error at ["+id+"]: "+fmt.Sprintf(format, a...)))
+		prefix := fmt.Sprintf("Error at [%#v]: ", agari)
+		appendError(errors.New(prefix + fmt.Sprintf(format, a...)))
 	}
 
-	totalExpected := agari.Changes[agari.Who].Diff
+	totalExpected := agari.Changes[agari.Who].DiffMoney()
 
 	if yaku == nil {
 		addError("Expected win for hand %v + [%v] + %v with Score: %v. Round %v",
@@ -64,7 +72,7 @@ func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Co
 			totalExpected,
 			ctx.RoundWind,
 		)
-		return
+		return nil
 	}
 	var scoreFinal score.Score
 	var baseScore score.Score
@@ -79,12 +87,18 @@ func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Co
 	total := changes.TotalWin()
 
 	if total != totalExpected {
-		addError("Money mismatch. Expected: %v, Calculated: %v (%v.%v). Debug %v + %v",
+		original, err := agari.Yakus.ToCore()
+		if err != nil {
+			appendError(err)
+		}
+		addError("Money mismatch. Expected: %v, Calculated: %v (%v.%v). Calulated yakus: %v + %v, Original yakus: %v",
 			totalExpected,
-			total, yaku.Sum(), yaku.Fus.Sum(), yaku.Yaku, yaku.Bonuses)
+			total, yaku.Sum(), yaku.Fus.Sum(),
+			yaku.Yaku, yaku.Bonuses,
+			original)
 	}
 
-	report := &AgariReport{
+	return &AgariReport{
 		Round:          int(ctx.RoundWind),
 		Wind:           int(ctx.SelfWind),
 		Hand:           comp.Instances(),
@@ -97,7 +111,4 @@ func ValidateAgari(outError *error, info *Info, agari *tbase.Agari, ctx *yaku.Co
 		Yakuman:        agari.Yakumans,
 		Log:            &info.FullName,
 	}
-
-	bytes, _ := json.Marshal(report)
-	fmt.Printf("%s\n", bytes)
 }

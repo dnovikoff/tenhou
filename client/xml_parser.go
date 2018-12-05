@@ -230,6 +230,20 @@ func ProcessXMLNode(node *parser.Node, c Controller) (err error) {
 	return
 }
 
+func limitIntList(x []int, limit int) []int {
+	if len(x) < limit {
+		return x
+	}
+	return x[:limit]
+}
+
+func limitFloatList(x []tbase.Float, limit int) []tbase.Float {
+	if len(x) < limit {
+		return x
+	}
+	return x[:limit]
+}
+
 func ProcessUserList(node *parser.Node, c UNController) error {
 	if len(node.Attributes) == 1 {
 		o := tbase.Self
@@ -255,34 +269,28 @@ func ProcessUserList(node *parser.Node, c UNController) error {
 		}
 		return nil
 	}
-	dan := node.IntList("dan")
-	rc := node.IntList("rc")
-	rate := node.FloatList("rate")
+	ul := tbase.UserList{}
 	sx := node.StringList("sx")
-	if len(dan) != 4 || len(rate) != 4 || len(sx) != 4 {
-		return stackerr.Newf("Bad lens for arrays in UN")
-	}
-	ul := make(tbase.UserList, 4)
-	for k := range ul {
-		sex := tbase.ParseSexLetter(sx[k])
+	ul.Count = len(sx)
+	for k, v := range sx {
+		sex := tbase.ParseSexLetter(v)
 		name, err := url.QueryUnescape(node.String("n" + strconv.Itoa(k)))
 		if err != nil {
 			return stackerr.Wrap(err)
 		}
-
-		var r *int
-		if k < len(rc) {
-			r = &rc[k]
+		// Some logs for sanma contains empty n3
+		if name == "" {
+			ul.Count--
 		}
-		ul[k] = tbase.User{
-			Num:  k,
-			Name: name,
-			Dan:  dan[k],
-			Rate: rate[k],
-			Sex:  sex,
-			Rc:   r,
-		}
+		ul.Sex = append(ul.Sex, sex)
+		ul.Names = append(ul.Names, name)
 	}
+	limit := len(ul.Names)
+	ul.Dan = limitIntList(node.IntList("dan"), limit)
+	ul.RC = limitIntList(node.IntList("rc"), limit)
+	ul.Rate = limitFloatList(node.FloatList("rate"), limit)
+	ul.Gold = limitIntList(node.IntList("gold"), limit)
+
 	c.UserList(UserList{ul})
 	return nil
 }

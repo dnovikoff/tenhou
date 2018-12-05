@@ -9,8 +9,8 @@ const (
 	SexComputer
 )
 
-func (this Sex) Letter() string {
-	switch this {
+func (sx Sex) Letter() string {
+	switch sx {
 	case SexMale:
 		return "M"
 	case SexFemale:

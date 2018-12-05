@@ -1,9 +1,7 @@
 package client
 
 import (
-	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tenhou/parser"
@@ -81,10 +79,9 @@ func (this XMLWriter) Declare(params Declare) {
 
 func (w XMLWriter) writeInit(in Init) {
 	w.WriteArg("seed", parser.SeedString(&in.Seed)).
-		WriteArg("ten", util.ScoreString(in.Scores))
-	if in.Chip != nil {
-		w.WriteArg("chip", util.IntsString(in.Chip))
-	}
+		WriteArg("ten", util.ScoreString(in.Scores)).
+		WriteListInt("chip", in.Chip)
+
 	w.WriteDealer(in.Dealer).
 		WriteArg("hai", util.InstanceString(in.Hand))
 }
@@ -170,37 +167,24 @@ func (w XMLWriter) Hello(params Hello) {
 }
 
 func (w XMLWriter) UserList(params UserList) {
-	w.WriteUserList(params.Users, true)
+	w.WriteUserList(params.Users)
 }
 
-func (w XMLWriter) WriteUserList(list tbase.UserList, isFloatFormat bool) {
+func (w XMLWriter) WriteUserList(ul tbase.UserList) {
 	w.Begin("UN")
-	dan := make([]string, len(list))
-	rate := make([]string, len(list))
-	sex := make([]string, len(list))
-	rc := make([]string, len(list))
+	var sex []string
+	for _, v := range ul.Sex {
+		sex = append(sex, v.Letter())
+	}
 
-	haveRc := false
-	for k, v := range list {
-		w.WriteArg("n"+strconv.Itoa(k), util.Escape(v.Name))
-		dan[k] = strconv.Itoa(v.Dan)
-		if isFloatFormat {
-			rate[k] = fmt.Sprintf("%.2f", v.Rate)
-		} else {
-			rate[k] = strconv.Itoa(int(v.Rate))
-		}
-		if v.Rc != nil {
-			rc[k] = strconv.Itoa(*v.Rc)
-			haveRc = true
-		}
-		sex[k] = v.Sex.Letter()
+	for k, v := range ul.Names {
+		w.WriteArg("n"+strconv.Itoa(k), util.Escape(v))
 	}
-	w.WriteArg("dan", strings.Join(dan, ","))
-	if haveRc {
-		w.WriteArg("rc", strings.Join(rc, ","))
-	}
-	w.WriteArg("rate", strings.Join(rate, ","))
-	w.WriteArg("sx", strings.Join(sex, ","))
+	w.WriteListInt("dan", ul.Dan)
+	w.WriteListInt("rc", ul.RC)
+	w.WriteListInt("gold", ul.Gold)
+	w.WriteListFloat("rate", ul.Rate)
+	w.WriteList("sx", sex)
 	w.End()
 }
 
@@ -213,10 +197,10 @@ func (this XMLWriter) LobbyStats(params LobbyStats) {
 }
 
 func (w XMLWriter) Agari(a tbase.Agari) {
-	w.WriteAgari(&a, true)
+	w.WriteAgari(&a)
 }
 
-func (w XMLWriter) WriteAgari(a *tbase.Agari, floatFormat bool) {
+func (w XMLWriter) WriteAgari(a *tbase.Agari) {
 	w.Begin("AGARI")
 	w.WriteTableStatus(a.Status)
 	w.WriteArg("hai", util.InstanceString(a.Hand))
@@ -231,6 +215,7 @@ func (w XMLWriter) WriteAgari(a *tbase.Agari, floatFormat bool) {
 	if len(a.Yakumans) > 0 {
 		w.WriteArg("yakuman", util.YakumanString(a.Yakumans))
 	}
+	w.WriteListInt("chip", a.Chips)
 	w.WriteArg("doraHai", util.InstanceString(a.DoraIndicators))
 	if len(a.UraIndicators) > 0 {
 		w.WriteArg("doraHaiUra", util.InstanceString(a.UraIndicators))
@@ -242,7 +227,7 @@ func (w XMLWriter) WriteAgari(a *tbase.Agari, floatFormat bool) {
 	}
 	w.WriteScoreChanges(a.Changes)
 	if len(a.FinalScores) > 0 {
-		w.WriteArg("owari", util.FinalsString(a.FinalScores, floatFormat))
+		w.WriteArg("owari", util.FinalsString(a.FinalScores))
 	}
 	if a.Ratio != "" {
 		w.WriteArg("ratio", a.Ratio)
@@ -276,10 +261,10 @@ func (this XMLWriter) Furiten(params Furiten) {
 }
 
 func (w XMLWriter) Ryuukyoku(a tbase.Ryuukyoku) {
-	w.WriteRyuukyoku(&a, true)
+	w.WriteRyuukyoku(&a)
 }
 
-func (w XMLWriter) WriteRyuukyoku(a *tbase.Ryuukyoku, floats bool) {
+func (w XMLWriter) WriteRyuukyoku(a *tbase.Ryuukyoku) {
 	w.Begin("RYUUKYOKU")
 	if a.DrawType != tbase.DrawEnd {
 		w.WriteArg("type", tbase.ReverseDrawMap[a.DrawType])
@@ -293,8 +278,9 @@ func (w XMLWriter) WriteRyuukyoku(a *tbase.Ryuukyoku, floats bool) {
 		w.WriteArg("hai"+strconv.Itoa(k), util.InstanceString(v))
 	}
 	if len(a.Finals) > 0 {
-		w.WriteArg("owari", util.FinalsString(a.Finals, floats))
+		w.WriteArg("owari", util.FinalsString(a.Finals))
 	}
+	w.WriteListInt("ratio", a.Ratio)
 	w.AddTrailingSpace().End()
 }
 

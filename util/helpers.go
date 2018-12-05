@@ -116,14 +116,13 @@ func YakumanString(y tbase.Yakumans) string {
 	return IntsString(y.Ints())
 }
 
-func FinalsString(ch tbase.ScoreChanges, floats bool) string {
+func FinalsString(ch tbase.FinalScoreChanges) string {
 	tmp := make([]string, len(ch))
 	for k, v := range ch {
-		diff := float64(v.Diff/100) / 10
-		if floats {
-			tmp[k] = fmt.Sprintf("%d,%.1f", v.Score/100, diff)
+		if v.Diff.IsInt {
+			tmp[k] = fmt.Sprintf("%d,%d", v.Score, int(v.Diff.Value))
 		} else {
-			tmp[k] = fmt.Sprintf("%d,%d", v.Score/100, int(diff))
+			tmp[k] = fmt.Sprintf("%d,%.1f", v.Score, v.Diff.Value)
 		}
 
 	}

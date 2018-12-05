@@ -1,0 +1,76 @@
+syntax = "proto3";
+package stats;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+option go_package = "github.com/dnovikoff/tenhou/genproto/stats";
+
+enum LobbyType {
+    LOBBY_TYPE_KU = 0; // 般
+    LOBBY_TYPE_DAN = 1; // 上
+    LOBBY_TYPE_UPPERDAN = 2; // 特
+    LOBBY_TYPE_PHOENIX = 3; // 鳳
+    LOBBY_TYPE_DZ = 4; // 技
+    LOBBY_TYPE_X1 = 5; // 若
+    LOBBY_TYPE_X2 = 6; // 銀
+    LOBBY_TYPE_X3 = 7; // 琥
+}
+
+enum GameLength {
+    GAME_LENGTH_SOUTH = 0;
+    GAME_LENGTH_EAST = 1;
+    GAME_LENGTH_ONE = 2;
+}
+
+enum GameType {
+    GAME_TYPE_4 = 0;
+    GAME_TYPE_3 = 1;
+}
+
+enum GameSpeed {
+    GAME_SPEED_NORMAL = 0;
+    GAME_SPEED_FAST = 1;
+}
+
+enum Akkas {
+    AKKAS_YES = 0;
+    AKKAS_NO = 1;
+}
+
+enum Tanyao {
+    TANYAO_YES = 0;
+    TANYAO_NO = 1;
+}
+
+enum NumberType {
+    NO_NUMBER = 0;
+    NUMBER_2 = 2;
+    NUMBER_5 = 5;
+    NUMBER_0 = 10;
+}
+
+message Player {
+    string name = 1;
+    int64 score = 2;
+    int64 coins = 3;
+}
+
+message Record {
+    google.protobuf.Timestamp time = 1;
+    google.protobuf.Duration duration = 2;
+    
+    int64 number = 3;
+    LobbyType lobby = 4;
+    GameLength length = 5;
+    GameType type = 6;
+    Akkas akkas = 7;
+    Tanyao tanyao = 8;
+    // Some strange numbers, that are not ascii numbers like '５' or '２'
+    NumberType number_type = 9;
+
+    repeated Player players = 10;
+    string id = 11;
+    bool is_dz = 12;
+    bool is_champion_lobby = 13;
+}

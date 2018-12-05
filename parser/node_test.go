@@ -10,12 +10,15 @@ import (
 
 func TestNodeScoreChanged(t *testing.T) {
 	node := Node{Name: "AGARI", Attributes: map[string]string{"sc": "302,-323,236,0,149,323,313,0"}}
+	changes := node.GetScoreChanges()
+	assert.EqualValues(t, 30200, changes[0].ScoreMoney())
+	assert.EqualValues(t, -32300, changes[0].DiffMoney())
 	assert.Equal(t, tbase.ScoreChanges{
-		tbase.ScoreChange{Score: 30200, Diff: -32300},
-		tbase.ScoreChange{Score: 23600, Diff: 0},
-		tbase.ScoreChange{Score: 14900, Diff: 32300},
-		tbase.ScoreChange{Score: 31300, Diff: 0}},
-		node.GetScoreChanges())
+		tbase.ScoreChange{Score: 302, Diff: -323},
+		tbase.ScoreChange{Score: 236, Diff: 0},
+		tbase.ScoreChange{Score: 149, Diff: 323},
+		tbase.ScoreChange{Score: 313, Diff: 0}},
+		changes)
 }
 
 func TestNodeScore(t *testing.T) {

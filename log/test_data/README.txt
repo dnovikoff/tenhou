@@ -45,3 +45,5 @@ bug8.xml
 bug9.xml
 2009091515gm-00a9-0000-1753da1d
 
+chip.xml, ratio1.xml
+Seems like different calculation rules (like kiriyage mangan)

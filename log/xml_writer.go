@@ -11,7 +11,6 @@ import (
 
 type XMLWriter struct {
 	client.XMLWriter
-	FloatFormat bool
 }
 
 var _ Controller = &XMLWriter{}
@@ -23,10 +22,6 @@ func (w *XMLWriter) Open(Info) bool {
 
 func (w *XMLWriter) Close() {
 	w.Write(`</mjloggm>`)
-}
-
-func (w *XMLWriter) SetFloatFormat() {
-	w.FloatFormat = true
 }
 
 func (w *XMLWriter) client() client.XMLWriter {
@@ -45,7 +40,7 @@ func (w *XMLWriter) Go(params client.WithLobby) {
 }
 
 func (w XMLWriter) UserList(params client.UserList) {
-	w.WriteUserList(params.Users, w.FloatFormat)
+	w.WriteUserList(params.Users)
 }
 
 func (w *XMLWriter) Start(params client.WithDealer) {
@@ -56,6 +51,7 @@ func (w *XMLWriter) Init(params Init) {
 	w.Begin("INIT").
 		WriteArg("seed", parser.SeedString(&params.Seed)).
 		WriteArg("ten", util.ScoreString(params.Scores)).
+		WriteListInt("chip", params.Chip).
 		WriteDealer(params.Dealer)
 	for k, v := range params.Hands {
 		w.WriteArg("hai"+strconv.Itoa(k), util.InstanceString(v))
@@ -85,11 +81,11 @@ func (w *XMLWriter) Declare(params Declare) {
 }
 
 func (w *XMLWriter) Ryuukyoku(params tbase.Ryuukyoku) {
-	w.WriteRyuukyoku(&params, w.FloatFormat)
+	w.WriteRyuukyoku(&params)
 }
 
 func (w *XMLWriter) Agari(params tbase.Agari) {
-	w.WriteAgari(&params, w.FloatFormat)
+	w.WriteAgari(&params)
 }
 
 func (w *XMLWriter) Disconnect(params client.WithOpponent) {

@@ -29,22 +29,22 @@ const (
 	RulesDzjanso LobbyRules = 0x0841
 )
 
-func (this LobbyRules) Extract(mask LobbyRules) LobbyRules {
-	return this & mask
+func (r LobbyRules) Extract(mask LobbyRules) LobbyRules {
+	return r & mask
 }
 
-func (this LobbyRules) Check(f LobbyRules) bool {
-	return (f & this) == f
+func (r LobbyRules) Check(f LobbyRules) bool {
+	return (f & r) == f
 }
 
-func (this LobbyRules) String() string {
-	return fmt.Sprintf("%04x", int(this))
+func (r LobbyRules) String() string {
+	return fmt.Sprintf("%04x", int(r))
 }
 
-func (this LobbyRules) DebugString() string {
+func (r LobbyRules) DebugString() string {
 	buf := &bytes.Buffer{}
-	w := func(r LobbyRules, t string, f string) {
-		if this.Check(r) {
+	w := func(x LobbyRules, t string, f string) {
+		if r.Check(x) {
 			fmt.Fprintf(buf, t)
 		} else {
 			fmt.Fprintf(buf, f)
@@ -55,7 +55,7 @@ func (this LobbyRules) DebugString() string {
 	w(FlagHanchan, "H", "T")
 	w(Flag3Man, "3", "4")
 	w(FlagFast, "F", "f")
-	dan := this.Extract(MaskDanAll)
+	dan := r.Extract(MaskDanAll)
 	switch dan {
 	case MaskDanKu:
 		fmt.Fprintf(buf, "0")

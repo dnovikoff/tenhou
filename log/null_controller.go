@@ -11,7 +11,6 @@ var _ Controller = NullController{}
 
 func (NullController) Open(Info) bool                  { return true }
 func (NullController) Close()                          {}
-func (NullController) SetFloatFormat()                 {}
 func (NullController) Shuffle(Shuffle)                 {}
 func (NullController) Go(client.WithLobby)             {}
 func (NullController) Start(client.WithDealer)         {}

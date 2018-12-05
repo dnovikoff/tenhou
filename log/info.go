@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dnovikoff/tenhou/tbase"
-
 	"github.com/facebookgo/stackerr"
+
+	"github.com/dnovikoff/tenhou/tbase"
 )
 
 const (

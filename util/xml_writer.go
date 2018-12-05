@@ -54,6 +54,33 @@ func (this XMLWriter) Buffer() *bytes.Buffer {
 	return this.buf
 }
 
+func (this XMLWriter) WriteListInt(key string, values []int) XMLWriter {
+	x := make([]string, len(values))
+	for k, v := range values {
+		x[k] = strconv.Itoa(v)
+	}
+	return this.WriteList(key, x)
+}
+
+func (this XMLWriter) WriteListFloat(key string, values []tbase.Float) XMLWriter {
+	x := make([]string, len(values))
+	for k, v := range values {
+		if v.IsInt {
+			x[k] = strconv.Itoa(int(v.Value))
+		} else {
+			x[k] = fmt.Sprintf("%.2f", v.Value)
+		}
+	}
+	return this.WriteList(key, x)
+}
+
+func (this XMLWriter) WriteList(key string, values []string) XMLWriter {
+	if len(values) == 0 {
+		return this
+	}
+	return this.WriteArg(key, strings.Join(values, ","))
+}
+
 func (this XMLWriter) WriteArg(key string, value string) XMLWriter {
 	this.buf.WriteString(" " + key + `="` + value + `"`)
 	return this
@@ -105,7 +132,7 @@ func (this XMLWriter) WriteBody(format string, args ...interface{}) {
 func changesToString(ch tbase.ScoreChanges) string {
 	tmp := make([]string, len(ch))
 	for k, v := range ch {
-		tmp[k] = fmt.Sprintf("%d,%d", v.Score/100, v.Diff/100)
+		tmp[k] = fmt.Sprintf("%d,%d", v.Score, v.Diff)
 	}
 	return strings.Join(tmp, ",")
 }

@@ -132,9 +132,9 @@ func (this *Game) diff(who bool, m score.Money) tbase.ScoreChanges {
 	this.Human.Score += m
 	this.Robot.Score -= m
 	return tbase.ScoreChanges{
-		tbase.ScoreChange{this.Human.Score + -m, m},
+		tbase.ScoreChange{tbase.MoneyToInt(this.Human.Score + -m), tbase.MoneyToInt(m)},
 		tbase.ScoreChange{},
-		tbase.ScoreChange{this.Robot.Score + m, -m},
+		tbase.ScoreChange{tbase.MoneyToInt(this.Robot.Score + m), tbase.MoneyToInt(-m)},
 		tbase.ScoreChange{},
 	}
 }
@@ -213,7 +213,7 @@ func (this *Game) doAgari(
 		Who:            this.opp(who),
 		From:           this.opp(op),
 		Score:          tbase.Score{fu, money, 0},
-		FinalScores:    fin,
+		FinalScores:    fin.ToFinal(true),
 		Changes:        diff,
 		Hand:           hand.Instances(),
 		DoraIndicators: indicators,
@@ -546,10 +546,9 @@ func (this *Game) Run() {
 	params.LobbyType = 11
 	this.Client.Go(params)
 	this.Client.UserList(client.UserList{tbase.UserList{
-		tbase.User{Num: 0, Name: "Player", Sex: tbase.SexMale, Rate: 1500},
-		tbase.User{Num: 1, Name: "_", Sex: tbase.SexFemale, Rate: 1500},
-		tbase.User{Num: 2, Name: "Robot", Sex: tbase.SexComputer, Rate: 1500},
-		tbase.User{Num: 3, Name: "_", Sex: tbase.SexFemale, Rate: 1500},
+		Names: []string{"Player", "_", "Robot", "_"},
+		Sex:   []tbase.Sex{tbase.SexMale, tbase.SexFemale, tbase.SexComputer, tbase.SexFemale},
+		Rate:  []tbase.Float{{1500, true}, {1500, true}, {1500, true}, {1500, true}},
 	}})
 	this.Client.LogInfo(client.LogInfo{})
 	this.wait() // Ok

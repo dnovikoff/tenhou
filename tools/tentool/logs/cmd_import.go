@@ -3,11 +3,12 @@ package logs
 import (
 	"archive/zip"
 	"fmt"
+	"os"
 	"path"
 	"path/filepath"
 	"strings"
 
-	"github.com/dnovikoff/tenhou/tools/utils"
+	"github.com/dnovikoff/tenhou/tools/tentool/utils"
 )
 
 type importer struct {
@@ -20,24 +21,58 @@ func (i *importer) Run(args []string) {
 	i.index, err = LoadIndex()
 	utils.Check(err)
 	for _, v := range args {
-		utils.Check(i.addZip(v))
+		stat, err := os.Stat(v)
+		utils.Check(err)
+		if stat.IsDir() {
+			utils.Check(i.addDir(v))
+		} else {
+			utils.Check(i.addZip(v))
+		}
 	}
 }
 
-func (i *importer) addToIndex(zipPath string, files []string) error {
+func idFromFilename(p string) string {
+	p = path.Base(p)
+	i := strings.Index(p, ".")
+	if i == -1 {
+		return p
+	}
+	return p[:i]
+}
+
+func addFilesToIndex(index *FileIndex, zipPath string, files []string) error {
+	infos := index.CreateZip(zipPath)
 	for _, name := range files {
-		ext := path.Ext(name)
-		id := strings.TrimSuffix(path.Base(name), ext)
-		i.index.Set(id, []string{zipPath, name})
+		index.SetFile(infos, idFromFilename(name), name)
+	}
+	return index.Save()
+}
+
+func (i *importer) addDir(path string) error {
+	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.IsDir() {
+			return nil
+		}
+		if strings.HasSuffix(path, ".mjlog.gz") {
+			i.index.SetRootFile(idFromFilename(path), path)
+			return nil
+		}
+		return nil
+	})
+	if err != nil {
+		return err
 	}
 	return i.index.Save()
 }
 
 func (i *importer) addZip(zipPath string) error {
-	indexPath, err := makeZipPath(zipPath)
-	if err != nil {
-		return err
-	}
+	return addZipToIndex(i.index, zipPath)
+}
+
+func addZipToIndex(index *FileIndex, zipPath string) error {
 	reader, err := zip.OpenReader(zipPath)
 	if err != nil {
 		return err
@@ -51,13 +86,5 @@ func (i *importer) addZip(zipPath string) error {
 		files = append(files, v.Name)
 	}
 	fmt.Printf("Adding %v logs from %v\n", len(files), zipPath)
-	return i.addToIndex(indexPath, files)
-}
-
-func makeZipPath(p string) (string, error) {
-	p = filepath.Clean(p)
-	if filepath.IsAbs(p) {
-		return p, nil
-	}
-	return filepath.Rel(Location, p)
+	return addFilesToIndex(index, zipPath, files)
 }
