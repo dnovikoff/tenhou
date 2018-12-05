@@ -132,9 +132,9 @@ func (this *Game) diff(who bool, m score.Money) tbase.ScoreChanges {
 	this.Human.Score += m
 	this.Robot.Score -= m
 	return tbase.ScoreChanges{
-		tbase.ScoreChange{this.Human.Score + -m, m},
+		tbase.ScoreChange{tbase.MoneyToInt(this.Human.Score + -m), tbase.MoneyToInt(m)},
 		tbase.ScoreChange{},
-		tbase.ScoreChange{this.Robot.Score + m, -m},
+		tbase.ScoreChange{tbase.MoneyToInt(this.Robot.Score + m), tbase.MoneyToInt(-m)},
 		tbase.ScoreChange{},
 	}
 }
@@ -213,7 +213,7 @@ func (this *Game) doAgari(
 		Who:            this.opp(who),
 		From:           this.opp(op),
 		Score:          tbase.Score{fu, money, 0},
-		FinalScores:    fin,
+		FinalScores:    fin.ToFinal(true),
 		Changes:        diff,
 		Hand:           hand.Instances(),
 		DoraIndicators: indicators,

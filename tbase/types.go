@@ -39,6 +39,10 @@ type ScoreChange struct {
 }
 type ScoreChanges []ScoreChange
 
+func MoneyToInt(in score.Money) int {
+	return int(in) / 100
+}
+
 func (sc *ScoreChange) ScoreMoney() score.Money {
 	return score.Money(sc.Score * 100)
 }
@@ -51,6 +55,7 @@ type FinalScoreChange struct {
 	Score int
 	Diff  Float
 }
+
 type FinalScoreChanges []FinalScoreChange
 
 func (sc *FinalScoreChange) ScoreMoney() score.Money {
@@ -59,6 +64,17 @@ func (sc *FinalScoreChange) ScoreMoney() score.Money {
 
 func (sc *FinalScoreChange) DiffMoney() score.Money {
 	return score.Money(sc.Diff.Value * 1000)
+}
+
+func (sc ScoreChanges) ToFinal(isInt bool) FinalScoreChanges {
+	x := make(FinalScoreChanges, len(sc))
+	for k, v := range sc {
+		x[k] = FinalScoreChange{
+			Score: v.Score,
+			Diff:  Float{Value: float64(v.Diff), IsInt: isInt},
+		}
+	}
+	return x
 }
 
 type Scores []score.Money
