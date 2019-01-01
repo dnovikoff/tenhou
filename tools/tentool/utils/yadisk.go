@@ -74,7 +74,7 @@ func YaDiskDownload(u string, location string, interactive bool, onDownloaded fu
 			return err
 		}
 		if exists {
-			fmt.Printf("File %v already exists. Skip download.", path)
+			fmt.Printf("File %v already exists. Skip download.\n", path)
 			continue
 		}
 		dl := NewDownloader(

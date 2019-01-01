@@ -1,7 +1,7 @@
 [
     {
-        "search": "^2018.+$",
-        "file": "export/logs2018_part.zip"
+        "search": "^2019.+$",
+        "file": "export/logs2019_part.zip"
     },
     {
         "search": "^([0-9]{4}).+$",
