@@ -31,11 +31,10 @@ var rules = &yaku.RulesStruct{
 }
 
 var scoring = &score.RulesStruct{
-	IsManganRound:   false,
-	IsKazoeYakuman:  true,
-	IsYakumanDouble: false,
-	IsYakumanSum:    true,
-	HonbaValue:      100,
+	IsManganRound:  false,
+	IsKazoeYakuman: true,
+	IsYakumanSum:   true,
+	HonbaValue:     100,
 }
 
 type Game struct {
@@ -196,7 +195,7 @@ func (this *Game) doAgari(
 	money score.Money,
 	fu yaku.FuPoints,
 	yaku yaku.YakuSet,
-	yakuman yaku.YakumanSet) {
+	yakuman yaku.Yakumans) {
 	diff := this.diff(who, money)
 	var fin tbase.ScoreChanges
 	if this.isDead() {
@@ -275,7 +274,7 @@ func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 				penalty,
 				13,
 				nil,
-				yaku.YakumanSet{yaku.YakumanKokushi: 1},
+				yaku.Yakumans{yaku.YakumanKokushi},
 			)
 			return true
 		}
@@ -295,7 +294,7 @@ func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 				penalty,
 				13,
 				nil,
-				yaku.YakumanSet{yaku.YakumanKokushi: 1},
+				yaku.Yakumans{yaku.YakumanKokushi},
 			)
 			return true
 		}
@@ -314,7 +313,7 @@ func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 				penalty,
 				13,
 				nil,
-				yaku.YakumanSet{yaku.YakumanKokushi: 1},
+				yaku.Yakumans{yaku.YakumanKokushi},
 			)
 			return true
 		}
@@ -346,7 +345,7 @@ func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 		pay,
 		yaku.FuPoints(win.Fus.Sum().Round()),
 		win.Yaku,
-		win.Yakuman,
+		win.Yakumans,
 	)
 	return true
 }

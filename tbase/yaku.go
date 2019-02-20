@@ -196,11 +196,11 @@ func YakusFromCore(in yaku.YakuSet) (ret Yakus, err error) {
 	return
 }
 
-func YakumansFromCore(in yaku.YakumanSet) (ret Yakumans, err error) {
-	for k := range in {
-		y, ok := ReverseYakumanMap[k]
+func YakumansFromCore(in yaku.Yakumans) (ret Yakumans, err error) {
+	for _, v := range in {
+		y, ok := ReverseYakumanMap[v]
 		if !ok {
-			err = fmt.Errorf("No yakuman '%v' in reverse map", k)
+			err = fmt.Errorf("No yakuman '%v' in reverse map", v)
 			ret = nil
 			return
 		}
@@ -224,8 +224,8 @@ func (this Yakus) ToCore() (ret yaku.YakuSet, err error) {
 	return
 }
 
-func (this Yakumans) ToCore() (ret yaku.YakumanSet, err error) {
-	result := make(yaku.YakumanSet, len(this))
+func (this Yakumans) ToCore() (ret yaku.Yakumans, err error) {
+	result := make(yaku.Yakumans, len(this))
 	for _, v := range this {
 		y, ok := YakumanMap[v]
 		if !ok {

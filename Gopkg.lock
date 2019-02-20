@@ -19,7 +19,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:0e69fc69591d7a9a6778d70fb85fbfb05f06d7e0bccb52824dea274c2dc7a0a8"
+  digest = "1:748cf322526152b9efbcbb7046d01f89c7e4ec0632a93296c46a537aefc5a807"
   name = "github.com/dnovikoff/tempai-core"
   packages = [
     "base",
@@ -33,7 +33,7 @@
     "yaku",
   ]
   pruneopts = "UT"
-  revision = "93559b7ca50c75b64d3424336b07aa094ca1c121"
+  revision = "b49b3f63208866675c1cd235fa837de0d6df49bc"
 
 [[projects]]
   branch = "master"
@@ -52,7 +52,7 @@
   revision = "c2fcf88613f4fc155efcb81619424db6cbb5bce0"
 
 [[projects]]
-  digest = "1:14053216b10287b4d1a3d9cc7cf9c739de42dec897a519bc8641cde60b2dc340"
+  digest = "1:b00d66edb5f40dbbdcd37292851a61c2644356e37d8fb6517394ffb4b24b1c22"
   name = "github.com/golang/protobuf"
   packages = [
     "proto",
@@ -62,6 +62,10 @@
     "protoc-gen-go/generator/internal/remap",
     "protoc-gen-go/grpc",
     "protoc-gen-go/plugin",
+    "ptypes",
+    "ptypes/any",
+    "ptypes/duration",
+    "ptypes/timestamp",
   ]
   pruneopts = "UT"
   revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
@@ -156,7 +160,11 @@
     "github.com/dnovikoff/tempai-core/tile",
     "github.com/dnovikoff/tempai-core/yaku",
     "github.com/facebookgo/stackerr",
+    "github.com/golang/protobuf/proto",
     "github.com/golang/protobuf/protoc-gen-go",
+    "github.com/golang/protobuf/ptypes",
+    "github.com/golang/protobuf/ptypes/duration",
+    "github.com/golang/protobuf/ptypes/timestamp",
     "github.com/satori/go.uuid",
     "github.com/spf13/cobra",
     "github.com/stretchr/testify/assert",
