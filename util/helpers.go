@@ -14,8 +14,8 @@ import (
 
 type Exceptions string
 
-func (this Exceptions) Check(b byte) bool {
-	for _, v := range []byte(this) {
+func (e Exceptions) Check(b byte) bool {
+	for _, v := range []byte(e) {
 		if v == b {
 			return true
 		}

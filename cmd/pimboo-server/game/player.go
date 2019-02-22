@@ -24,39 +24,39 @@ func NewPlayer(x score.Money) *Player {
 	return &Player{Score: x}
 }
 
-func (this *Player) Waits() compact.Tiles {
-	return tempai.GetWaits(this.tempai)
+func (p *Player) Waits() compact.Tiles {
+	return tempai.GetWaits(p.tempai)
 }
 
-func (this *Player) update() {
-	this.tempai = tempai.Calculate(this.Hand, calc.Declared(this.Melds.Core()))
+func (p *Player) update() {
+	p.tempai = tempai.Calculate(p.Hand, calc.Declared(p.Melds.Core()))
 
-	checker := this.Discard.UniqueTiles()
-	this.furiten = (checker & this.Waits()) != 0
+	checker := p.Discard.UniqueTiles()
+	p.furiten = (checker & p.Waits()) != 0
 }
 
-func (this *Player) win(ctx *yaku.Context) *yaku.Result {
-	ctx.IsFirstTake = this.first
+func (p *Player) win(ctx *yaku.Context) *yaku.Result {
+	ctx.IsFirstTake = p.first
 	ctx.Rules = rules
-	return yaku.Win(this.tempai, ctx, nil)
+	return yaku.Win(p.tempai, ctx, nil)
 }
 
-func (this *Player) drop(t tile.Instance) {
-	this.first = false
-	this.Hand.Remove(t)
-	this.Discard.Set(t)
-	this.update()
+func (p *Player) drop(t tile.Instance) {
+	p.first = false
+	p.Hand.Remove(t)
+	p.Discard.Set(t)
+	p.update()
 }
 
-func (this *Player) take(t tile.Instance) bool {
-	this.Hand.Set(t)
-	return this.Waits().Check(t.Tile())
+func (p *Player) take(t tile.Instance) bool {
+	p.Hand.Set(t)
+	return p.Waits().Check(t.Tile())
 }
 
-func (this *Player) Init(hand compact.Instances) {
-	this.Hand = hand
-	this.Melds = nil
-	this.first = true
-	this.Discard = compact.NewInstances()
-	this.update()
+func (p *Player) Init(hand compact.Instances) {
+	p.Hand = hand
+	p.Melds = nil
+	p.first = true
+	p.Discard = compact.NewInstances()
+	p.update()
 }

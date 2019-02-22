@@ -21,8 +21,8 @@ const (
 	SuggetSanmaDora         // 128
 )
 
-func (this Suggest) Check(x Suggest) bool {
-	return (this & x) == x
+func (s Suggest) Check(x Suggest) bool {
+	return (s & x) == x
 }
 
 type UNController interface {

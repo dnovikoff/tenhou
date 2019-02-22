@@ -80,73 +80,73 @@ func ctxTimeout(ctx context.Context) (context.Context, func()) {
 	return context.WithTimeout(ctx, time.Second*30)
 }
 
-func (this *Game) commit(data string) {
+func (g *Game) commit(data string) {
 	if data == "" {
 		return
 	}
-	ctx, cancel := ctxTimeout(this.Context)
+	ctx, cancel := ctxTimeout(g.Context)
 	defer cancel()
-	this.check(this.Connection.Write(ctx, data))
+	g.check(g.Connection.Write(ctx, data))
 }
 
-func (this *Game) GetHand() compact.Instances {
+func (g *Game) GetHand() compact.Instances {
 	x := compact.NewInstances()
-	hand, wall := this.Wall[:13], this.Wall[13:]
-	this.Wall = wall
+	hand, wall := g.Wall[:13], g.Wall[13:]
+	g.Wall = wall
 	return x.Add(hand)
 }
 
-func (this *Game) canTake() bool {
-	return len(this.Wall) > 0
+func (g *Game) canTake() bool {
+	return len(g.Wall) > 0
 }
 
-func (this *Game) take() tile.Instance {
-	x := this.Wall[0]
-	this.Wall = this.Wall[1:]
+func (g *Game) take() tile.Instance {
+	x := g.Wall[0]
+	g.Wall = g.Wall[1:]
 	return x
 }
 
-func (this *Game) Player(x bool) *Player {
+func (g *Game) Player(x bool) *Player {
 	if x {
-		return this.Human
+		return g.Human
 	}
-	return this.Robot
+	return g.Robot
 }
 
-func (this *Game) opp(x bool) tbase.Opponent {
+func (g *Game) opp(x bool) tbase.Opponent {
 	if x {
 		return tbase.Self
 	}
 	return tbase.Front
 }
 
-func (this *Game) scores() tbase.Scores {
-	return tbase.Scores{this.Human.Score, 0, this.Robot.Score, 0}
+func (g *Game) scores() tbase.Scores {
+	return tbase.Scores{g.Human.Score, 0, g.Robot.Score, 0}
 }
 
-func (this *Game) diff(who bool, m score.Money) tbase.ScoreChanges {
+func (g *Game) diff(who bool, m score.Money) tbase.ScoreChanges {
 	if !who {
 		m *= -1
 	}
-	this.Human.Score += m
-	this.Robot.Score -= m
+	g.Human.Score += m
+	g.Robot.Score -= m
 	return tbase.ScoreChanges{
-		tbase.ScoreChange{tbase.MoneyToInt(this.Human.Score + -m), tbase.MoneyToInt(m)},
+		tbase.ScoreChange{tbase.MoneyToInt(g.Human.Score + -m), tbase.MoneyToInt(m)},
 		tbase.ScoreChange{},
-		tbase.ScoreChange{tbase.MoneyToInt(this.Robot.Score + m), tbase.MoneyToInt(-m)},
+		tbase.ScoreChange{tbase.MoneyToInt(g.Robot.Score + m), tbase.MoneyToInt(-m)},
 		tbase.ScoreChange{},
 	}
 }
 
-func (this *Game) ProcessOne(cb *server.Callbacks) bool {
+func (g *Game) ProcessOne(cb *server.Callbacks) bool {
 	repeat := false
 	badRequest := false
 	cb.CbPing = func() {
-		this.logger.Print("Got ping")
+		g.logger.Print("Got ping")
 		repeat = true
 	}
 	cb.CbRequestLobbyStatus = func(int, int) {
-		this.logger.Print("Got lobby status")
+		g.logger.Print("Got lobby status")
 		repeat = true
 	}
 	cb.Default = func() {
@@ -157,24 +157,24 @@ func (this *Game) ProcessOne(cb *server.Callbacks) bool {
 	var err error
 	for repeat {
 		repeat = false
-		node, err = this.reader.Next()
-		if !this.check(err) {
+		node, err = g.reader.Next()
+		if !g.check(err) {
 			return false
 		}
 		err = server.ProcessXMLNode(node, cb)
-		if !this.check(err) {
+		if !g.check(err) {
 			return false
 		}
 	}
 	if badRequest {
-		this.check(fmt.Errorf("Unexpected message %s", node.Name))
+		g.check(fmt.Errorf("Unexpected message %s", node.Name))
 		return false
 	}
 	return true
 }
 
-func (this *Game) isDead() bool {
-	return this.Human.Score < 0 || this.Robot.Score < 0 || this.err != nil
+func (g *Game) isDead() bool {
+	return g.Human.Score < 0 || g.Robot.Score < 0 || g.err != nil
 }
 
 func inds(head tile.Tile, data compact.Tiles) (ret tile.Instances) {
@@ -185,7 +185,7 @@ func inds(head tile.Tile, data compact.Tiles) (ret tile.Instances) {
 	return
 }
 
-func (this *Game) doAgari(
+func (g *Game) doAgari(
 	who bool,
 	isTsumo bool,
 	hand compact.Instances,
@@ -196,10 +196,10 @@ func (this *Game) doAgari(
 	fu yaku.FuPoints,
 	yaku yaku.YakuSet,
 	yakuman yaku.Yakumans) {
-	diff := this.diff(who, money)
+	diff := g.diff(who, money)
 	var fin tbase.ScoreChanges
-	if this.isDead() {
-		fin = this.diff(who, 0)
+	if g.isDead() {
+		fin = g.diff(who, 0)
 		for k, v := range fin {
 			fin[k].Diff = v.Score
 		}
@@ -209,8 +209,8 @@ func (this *Game) doAgari(
 		op = !op
 	}
 	a := tbase.Agari{
-		Who:            this.opp(who),
-		From:           this.opp(op),
+		Who:            g.opp(who),
+		From:           g.opp(op),
 		Score:          tbase.Score{fu, money, 0},
 		FinalScores:    fin.ToFinal(true),
 		Changes:        diff,
@@ -222,29 +222,29 @@ func (this *Game) doAgari(
 	var err error
 	a.Yakus, err = tbase.YakusFromCore(yaku)
 	if err != nil {
-		this.logger.Printf("Error converting yakus: %v", err)
+		g.logger.Printf("Error converting yakus: %v", err)
 	}
 	a.Yakumans, err = tbase.YakumansFromCore(yakuman)
 	if err != nil {
-		this.logger.Printf("Error converting yakumans: %v", err)
+		g.logger.Printf("Error converting yakumans: %v", err)
 	}
 	if len(indicators) > 5 {
 		a.DoraIndicators, a.UraIndicators = indicators[:5], indicators[5:]
 	}
-	this.Client.Agari(a)
-	this.wait()
+	g.Client.Agari(a)
+	g.wait()
 }
 
-func (this Game) wait() {
-	this.logger.Print("Waiting...")
+func (g *Game) wait() {
+	g.logger.Print("Waiting...")
 	cb := &server.Callbacks{}
 	cb.CbNextReady = func() {}
 	cb.CbGoOK = func() {}
 	cb.CbBye = func() {
-		this.Connection.Close()
+		g.Connection.Close()
 	}
 	cb.CbRequestLobbyStatus = func(int, int) {}
-	this.ProcessOne(cb)
+	g.ProcessOne(cb)
 }
 
 func wind(x bool) base.Wind {
@@ -254,17 +254,17 @@ func wind(x bool) base.Wind {
 	return base.WindWest
 }
 
-func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
-	p := this.Player(who)
+func (g *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
+	p := g.Player(who)
 	s := score.GetYakumanScore(scoring, 1, 0)
 	penalty := -s.PayRon
-	if this.Dealer {
+	if g.Dealer {
 		penalty = -s.PayRonDealer
 	}
 	// Noten ron
 	if p.tempai == nil {
 		if who {
-			this.doAgari(
+			g.doAgari(
 				who,
 				isTsumo,
 				p.Hand,
@@ -284,7 +284,7 @@ func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 	waits := tempai.GetWaits(p.tempai)
 	if !waits.Check(t.Tile()) {
 		if who {
-			this.doAgari(
+			g.doAgari(
 				who,
 				isTsumo,
 				p.Hand,
@@ -303,7 +303,7 @@ func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 	if !isTsumo && p.furiten {
 		tls := (p.Discard.UniqueTiles() & waits)
 		if who {
-			this.doAgari(
+			g.doAgari(
 				who,
 				isTsumo,
 				p.Hand,
@@ -322,20 +322,20 @@ func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 	ctx := &yaku.Context{
 		Tile:        t,
 		Rules:       rules,
-		IsLastTile:  !this.canTake(),
+		IsLastTile:  !g.canTake(),
 		IsFirstTake: p.first,
 		IsTsumo:     isTsumo,
-		SelfWind:    wind(this.Dealer == this.Turn),
-		IsRinshan:   this.Rinshan,
+		SelfWind:    wind(g.Dealer == g.Turn),
+		IsRinshan:   g.Rinshan,
 	}
 	win := yaku.Win(p.tempai, ctx, nil)
 	s = score.GetScoreByResult(scoring, win, 0)
 	pay := s.PayRon
-	if who == this.Dealer {
+	if who == g.Dealer {
 		pay = s.PayRonDealer
 	}
 
-	this.doAgari(
+	g.doAgari(
 		who,
 		isTsumo,
 		p.Hand,
@@ -350,25 +350,25 @@ func (this *Game) tryWin(t tile.Instance, who, isTsumo bool) (done bool) {
 	return true
 }
 
-func (this *Game) RobotTurn() (result bool) {
+func (g *Game) RobotTurn() (result bool) {
 	{
 		params := client.Take{}
 		params.Opponent = tbase.Front
-		this.Client.Take(params)
+		g.Client.Take(params)
 	}
-	t := this.take()
-	p := this.Robot
+	t := g.take()
+	p := g.Robot
 	p.take(t)
-	if this.tryWin(t, false, true) {
+	if g.tryWin(t, false, true) {
 		return false
 	}
 	visible := compact.NewInstances()
 	visible.
 		Merge(p.Hand).
 		Merge(p.Discard).
-		Merge(this.Human.Discard)
+		Merge(g.Human.Discard)
 	p.Melds.Add(visible)
-	this.Human.Melds.Add(visible)
+	g.Human.Melds.Add(visible)
 
 	res := effective.Calculate(
 		p.Hand,
@@ -384,32 +384,32 @@ func (this *Game) RobotTurn() (result bool) {
 	params.Suggest = client.SuggestRon
 	params.IsTsumogiri = (toDrop == t)
 	params.Opponent = tbase.Front
-	this.Client.Drop(params)
+	g.Client.Drop(params)
 	cb := &server.Callbacks{}
 	cb.CbCall = func(x server.Answer, t tile.Instances) {
 		switch x {
 		case server.AnswerSkip:
 			result = true
 		case server.AnswerRon:
-			this.tryWin(toDrop, true, false)
+			g.tryWin(toDrop, true, false)
 			result = false
 		default:
 			// Unexpected answer
 			cb.Default()
 		}
 	}
-	this.ProcessOne(cb)
+	g.ProcessOne(cb)
 	return
 }
 
-func (this *Game) HumanTurn() (result bool) {
-	t := this.take()
+func (g *Game) HumanTurn() (result bool) {
+	t := g.take()
 	params := client.Take{}
 	params.Opponent = tbase.Self
 	params.Instance = t
 	params.Suggest = client.SuggestTsumo
-	this.Client.Take(params)
-	p := this.Human
+	g.Client.Take(params)
+	p := g.Human
 	p.take(t)
 
 	cb := &server.Callbacks{}
@@ -424,13 +424,13 @@ func (this *Game) HumanTurn() (result bool) {
 		params.Opponent = tbase.Self
 		params.Instance = t
 		params.IsTsumogiri = (i == t)
-		this.Client.Drop(params)
-		result = !this.tryWin(i, false, false)
+		g.Client.Drop(params)
+		result = !g.tryWin(i, false, false)
 	}
 	cb.CbCall = func(x server.Answer, i tile.Instances) {
 		switch x {
 		case server.AnswerClosedKan:
-			if !this.canTake() || len(i) != 1 {
+			if !g.canTake() || len(i) != 1 {
 				cb.Default()
 				return
 			}
@@ -446,148 +446,148 @@ func (this *Game) HumanTurn() (result bool) {
 				Tiles:  compact.NewMask(0, t.Tile()).SetCount(4).Instances(),
 			}
 			p.first = false
-			this.Robot.first = false
-			this.Rinshan = true
+			g.Robot.first = false
+			g.Rinshan = true
 			p.Melds = append(p.Melds, m)
 			p.Hand.SetCount(first.Tile(), 0)
 			params := client.Declare{}
 			params.Opponent = tbase.Self
 			params.Meld = tbase.EncodeCalled(m)
-			this.Client.Declare(params)
+			g.Client.Declare(params)
 			extraTurn = true
 		case server.AnswerSkip:
 			result = true
 		case server.AnswerTsumo:
-			this.tryWin(t, true, true)
+			g.tryWin(t, true, true)
 		default:
 			// Unexpected answer
 			cb.Default()
 		}
 	}
-	this.ProcessOne(cb)
+	g.ProcessOne(cb)
 
 	if extraTurn {
-		return this.HumanTurn()
+		return g.HumanTurn()
 	}
 	return
 }
 
-func (this *Game) check(err error) bool {
+func (g *Game) check(err error) bool {
 	if err != nil {
-		this.logger.Printf("New error: %v", err)
+		g.logger.Printf("New error: %v", err)
 	}
-	if this.err != nil {
+	if g.err != nil {
 		return false
 	}
 	if err == nil {
 		return true
 	}
-	this.err = err
+	g.err = err
 	return false
 }
 
-func (this *Game) MakeDraw() {
+func (g *Game) MakeDraw() {
 	rk := tbase.Ryuukyoku{
 		DrawType: tbase.DrawEnd,
 	}
-	this.Client.Ryuukyoku(rk)
-	this.wait()
+	g.Client.Ryuukyoku(rk)
+	g.wait()
 }
 
-func (this *Game) MakeTurn() (x bool) {
-	if !this.canTake() {
-		this.MakeDraw()
+func (g *Game) MakeTurn() (x bool) {
+	if !g.canTake() {
+		g.MakeDraw()
 		return false
 	}
-	if this.Turn {
-		x = this.HumanTurn()
+	if g.Turn {
+		x = g.HumanTurn()
 	} else {
-		x = this.RobotTurn()
+		x = g.RobotTurn()
 	}
-	this.Turn = !this.Turn
+	g.Turn = !g.Turn
 	return
 }
 
-func (this *Game) auth() bool {
+func (g *Game) auth() bool {
 	cb := &server.Callbacks{}
 	cb.CbHello = func(name string, tid string, sex tbase.Sex) {
-		this.Client.Hello(client.Hello{Name: name, Auth: "20180117-e7b5e83e"})
+		g.Client.Hello(client.Hello{Name: name, Auth: "20180117-e7b5e83e"})
 	}
-	if !this.ProcessOne(cb) {
+	if !g.ProcessOne(cb) {
 		return false
 	}
 	cb.CbHello = nil
 	cb.CbAuth = func(string) {}
-	if !this.ProcessOne(cb) {
+	if !g.ProcessOne(cb) {
 		return false
 	}
 	return true
 }
 
-func (this *Game) Run() {
-	ctx, stop := context.WithCancel(this.Context)
-	this.reader.ReadCallback = func(ctx context.Context) (string, error) {
+func (g *Game) Run() {
+	ctx, stop := context.WithCancel(g.Context)
+	g.reader.ReadCallback = func(ctx context.Context) (string, error) {
 		rCtx, cancel := ctxTimeout(ctx)
 		defer cancel()
-		return this.Connection.Read(rCtx)
+		return g.Connection.Read(rCtx)
 	}
-	waitForExit := this.reader.Start(ctx)
+	waitForExit := g.reader.Start(ctx)
 	defer func() {
 		stop()
 		waitForExit()
-		this.Connection.Close()
+		g.Connection.Close()
 	}()
-	if !this.auth() {
+	if !g.auth() {
 		return
 	}
-	this.wait()
+	g.wait()
 	params := client.Go{}
 	params.LobbyType = 11
-	this.Client.Go(params)
-	this.Client.UserList(client.UserList{tbase.UserList{
+	g.Client.Go(params)
+	g.Client.UserList(client.UserList{tbase.UserList{
 		Names: []string{"Player", "_", "Robot", "_"},
 		Sex:   []tbase.Sex{tbase.SexMale, tbase.SexFemale, tbase.SexComputer, tbase.SexFemale},
 		Rate:  []tbase.Float{{1500, true}, {1500, true}, {1500, true}, {1500, true}},
 	}})
-	this.Client.LogInfo(client.LogInfo{})
-	this.wait() // Ok
+	g.Client.LogInfo(client.LogInfo{})
+	g.wait() // Ok
 	//	this.wait() // Ready
 	rnd := 0
 	startTile := tile.Tiles{tile.Pin1, tile.Man1, tile.Sou1}
-	for this.RunOne(rnd, startTile[rnd%len(startTile)]) {
+	for g.RunOne(rnd, startTile[rnd%len(startTile)]) {
 		rnd++
-		this.Dealer = !this.Dealer
+		g.Dealer = !g.Dealer
 	}
-	this.wait()
+	g.wait()
 }
 
-func (this *Game) RunOne(rnd int, startTile tile.Tile) bool {
-	this.logger.Printf("Round %v START", rnd)
+func (g *Game) RunOne(rnd int, startTile tile.Tile) bool {
+	g.logger.Printf("Round %v START", rnd)
 	tiles := compact.AllInstancesFromTo(startTile, startTile+9).Instances()
-	this.rnd.Shuffle(len(tiles), func(i, j int) {
+	g.rnd.Shuffle(len(tiles), func(i, j int) {
 		tiles[i], tiles[j] = tiles[j], tiles[i]
 	})
-	this.Wall = tiles
-	this.Human.Init(this.GetHand())
-	this.Robot.Init(this.GetHand())
-	this.Client.Init(client.Init{
+	g.Wall = tiles
+	g.Human.Init(g.GetHand())
+	g.Robot.Init(g.GetHand())
+	g.Client.Init(client.Init{
 		Init: tbase.Init{
 			Seed: tbase.Seed{
 				RoundNumber: rnd,
 				Indicator:   indicator,
 				Dice:        [2]int{1, 2},
 			},
-			Scores: this.scores(),
-			Dealer: this.opp(this.Dealer),
+			Scores: g.scores(),
+			Dealer: g.opp(g.Dealer),
 		},
-		Hand: this.Human.Hand.Instances(),
+		Hand: g.Human.Hand.Instances(),
 	})
 
-	for this.MakeTurn() {
-		if this.err != nil {
+	for g.MakeTurn() {
+		if g.err != nil {
 			return false
 		}
 	}
-	this.logger.Printf("Round %v END", rnd)
-	return !this.isDead()
+	g.logger.Printf("Round %v END", rnd)
+	return !g.isDead()
 }

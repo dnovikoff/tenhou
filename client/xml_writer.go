@@ -19,7 +19,7 @@ func NewXMLWriter() XMLWriter {
 	return XMLWriter{util.NewXMLWriter()}
 }
 
-func (this XMLWriter) Drop(params Drop) {
+func (w XMLWriter) Drop(params Drop) {
 	letter := 'D'
 	i := util.InstanceToTenhou(params.Instance)
 	if params.IsTsumogiri {
@@ -27,54 +27,54 @@ func (this XMLWriter) Drop(params Drop) {
 	}
 	letter += rune(params.Opponent)
 	if params.Suggest > 0 {
-		this.WriteBody(`%s%d t="%d"`, string(letter), i, params.Suggest)
+		w.WriteBody(`%s%d t="%d"`, string(letter), i, params.Suggest)
 		return
 	}
-	this.WriteBody("%s%d", string(letter), i)
+	w.WriteBody("%s%d", string(letter), i)
 }
 
-func (this XMLWriter) WriteTake(o tbase.Opponent, t tile.Instance, suggest Suggest, hideOthers bool) {
+func (w XMLWriter) WriteTake(o tbase.Opponent, t tile.Instance, suggest Suggest, hideOthers bool) {
 	letter := 'T'
 	letter += rune(o)
 	i := util.InstanceToTenhou(t)
 	if hideOthers && o != tbase.Self {
-		this.WriteBody(string(letter))
+		w.WriteBody(string(letter))
 		return
 	}
 	if suggest > 0 {
-		this.WriteBody(`%s%d t="%d"`, string(letter), i, suggest)
+		w.WriteBody(`%s%d t="%d"`, string(letter), i, suggest)
 		return
 	}
-	this.WriteBody("%s%d", string(letter), i)
+	w.WriteBody("%s%d", string(letter), i)
 }
 
-func (this XMLWriter) Take(params Take) {
-	this.WriteTake(
+func (w XMLWriter) Take(params Take) {
+	w.WriteTake(
 		params.Opponent,
 		params.Instance,
 		params.Suggest,
 		true)
 }
 
-func (this XMLWriter) Reach(params Reach) {
-	this.Begin("REACH").
+func (w XMLWriter) Reach(params Reach) {
+	w.Begin("REACH").
 		WriteWho(params.Opponent)
 	if len(params.Score) > 0 {
-		this.WriteArg("ten", util.ScoreString(params.Score))
+		w.WriteArg("ten", util.ScoreString(params.Score))
 	}
-	this.WriteIntArg("step", params.Step).
+	w.WriteIntArg("step", params.Step).
 		End()
 }
 
-func (this XMLWriter) Declare(params Declare) {
-	w := this.Begin("N").
+func (w XMLWriter) Declare(params Declare) {
+	wr := w.Begin("N").
 		WriteWho(params.Opponent).
 		WriteIntArg("m", int(params.Meld))
 
 	if params.Suggest > 0 {
-		w.WriteIntArg("t", int(params.Suggest))
+		wr.WriteIntArg("t", int(params.Suggest))
 	}
-	w.End()
+	wr.End()
 }
 
 func (w XMLWriter) writeInit(in Init) {
@@ -86,20 +86,20 @@ func (w XMLWriter) writeInit(in Init) {
 		WriteArg("hai", util.InstanceString(in.Hand))
 }
 
-func (this XMLWriter) Init(params Init) {
-	this.Begin("INIT")
-	this.writeInit(params)
-	this.End()
+func (w XMLWriter) Init(params Init) {
+	w.Begin("INIT")
+	w.writeInit(params)
+	w.End()
 }
 
-func (this XMLWriter) Reinit(params Reinit) {
-	this.Begin("REINIT")
-	this.writeInit(params.Init)
+func (w XMLWriter) Reinit(params Reinit) {
+	w.Begin("REINIT")
+	w.writeInit(params.Init)
 	for k, v := range params.Melds {
 		if len(v) == 0 {
 			continue
 		}
-		this.WriteArg("m"+strconv.Itoa(k), util.MeldString(v))
+		w.WriteArg("m"+strconv.Itoa(k), util.MeldString(v))
 	}
 	for k, v := range params.Discard {
 		tiles := v
@@ -113,9 +113,9 @@ func (this XMLWriter) Reinit(params Reinit) {
 			tiles = append(tiles, 255)
 			tiles = append(tiles, v[r:]...)
 		}
-		this.WriteArg("kawa"+strconv.Itoa(k), util.InstanceString(tiles))
+		w.WriteArg("kawa"+strconv.Itoa(k), util.InstanceString(tiles))
 	}
-	this.End()
+	w.End()
 }
 
 func (w XMLWriter) LogInfo(params LogInfo) {
@@ -188,8 +188,8 @@ func (w XMLWriter) WriteUserList(ul tbase.UserList) {
 	w.End()
 }
 
-func (this XMLWriter) LobbyStats(params LobbyStats) {
-	this.Begin("LN").
+func (w XMLWriter) LobbyStats(params LobbyStats) {
+	w.Begin("LN").
 		WriteArg("n", params.N).
 		WriteArg("j", params.J).
 		WriteArg("g", params.G).
@@ -235,26 +235,26 @@ func (w XMLWriter) WriteAgari(a *tbase.Agari) {
 	w.AddTrailingSpace().End()
 }
 
-func (this XMLWriter) Indicator(params WithInstance) {
-	this.Begin("DORA").
+func (w XMLWriter) Indicator(params WithInstance) {
+	w.Begin("DORA").
 		WriteInstance("hai", params.Instance).
 		AddTrailingSpace().End()
 }
 
-func (this XMLWriter) EndButton(params EndButton) {
-	this.Begin("PROF").
+func (w XMLWriter) EndButton(params EndButton) {
+	w.Begin("PROF").
 		WriteIntArg("lobby", params.LobbyNumber).
 		WriteIntArg("type", params.LobbyType).
 		WriteArg("add", params.Add).
 		End()
 }
 
-func (this XMLWriter) Furiten(params Furiten) {
+func (w XMLWriter) Furiten(params Furiten) {
 	val := 0
 	if params.Furiten {
 		val = 1
 	}
-	this.Begin("FURITEN").
+	w.Begin("FURITEN").
 		WriteIntArg("show", val).
 		AddTrailingSpace().
 		End()
@@ -284,16 +284,16 @@ func (w XMLWriter) WriteRyuukyoku(a *tbase.Ryuukyoku) {
 	w.AddTrailingSpace().End()
 }
 
-func (this XMLWriter) Rejoin(params Rejoin) {
+func (w XMLWriter) Rejoin(params Rejoin) {
 	r := ""
 	if params.Rejoin {
 		r = ",r"
 	}
-	this.WriteBody(`REJOIN t="%d,%d%s"`, params.LobbyNumber, params.LobbyType, r)
+	w.WriteBody(`REJOIN t="%d,%d%s"`, params.LobbyNumber, params.LobbyType, r)
 }
 
-func (this XMLWriter) Disconnect(params WithOpponent) {
-	this.Begin("BYE").WriteWho(params.Opponent).End()
+func (w XMLWriter) Disconnect(params WithOpponent) {
+	w.Begin("BYE").WriteWho(params.Opponent).End()
 }
 
 func (w XMLWriter) Reconnect(params Reconnect) {
@@ -309,8 +309,8 @@ func (w XMLWriter) Chat(params Chat) {
 	w.AddTrailingSpace().End()
 }
 
-func (this XMLWriter) Ranking(params Ranking) {
-	this.WriteBody(`RANKING v2="%s"`, params.V2)
+func (w XMLWriter) Ranking(params Ranking) {
+	w.WriteBody(`RANKING v2="%s"`, params.V2)
 }
 
 func (w XMLWriter) Recover(params Recover) {

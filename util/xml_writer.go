@@ -20,49 +20,49 @@ func NewXMLWriter() XMLWriter {
 	return XMLWriter{&bytes.Buffer{}, true, nil}
 }
 
-func (this XMLWriter) Reset() {
-	this.buf.Reset()
+func (w XMLWriter) Reset() {
+	w.buf.Reset()
 }
 
-func (this XMLWriter) String() string {
-	return this.buf.String()
+func (w XMLWriter) String() string {
+	return w.buf.String()
 }
 
-func (this XMLWriter) Begin(tag string) XMLWriter {
-	if this.AddSpaces && this.buf.Len() > 0 {
-		this.buf.WriteByte(' ')
+func (w XMLWriter) Begin(tag string) XMLWriter {
+	if w.AddSpaces && w.buf.Len() > 0 {
+		w.buf.WriteByte(' ')
 	}
-	this.buf.WriteByte('<')
-	this.buf.WriteString(tag)
-	return this
+	w.buf.WriteByte('<')
+	w.buf.WriteString(tag)
+	return w
 }
 
-func (this XMLWriter) End() {
-	this.buf.WriteString("/>")
-	if this.Commit != nil {
-		this.Commit(this.String())
-		this.Reset()
+func (w XMLWriter) End() {
+	w.buf.WriteString("/>")
+	if w.Commit != nil {
+		w.Commit(w.String())
+		w.Reset()
 	}
 }
 
-func (this XMLWriter) AddTrailingSpace() XMLWriter {
-	this.buf.WriteByte(' ')
-	return this
+func (w XMLWriter) AddTrailingSpace() XMLWriter {
+	w.buf.WriteByte(' ')
+	return w
 }
 
-func (this XMLWriter) Buffer() *bytes.Buffer {
-	return this.buf
+func (w XMLWriter) Buffer() *bytes.Buffer {
+	return w.buf
 }
 
-func (this XMLWriter) WriteListInt(key string, values []int) XMLWriter {
+func (w XMLWriter) WriteListInt(key string, values []int) XMLWriter {
 	x := make([]string, len(values))
 	for k, v := range values {
 		x[k] = strconv.Itoa(v)
 	}
-	return this.WriteList(key, x)
+	return w.WriteList(key, x)
 }
 
-func (this XMLWriter) WriteListFloat(key string, values []tbase.Float) XMLWriter {
+func (w XMLWriter) WriteListFloat(key string, values []tbase.Float) XMLWriter {
 	x := make([]string, len(values))
 	for k, v := range values {
 		if v.IsInt {
@@ -71,62 +71,62 @@ func (this XMLWriter) WriteListFloat(key string, values []tbase.Float) XMLWriter
 			x[k] = fmt.Sprintf("%.2f", v.Value)
 		}
 	}
-	return this.WriteList(key, x)
+	return w.WriteList(key, x)
 }
 
-func (this XMLWriter) WriteList(key string, values []string) XMLWriter {
+func (w XMLWriter) WriteList(key string, values []string) XMLWriter {
 	if len(values) == 0 {
-		return this
+		return w
 	}
-	return this.WriteArg(key, strings.Join(values, ","))
+	return w.WriteArg(key, strings.Join(values, ","))
 }
 
-func (this XMLWriter) WriteArg(key string, value string) XMLWriter {
-	this.buf.WriteString(" " + key + `="` + value + `"`)
-	return this
+func (w XMLWriter) WriteArg(key string, value string) XMLWriter {
+	w.buf.WriteString(" " + key + `="` + value + `"`)
+	return w
 }
 
-func (this XMLWriter) WriteFmtArg(key string, format string, args ...interface{}) XMLWriter {
-	return this.WriteArg(key, fmt.Sprintf(format, args...))
+func (w XMLWriter) WriteFmtArg(key string, format string, args ...interface{}) XMLWriter {
+	return w.WriteArg(key, fmt.Sprintf(format, args...))
 }
 
-func (this XMLWriter) WriteIntArg(key string, value int) XMLWriter {
-	this.WriteArg(key, strconv.Itoa(value))
-	return this
+func (w XMLWriter) WriteIntArg(key string, value int) XMLWriter {
+	w.WriteArg(key, strconv.Itoa(value))
+	return w
 }
 
-func (this XMLWriter) WriteInstance(key string, value tile.Instance) XMLWriter {
-	return this.WriteIntArg(key, InstanceToTenhou(value))
+func (w XMLWriter) WriteInstance(key string, value tile.Instance) XMLWriter {
+	return w.WriteIntArg(key, InstanceToTenhou(value))
 }
 
-func (this XMLWriter) WriteOpponent(key string, d tbase.Opponent) XMLWriter {
-	return this.WriteIntArg(key, int(d))
+func (w XMLWriter) WriteOpponent(key string, d tbase.Opponent) XMLWriter {
+	return w.WriteIntArg(key, int(d))
 }
 
-func (this XMLWriter) WriteDealer(d tbase.Opponent) XMLWriter {
-	return this.WriteOpponent("oya", d)
+func (w XMLWriter) WriteDealer(d tbase.Opponent) XMLWriter {
+	return w.WriteOpponent("oya", d)
 }
 
-func (this XMLWriter) WriteWho(d tbase.Opponent) XMLWriter {
-	return this.WriteOpponent("who", d)
+func (w XMLWriter) WriteWho(d tbase.Opponent) XMLWriter {
+	return w.WriteOpponent("who", d)
 }
 
-func (this XMLWriter) WriteTableStatus(status tbase.TableStatus) XMLWriter {
-	return this.WriteArg("ba", fmt.Sprintf("%d,%d", status.Honba, status.Sticks))
+func (w XMLWriter) WriteTableStatus(status tbase.TableStatus) XMLWriter {
+	return w.WriteArg("ba", fmt.Sprintf("%d,%d", status.Honba, status.Sticks))
 }
 
-func (this XMLWriter) WriteScoreChanges(sc tbase.ScoreChanges) XMLWriter {
-	return this.WriteArg("sc", changesToString(sc))
+func (w XMLWriter) WriteScoreChanges(sc tbase.ScoreChanges) XMLWriter {
+	return w.WriteArg("sc", changesToString(sc))
 }
 
-func (this XMLWriter) Write(format string, args ...interface{}) {
-	fmt.Fprintf(this.buf, format, args...)
+func (w XMLWriter) Write(format string, args ...interface{}) {
+	fmt.Fprintf(w.buf, format, args...)
 }
 
-func (this XMLWriter) WriteBody(format string, args ...interface{}) {
-	this.Begin("")
-	this.Write(format, args...)
-	this.End()
+func (w XMLWriter) WriteBody(format string, args ...interface{}) {
+	w.Begin("")
+	w.Write(format, args...)
+	w.End()
 }
 
 func changesToString(ch tbase.ScoreChanges) string {

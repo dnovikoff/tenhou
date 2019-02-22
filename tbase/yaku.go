@@ -52,8 +52,8 @@ func (ys Yakus) Check(x Yaku) bool {
 	return false
 }
 
-func (this Yakumans) Check(x Yakuman) bool {
-	for _, v := range this {
+func (y Yakumans) Check(x Yakuman) bool {
+	for _, v := range y {
 		if x == v {
 			return true
 		}
@@ -83,9 +83,9 @@ func YakumansFromInts(in []int) Yakumans {
 	return x
 }
 
-func (this Yakumans) Ints() []int {
-	ret := make([]int, len(this))
-	for k, v := range this {
+func (y Yakumans) Ints() []int {
+	ret := make([]int, len(y))
+	for k, v := range y {
 		ret[k] = int(v)
 	}
 	return ret
@@ -210,9 +210,9 @@ func YakumansFromCore(in yaku.Yakumans) (ret Yakumans, err error) {
 	return
 }
 
-func (this Yakus) ToCore() (ret yaku.YakuSet, err error) {
-	result := make(yaku.YakuSet, len(this))
-	for _, v := range this {
+func (y Yakus) ToCore() (ret yaku.YakuSet, err error) {
+	result := make(yaku.YakuSet, len(y))
+	for _, v := range y {
 		y, ok := YakuMap[v.Yaku]
 		if !ok {
 			err = fmt.Errorf("No yaku '%v' in map", v.Yaku)
@@ -224,9 +224,9 @@ func (this Yakus) ToCore() (ret yaku.YakuSet, err error) {
 	return
 }
 
-func (this Yakumans) ToCore() (ret yaku.Yakumans, err error) {
-	result := make(yaku.Yakumans, len(this))
-	for _, v := range this {
+func (y Yakumans) ToCore() (ret yaku.Yakumans, err error) {
+	result := make(yaku.Yakumans, len(y))
+	for _, v := range y {
 		y, ok := YakumanMap[v]
 		if !ok {
 			err = fmt.Errorf("No yakuman '%v' in map", v)

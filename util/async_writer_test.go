@@ -28,8 +28,8 @@ func newAwTester(channelSize int) *awTester {
 	return tst
 }
 
-func (this *awTester) start() func() {
-	return this.Start(context.Background())
+func (tester *awTester) start() func() {
+	return tester.Start(context.Background())
 }
 
 func TestAsyncWriter(t *testing.T) {
