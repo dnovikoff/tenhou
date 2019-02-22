@@ -3,10 +3,10 @@ package util_test
 import (
 	"testing"
 
-	"github.com/dnovikoff/tenhou/parser"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/dnovikoff/tenhou/parser"
 )
 
 func TestParseXML(t *testing.T) {

@@ -3,11 +3,11 @@ package server
 import (
 	"net/url"
 
-	"github.com/dnovikoff/tenhou/tbase"
 	"github.com/facebookgo/stackerr"
 
 	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tenhou/parser"
+	"github.com/dnovikoff/tenhou/tbase"
 	"github.com/dnovikoff/tenhou/util"
 )
 

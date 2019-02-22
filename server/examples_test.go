@@ -4,10 +4,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/dnovikoff/tenhou/tbase"
 	"github.com/dnovikoff/tenhou/util"
-
-	"github.com/stretchr/testify/require"
 )
 
 type exampleWriter struct {

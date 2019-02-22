@@ -4,10 +4,9 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/dnovikoff/tempai-core/tile"
 	"github.com/dnovikoff/tenhou/tbase"
 	"github.com/dnovikoff/tenhou/util"
-
-	"github.com/dnovikoff/tempai-core/tile"
 )
 
 type XMLWriter struct {
