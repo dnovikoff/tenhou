@@ -1,13 +1,12 @@
+include protoc.mk
+
 gobin:
 	mkdir gobin
 
-gobin/protoc-gen-go: gobin
-	go build -o ./gobin/protoc-gen-go ./vendor/github.com/golang/protobuf/protoc-gen-go
-
 # github.com/golang/protobuf/protoc-gen-go
-CMD := protoc --plugin=protoc-gen-go=./gobin/protoc-gen-go --go_out=paths=source_relative,plugins=grpc:./genproto --proto_path=./proto
+CMD := $(protoc_go_cmd) --go_out=paths=source_relative,plugins=grpc:./genproto --proto_path=./proto
 
-generate: gobin/protoc-gen-go
+generate: $(protoc_gen_go)
 	rm -rf genproto
 	mkdir genproto
 	# cd proto &&
