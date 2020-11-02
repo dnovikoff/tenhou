@@ -58,7 +58,7 @@ func (x LobbyType) String() string {
 	return proto.EnumName(LobbyType_name, int32(x))
 }
 func (LobbyType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_stats_de24dd28872dbf26, []int{0}
+	return fileDescriptor_stats_ab9f525f30e7f75c, []int{0}
 }
 
 type GameLength int32
@@ -84,7 +84,7 @@ func (x GameLength) String() string {
 	return proto.EnumName(GameLength_name, int32(x))
 }
 func (GameLength) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_stats_de24dd28872dbf26, []int{1}
+	return fileDescriptor_stats_ab9f525f30e7f75c, []int{1}
 }
 
 type GameType int32
@@ -107,7 +107,7 @@ func (x GameType) String() string {
 	return proto.EnumName(GameType_name, int32(x))
 }
 func (GameType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_stats_de24dd28872dbf26, []int{2}
+	return fileDescriptor_stats_ab9f525f30e7f75c, []int{2}
 }
 
 type GameSpeed int32
@@ -130,7 +130,7 @@ func (x GameSpeed) String() string {
 	return proto.EnumName(GameSpeed_name, int32(x))
 }
 func (GameSpeed) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_stats_de24dd28872dbf26, []int{3}
+	return fileDescriptor_stats_ab9f525f30e7f75c, []int{3}
 }
 
 type Akkas int32
@@ -153,7 +153,7 @@ func (x Akkas) String() string {
 	return proto.EnumName(Akkas_name, int32(x))
 }
 func (Akkas) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_stats_de24dd28872dbf26, []int{4}
+	return fileDescriptor_stats_ab9f525f30e7f75c, []int{4}
 }
 
 type Tanyao int32
@@ -176,7 +176,7 @@ func (x Tanyao) String() string {
 	return proto.EnumName(Tanyao_name, int32(x))
 }
 func (Tanyao) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_stats_de24dd28872dbf26, []int{5}
+	return fileDescriptor_stats_ab9f525f30e7f75c, []int{5}
 }
 
 type NumberType int32
@@ -205,7 +205,7 @@ func (x NumberType) String() string {
 	return proto.EnumName(NumberType_name, int32(x))
 }
 func (NumberType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_stats_de24dd28872dbf26, []int{6}
+	return fileDescriptor_stats_ab9f525f30e7f75c, []int{6}
 }
 
 type Player struct {
@@ -221,7 +221,7 @@ func (m *Player) Reset()         { *m = Player{} }
 func (m *Player) String() string { return proto.CompactTextString(m) }
 func (*Player) ProtoMessage()    {}
 func (*Player) Descriptor() ([]byte, []int) {
-	return fileDescriptor_stats_de24dd28872dbf26, []int{0}
+	return fileDescriptor_stats_ab9f525f30e7f75c, []int{0}
 }
 func (m *Player) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Player.Unmarshal(m, b)
@@ -286,7 +286,7 @@ func (m *Record) Reset()         { *m = Record{} }
 func (m *Record) String() string { return proto.CompactTextString(m) }
 func (*Record) ProtoMessage()    {}
 func (*Record) Descriptor() ([]byte, []int) {
-	return fileDescriptor_stats_de24dd28872dbf26, []int{1}
+	return fileDescriptor_stats_ab9f525f30e7f75c, []int{1}
 }
 func (m *Record) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Record.Unmarshal(m, b)
@@ -409,9 +409,9 @@ func init() {
 	proto.RegisterEnum("stats.NumberType", NumberType_name, NumberType_value)
 }
 
-func init() { proto.RegisterFile("stats/stats.proto", fileDescriptor_stats_de24dd28872dbf26) }
+func init() { proto.RegisterFile("stats/stats.proto", fileDescriptor_stats_ab9f525f30e7f75c) }
 
-var fileDescriptor_stats_de24dd28872dbf26 = []byte{
+var fileDescriptor_stats_ab9f525f30e7f75c = []byte{
 	// 688 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x64, 0x94, 0xd1, 0x6f, 0xda, 0x48,
 	0x10, 0xc6, 0x31, 0x60, 0x07, 0x86, 0x00, 0xcb, 0x24, 0x97, 0xf3, 0xe5, 0xe1, 0x0e, 0xe5, 0xee,
