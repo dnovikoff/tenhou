@@ -1,4 +1,4 @@
-name: Build and test Go
+name: CI
 on: [push, pull_request]
 jobs:
   build:
@@ -18,7 +18,19 @@ jobs:
             GOPROXY: "off"
         run: make generate
 
+      - name: Build
+        env:
+            GOPROXY: "off"
+        run: make build
+
       - name: Test
         env:
             GOPROXY: "off"
-        run: make test
+        run: make testcover
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage.txt
+          fail_ci_if_error: true
+          verbose: false

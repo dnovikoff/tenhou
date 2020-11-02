@@ -1,6 +1,6 @@
 # About
 
-[![Build Status](https://travis-ci.org/dnovikoff/tenhou.svg?branch=master)](https://travis-ci.org/dnovikoff/tenhou)
+[![CI](https://github.com/dnovikoff/tenhou/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/dnovikoff/tenhou/actions?query=workflow%3ACI)
 [![Coverage Status](https://img.shields.io/codecov/c/github/dnovikoff/tenhou.svg)](https://codecov.io/gh/dnovikoff/tenhou)
 [![Go Report Card](https://goreportcard.com/badge/github.com/dnovikoff/tenhou)](https://goreportcard.com/report/github.com/dnovikoff/tenhou)
 

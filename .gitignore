@@ -1,1 +1,3 @@
-gobin
+/gobin
+/build
+/coverage.txt
