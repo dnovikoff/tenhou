@@ -34,5 +34,5 @@ func TestInfoParsefilename(t *testing.T) {
 	ret, err := ParseLogInfo("http://tenhou.net/0/?log=2017022002gm-000b-2873-xc0294a92421e&tw=3")
 	require.NoError(t, err)
 	assert.Equal(t, "http://tenhou.net/0/?log=2017022002gm-000b-2873-xc0294a92421e", ret.LogUrl)
-	assert.Equal(t, "http://e.mjv.jp/0/log/plainfiles.cgi?2017022002gm-000b-2873-fb28df66", ret.XmlUrl)
+	assert.Equal(t, "https://tenhou.net/0/log/?2017022002gm-000b-2873-fb28df66", ret.XmlUrl)
 }

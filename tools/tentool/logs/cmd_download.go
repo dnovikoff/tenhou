@@ -10,6 +10,7 @@ import (
 	"os"
 	"path"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/dnovikoff/tenhou/tools/tentool/utils"
@@ -20,6 +21,7 @@ type downloader struct {
 	index       *FileIndex
 	parallel    int
 	yadiskURL   string
+	prefix      string
 }
 
 func (d *downloader) Run() {
@@ -29,6 +31,9 @@ func (d *downloader) Run() {
 	ids := make([]string, 0, len(d.index.data.Files))
 	for _, v := range d.index.data.Files {
 		if v.Check() {
+			continue
+		}
+		if d.prefix != "" && !strings.HasPrefix(v.ID, d.prefix) {
 			continue
 		}
 		if v.Failed > 5 {

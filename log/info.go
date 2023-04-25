@@ -14,7 +14,7 @@ import (
 
 const (
 	LogUrlPrefix = "http://tenhou.net/0/?log="
-	XmlUrlPrefix = "http://e.mjv.jp/0/log/plainfiles.cgi?"
+	XmlUrlPrefix = "https://tenhou.net/0/log/?"
 )
 
 var magic []uint64 = []uint64{
@@ -101,8 +101,8 @@ func extractId(in string) string {
 	return in[first:last]
 }
 
-//2009061806gm-00a1-0000-6d13c207
-///2009/03/17/2009031702gm
+// 2009061806gm-00a1-0000-6d13c207
+// /2009/03/17/2009031702gm
 func ParseLogInfo(fileName string) (ret *Info, err error) {
 	fileName = extractId(fileName)
 	groups := strings.Split(fileName, "-")

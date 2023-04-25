@@ -1,4 +1,4 @@
-protoc_version := 3.13.0
+protoc_version := 21.2
 protoc_dir := gobin/protoc/v$(protoc_version)
 protoc_bin := $(protoc_dir)/bin/protoc
 protoc_gen_go := gobin/protoc-gen-go

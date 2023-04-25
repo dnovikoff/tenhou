@@ -49,5 +49,15 @@ Download log files from collected log ids by typing
 tentool logs download
 ```
 
+Alternatevly you can init with makefile
+```
+make init
+```
+
+And update with
+```
+make download
+```
+
 Now you have full database of phoenix logs on your machine.
 Consider reading `tentool stats --help` and `tentool logs --help` on more commands and flags.

@@ -59,19 +59,19 @@ func ParseStats(reader io.Reader, info *StatFileInfo, f func(*stats.Record) erro
 	parser := &statParser{time: info.Date}
 	lparser := bindParser(parser, info.Source)
 	if lparser == nil {
-		return fmt.Errorf("Unknown parser source: %v", info.Source)
+		return fmt.Errorf("unknown parser source: %v", info.Source)
 	}
 	for scanner.Scan() {
 		str := scanner.Text()
 		record := parser.Next()
 		err := lparser.ParseLine(str)
 		if err != nil {
-			fmt.Printf("Error parsing line '%v'\n", str)
+			fmt.Printf("error parsing line '%v'\n", str)
 			return err
 		} else {
 			err = f(record)
 			if err != nil {
-				fmt.Printf("Error parsing line '%v'\n", str)
+				fmt.Printf("error parsing line '%v'\n", str)
 				return err
 			}
 		}
@@ -117,15 +117,15 @@ func (p *statParser) Duration(in string) error {
 func (p *statParser) Info(in string) error {
 	start := strings.Index(in, "\"")
 	if start == -1 {
-		return fmt.Errorf("No open quote found in '%v'", in)
+		return fmt.Errorf("no open quote found in '%v'", in)
 	}
 	end := strings.LastIndex(in, "\"")
 	if end <= start {
-		return fmt.Errorf("Wrong quote in '%v'", in)
+		return fmt.Errorf("wrong quote in '%v'", in)
 	}
 	start = strings.LastIndex(in, "=")
 	if start == -1 {
-		return fmt.Errorf("No = found '%v'", in)
+		return fmt.Errorf("no = found '%v'", in)
 	}
 	p.record.Id = in[start+1 : end]
 	return nil
@@ -243,8 +243,10 @@ func (p *statParser) lobbyType(r rune) error {
 		p.record.Lobby = stats.LobbyType_LOBBY_TYPE_X2
 	case '琥':
 		p.record.Lobby = stats.LobbyType_LOBBY_TYPE_X3
+	case '－':
+		p.record.Lobby = stats.LobbyType_LOBBY_TYPE_EXTERNAL
 	default:
-		return fmt.Errorf("Unknown Lobby Type '%v'", string(r))
+		return fmt.Errorf("unknown Lobby Type '%v'", string(r))
 	}
 	return nil
 }
@@ -258,7 +260,7 @@ func (p *statParser) lenType(r rune) error {
 	case dashSymbol:
 		p.record.Length = stats.GameLength_GAME_LENGTH_ONE
 	default:
-		return fmt.Errorf("Unknown Game Len '%v'", string(r))
+		return fmt.Errorf("unknown Game Len '%v'", string(r))
 	}
 	return nil
 }
@@ -270,7 +272,7 @@ func (p *statParser) tanyaoType(r rune) error {
 	case dashSymbol:
 		p.record.Tanyao = stats.Tanyao_TANYAO_NO
 	default:
-		return fmt.Errorf("Unknown Tanyao type '%v'", string(r))
+		return fmt.Errorf("unknown Tanyao type '%v'", string(r))
 	}
 	return nil
 }
@@ -282,7 +284,7 @@ func (p *statParser) akkaType(r rune) error {
 	case dashSymbol:
 		p.record.Akkas = stats.Akkas_AKKAS_NO
 	default:
-		return fmt.Errorf("Unknown Akka Len '%v'", string(r))
+		return fmt.Errorf("unknown Akka Len '%v'", string(r))
 	}
 	return nil
 }
@@ -294,7 +296,7 @@ func (p *statParser) dzType(r rune) error {
 	case dashSymbol:
 		p.record.IsDz = false
 	default:
-		return fmt.Errorf("Unknown Dz Type '%v'", string(r))
+		return fmt.Errorf("unknown Dz Type '%v'", string(r))
 	}
 	return nil
 }
@@ -308,7 +310,7 @@ func (p *statParser) five(r rune) error {
 	case '０':
 		p.record.NumberType = stats.NumberType_NUMBER_0
 	default:
-		return fmt.Errorf("Unknown Number Type '%v'", string(r))
+		return fmt.Errorf("unknown Number Type '%v'", string(r))
 	}
 	return nil
 }
@@ -331,7 +333,7 @@ func (p *statParser) LobbyConfig(in string) error {
 		regErr(p.dzType(runes[5]))
 	case 5:
 	default:
-		return fmt.Errorf("Wrong config string len %v for '%v'", len(runes), in)
+		return fmt.Errorf("wrong config string len %v for '%v'", len(runes), in)
 	}
 
 	regErr(p.gameType(runes[0]))
@@ -355,7 +357,7 @@ func (p lineParsers) ParseLine(in string) error {
 func (p lineParsers) ParseArray(in []string) error {
 	cnt := len(p)
 	if len(in) != cnt {
-		return stackerr.Newf("Wrong number of args %v != %v : %v", len(in), cnt, in)
+		return stackerr.Newf("wrong number of args %v != %v : %v", len(in), cnt, in)
 	}
 	var retErr error
 	for i, v := range p {

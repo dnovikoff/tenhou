@@ -15,6 +15,7 @@ enum LobbyType {
     LOBBY_TYPE_X1 = 5; // 若
     LOBBY_TYPE_X2 = 6; // 銀
     LOBBY_TYPE_X3 = 7; // 琥
+    LOBBY_TYPE_EXTERNAL = 8; // －
 }
 
 enum GameLength {

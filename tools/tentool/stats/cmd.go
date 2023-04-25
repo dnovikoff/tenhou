@@ -88,7 +88,7 @@ func CMD() *cobra.Command {
 		},
 	}
 	downloadCMD.Flags().BoolVar(&interactiveFlag, "interactive", true, "Use interactive downloader progress.")
-	downloadCMD.Flags().BoolVar(&cleanup, "cleanup", true, "Clean old files after download.")
+	downloadCMD.Flags().BoolVar(&cleanup, "cleanup", false, "Clean old files after download.")
 
 	yadiskCMD := &cobra.Command{
 		Use:   "yadisk",

@@ -95,6 +95,7 @@ func CMD() *cobra.Command {
 	updateCMD.Flags().BoolVar(&cleanFlag, "clean", false, "Reparse all database.")
 
 	var parallel int
+	var prefix string
 	downloadCMD := &cobra.Command{
 		Use:   "download",
 		Short: "Download log files",
@@ -103,9 +104,11 @@ func CMD() *cobra.Command {
 			(&downloader{
 				interactive: interactiveFlag,
 				parallel:    parallel,
+				prefix:      prefix,
 			}).Run()
 		},
 	}
+	downloadCMD.Flags().StringVar(&prefix, "prefix", "", "Limit downloads to ID prefix")
 	downloadCMD.Flags().BoolVar(&interactiveFlag, "interactive", true, "Use interactive downloader progress.")
 	downloadCMD.Flags().IntVar(&parallel, "parallel", 1, "Number of parallel downloads.")
 

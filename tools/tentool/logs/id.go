@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	XmlUrlPrefix = "http://e.mjv.jp/0/log/?"
+	XmlUrlPrefix = "https://tenhou.net/0/log/?"
 )
 
 var magic []uint64 = []uint64{
