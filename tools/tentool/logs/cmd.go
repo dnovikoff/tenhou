@@ -162,6 +162,15 @@ func CMD() *cobra.Command {
 		},
 	}
 
+	removeIndexCMD := &cobra.Command{
+		Use:   "removeindex",
+		Short: "Remove index records prefix",
+		Args:  cobra.ExactArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			RemoveIndex(args[0])
+		},
+	}
+
 	statusCMD := &cobra.Command{
 		Use:   "status",
 		Short: "Show downloaded status",
@@ -188,6 +197,7 @@ func CMD() *cobra.Command {
 	rootCMD.AddCommand(importCMD)
 	rootCMD.AddCommand(exportCMD)
 	rootCMD.AddCommand(collectCMD)
+	rootCMD.AddCommand(removeIndexCMD)
 	rootCMD.AddCommand(statusCMD)
 	rootCMD.AddCommand(getCMD)
 	return rootCMD

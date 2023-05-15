@@ -5,7 +5,7 @@ import (
 	"compress/gzip"
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"path"
@@ -76,11 +76,11 @@ func (d *downloader) Run() {
 		}
 		info := d.index.SetRootFile(result.ID, result.DestPath)
 		{
-			zipped, err := ioutil.ReadFile(result.DestPath)
+			zipped, err := os.ReadFile(result.DestPath)
 			utils.Check(err)
 			r, err := gzip.NewReader(bytes.NewReader(zipped))
 			utils.Check(err)
-			data, err := ioutil.ReadAll(r)
+			data, err := io.ReadAll(r)
 			utils.Check(err)
 			utils.Check(r.Close())
 			names, err := parseNames(data)
