@@ -23,7 +23,7 @@ func RemoveIndex(prefix string) {
 func removeIndex(infos []*FileInfo, prefix string, removed *int) []*FileInfo {
 	next := make([]*FileInfo, 0, len(infos))
 	for _, v := range infos {
-		if !strings.HasPrefix(prefix, v.ID) {
+		if !strings.HasPrefix(v.ID, prefix) {
 			next = append(next, v)
 		} else {
 			*removed++
