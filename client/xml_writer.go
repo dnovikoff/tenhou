@@ -137,6 +137,11 @@ func (w XMLWriter) Go(params Go) {
 	if params.GpID != "" {
 		w.WriteArg("gpid", params.GpID)
 	}
+
+	w.WritePString("title", params.Title)
+	w.WritePString("rule", params.Rule)
+	w.WritePString("ranking", params.Ranking)
+	w.WritePString("csrule", params.CSRule)
 	w.End()
 }
 

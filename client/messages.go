@@ -9,6 +9,12 @@ import (
 type WithLobby struct {
 	LobbyNumber int
 	LobbyType   int
+
+	// TODO: parse deeper
+	Title   *string
+	Rule    *string
+	Ranking *string
+	CSRule  *string
 }
 
 type WithOpponent struct {

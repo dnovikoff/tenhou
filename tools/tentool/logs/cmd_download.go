@@ -84,7 +84,10 @@ func (d *downloader) Run() {
 			utils.Check(err)
 			utils.Check(r.Close())
 			names, err := parseNames(data)
-			utils.Check(err)
+			if err != nil {
+				fmt.Println("Error validating ", result.ID)
+				utils.Check(err)
+			}
 			info.LogNames = names
 		}
 		if w.Progress()%200 == 0 {

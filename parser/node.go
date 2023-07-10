@@ -94,6 +94,14 @@ func (node *Node) String(name string) string {
 	return x
 }
 
+func (node *Node) PString(name string) *string {
+	if !node.Check(name) {
+		return nil
+	}
+	x := node.String(name)
+	return &x
+}
+
 func (node *Node) StringList(name string) []string {
 	return tbase.StringList(node.String(name))
 }

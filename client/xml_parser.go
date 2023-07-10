@@ -48,6 +48,10 @@ func GetWithLobby(node *parser.Node) WithLobby {
 	return WithLobby{
 		LobbyType:   node.Int("type"),
 		LobbyNumber: l,
+		Title:       node.PString("title"),
+		Rule:        node.PString("rule"),
+		Ranking:     node.PString("ranking"),
+		CSRule:      node.PString("csrule"),
 	}
 }
 

@@ -86,6 +86,13 @@ func (w XMLWriter) WriteArg(key string, value string) XMLWriter {
 	return w
 }
 
+func (w XMLWriter) WritePString(key string, value *string) XMLWriter {
+	if value != nil {
+		w.buf.WriteString(" " + key + `="` + *value + `"`)
+	}
+	return w
+}
+
 func (w XMLWriter) WriteFmtArg(key string, format string, args ...interface{}) XMLWriter {
 	return w.WriteArg(key, fmt.Sprintf(format, args...))
 }
