@@ -114,7 +114,7 @@ func TestSLogInfo(t *testing.T) {
 
 func TestSGo(t *testing.T) {
 	c := NewXMLWriter()
-	c.Go(Go{WithLobby{0, 9}, "12D32385-4987D01D"})
+	c.Go(Go{WithLobby{LobbyNumber: 0, LobbyType: 9}, "12D32385-4987D01D"})
 	assert.Equal(t, `<GO type="9" lobby="0" gpid="12D32385-4987D01D"/>`, c.String())
 }
 
