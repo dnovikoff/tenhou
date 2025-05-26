@@ -45,9 +45,9 @@ func (r LobbyRules) DebugString() string {
 	buf := &bytes.Buffer{}
 	w := func(x LobbyRules, t string, f string) {
 		if r.Check(x) {
-			fmt.Fprintf(buf, t)
+			fmt.Fprint(buf, t)
 		} else {
-			fmt.Fprintf(buf, f)
+			fmt.Fprint(buf, f)
 		}
 	}
 	w(FlagNoAkkas, "a", "A")

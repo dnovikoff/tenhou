@@ -38,7 +38,7 @@ func (w XMLWriter) WriteTake(o tbase.Opponent, t tile.Instance, suggest Suggest,
 	letter += rune(o)
 	i := util.InstanceToTenhou(t)
 	if hideOthers && o != tbase.Self {
-		w.WriteBody(string(letter))
+		w.WriteBody("%s", string(letter))
 		return
 	}
 	if suggest > 0 {

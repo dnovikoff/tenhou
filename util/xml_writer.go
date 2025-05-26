@@ -136,6 +136,12 @@ func (w XMLWriter) WriteBody(format string, args ...interface{}) {
 	w.End()
 }
 
+func (w XMLWriter) WriteBodyString(format string, args ...interface{}) {
+	w.Begin("")
+	w.Write(format, args...)
+	w.End()
+}
+
 func changesToString(ch tbase.ScoreChanges) string {
 	tmp := make([]string, len(ch))
 	for k, v := range ch {
