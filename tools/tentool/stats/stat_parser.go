@@ -13,8 +13,9 @@ import (
 	"unicode/utf8"
 
 	"github.com/facebookgo/stackerr"
-	"github.com/golang/protobuf/ptypes"
 	"go.uber.org/multierr"
+	durationpb "google.golang.org/protobuf/types/known/durationpb"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/dnovikoff/tenhou/genproto/stats"
 )
@@ -99,10 +100,10 @@ func (p *statParser) Time(in string) error {
 	if err != nil {
 		return err
 	}
-	p.record.Time, err = ptypes.TimestampProto(
+	p.record.Time = timestamppb.New(
 		p.time.Add(time.Nanosecond * time.Duration(t.UnixNano())),
 	)
-	return err
+	return nil
 }
 
 func (p *statParser) Duration(in string) error {
@@ -110,7 +111,7 @@ func (p *statParser) Duration(in string) error {
 	if err != nil {
 		return err
 	}
-	p.record.Duration = ptypes.DurationProto(time.Minute * time.Duration(dur))
+	p.record.Duration = durationpb.New(time.Minute * time.Duration(dur))
 	return nil
 }
 
